@@ -1,0 +1,40 @@
+<div class="modal fade" id="detailAlert">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--弹框标题-->
+            <div class="modal-header" style="display:none">
+                <h4 class="modal-title"><span id="versionTable_title"></span>字段列表</h4>
+                <form class="navbar-form navbar-left" role="search" target="_blank">
+	        		<div class="selfAdaptionLeft">
+	        			<div>
+							<div class="input-group">
+								<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="detail_dataSrcAbbr"  placeholder="数据源">
+								<input data-col="dataInterfaceNo" type="hidden" class="form-control" id="detail_dataInterfaceNo"  placeholder="接口编号">
+								<input data-col="columnNo" type="text" class="form-control" id="detail_columnNo"  placeholder="字段编号">
+                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+							</div>
+						</div>
+	        		</div>
+	        		<div class="selfAdaptionRight">
+						<button type="button" class="btn btn-primary" onclick="detailModel.search()">查询</button>
+						<button type="reset" class="btn btn-primary" >重置</button>
+						<!-- <a class="btn btn-primary" target="_blank" onclick="columnModel.importCol()">导入字段</a>
+						<button type="button" class="btn btn-primary btn-large" onclick="columnModel.add(1,this)">新增</button> -->
+						<!-- <button type="button" class="btn btn-primary btn-large" onclick='interfaceModel.init(localStorage.getItem("idx"))'>返回</button> -->
+                    </div>
+                   </form>
+            </div>
+            <!--模型版本列表-->
+            <div class="modal-body">
+                <div style="clear: both"></div>
+                <div>
+                    <table id="detailTable"></table>
+                </div>
+            </div>
+            <!--操作按钮-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>

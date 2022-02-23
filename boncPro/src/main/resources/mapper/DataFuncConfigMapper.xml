@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataFuncConfigMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataFuncConfig">
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <result column="func_name" jdbcType="VARCHAR" property="funcName" />
+    <result column="func_type" jdbcType="VARCHAR" property="funcType" />
+    <result column="use_type" jdbcType="VARCHAR" property="useType" />
+    <result column="func_param" jdbcType="VARCHAR" property="funcParam" />
+    <result column="func_param_desc" jdbcType="VARCHAR" property="funcParamDesc" />
+  </resultMap>
+  <resultMap id="BaseResultMap3" type="java.util.Map">
+    <result column="func_name" jdbcType="VARCHAR" property="funcName" />
+    <result column="func_type" jdbcType="VARCHAR" property="funcType" />
+    <!-- <result column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" /> -->
+    <result column="func_param" jdbcType="VARCHAR" property="funcParam" />
+    <result column="func_param_desc" jdbcType="VARCHAR" property="funcParamDesc" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="java.lang.String">
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+  </resultMap>
+  <resultMap id="BaseResultMap4" type="java.lang.String">
+    <id column="func_type" jdbcType="VARCHAR" property="funcType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    data_src_abbr, func_name, func_type, use_type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_func_config
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataFuncConfig">
+    delete from data_func_config
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+    and use_type = #{useType,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataFuncConfig">
+    insert into data_func_config (data_src_abbr, func_name, func_type, 
+      use_type)
+    values (#{dataSrcAbbr,jdbcType=VARCHAR}, #{funcName,jdbcType=VARCHAR}, #{funcType,jdbcType=VARCHAR}, 
+      #{useType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataFuncConfig">
+    insert into data_func_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="funcName != null">
+        func_name,
+      </if>
+      <if test="funcType != null">
+        func_type,
+      </if>
+      <if test="useType != null">
+        use_type,
+      </if>
+      <if test="funcParam != null">
+        func_param,
+      </if>
+      <if test="funcParamDesc != null">
+        func_param_desc,
+      </if>
+      <if test="func_order != null">
+        func_order,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="funcName != null">
+        #{funcName,jdbcType=VARCHAR},
+      </if>
+      <if test="funcType != null">
+        #{funcType,jdbcType=VARCHAR},
+      </if>
+      <if test="useType != null">
+        #{useType,jdbcType=VARCHAR},
+      </if>
+      <if test="funcParam != null">
+        #{funcParam,jdbcType=VARCHAR},
+      </if>
+      <if test="funcParamDesc != null">
+        #{funcParamDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="func_order != null">
+        #{func_order,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataFuncConfig">
+    update data_func_config
+    <set>
+      <if test="funcName != null">
+        func_name = #{funcName,jdbcType=VARCHAR},
+      </if>
+      <if test="funcType != null">
+        func_type = #{funcType,jdbcType=VARCHAR},
+      </if>
+      <if test="useType != null">
+        use_type = #{useType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR} and use_type=#{useType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataFuncConfig">
+    update data_func_config
+    set func_name = #{funcName,jdbcType=VARCHAR},
+      func_type = #{funcType,jdbcType=VARCHAR},
+      use_type = #{useType,jdbcType=VARCHAR}
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+  </update>
+  <select id="queryAll" parameterType="com.ljz.model.DataFuncConfig" resultMap="BaseResultMap3">
+    select 
+    func_type,func_name,func_param,func_param_desc,data_src_abbr
+    from data_func_config
+    where 1=1
+    <if test="dataSrcAbbr != null">
+        and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+     <if test="useType != null">
+        and use_type = #{useType,jdbcType=VARCHAR}
+     </if>
+     <if test="funcName != null">
+        and func_name = #{funcName,jdbcType=VARCHAR}
+     </if>
+     order by data_src_abbr,func_order
+  </select>
+  <select id="queryGroup" parameterType="com.ljz.model.DataFuncConfig" resultMap="BaseResultMap2">
+    select distinct data_src_abbr  from data_func_config
+  </select>
+  <select id="queryType" parameterType="com.ljz.model.DataFuncConfig" resultMap="BaseResultMap4">
+    select distinct func_type  from data_func_config where 1=1
+    <if test="dataSrcAbbr != null">
+        and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+  </select>
+  
+  
+  <insert id="batchInsertConfig" useGeneratedKeys="false"  parameterType="com.ljz.model.DataFuncConfig">
+	  insert into data_func_config (data_src_abbr, func_name, func_type, 
+      use_type,func_param,func_param_desc,func_order)
+       values 
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.funcName,jdbcType=VARCHAR}, #{model.funcType,jdbcType=VARCHAR}, 
+      #{model.useType,jdbcType=VARCHAR},#{model.funcParam,jdbcType=VARCHAR},#{model.funcParamDesc,jdbcType=VARCHAR},#{model.func_order,jdbcType=VARCHAR})
+	    </foreach>
+	</insert>
+</mapper>

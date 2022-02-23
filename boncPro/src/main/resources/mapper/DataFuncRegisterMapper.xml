@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataFuncRegisterMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataFuncRegister">
+    <result column="func_id" jdbcType="INTEGER" property="funcId" />
+    <result column="func_name" jdbcType="VARCHAR" property="funcName" />
+    <result column="use_type" jdbcType="VARCHAR" property="useType" />
+    <result column="func_param" jdbcType="VARCHAR" property="funcParam" />
+    <result column="func_desc" jdbcType="VARCHAR" property="funcDesc" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="func_param_desc" jdbcType="VARCHAR" property="funcParamDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+	func_id,func_name, use_type, func_param, func_desc, create_user, create_time, func_param_desc
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataFuncRegisterKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_func_register
+    where func_name = #{funcName,jdbcType=VARCHAR}
+      and use_type = #{useType,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataFuncRegister">
+    delete from data_func_register
+    where 1=1
+      <if test="funcName != null">
+        and func_name = #{funcName,jdbcType=VARCHAR}
+      </if>
+      <if test="funcParam != null">
+        and func_param = #{funcParam,jdbcType=VARCHAR}
+      </if>
+      <if test="useType != null">
+        and use_type = #{useType,jdbcType=VARCHAR}
+      </if>
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataFuncRegister">
+    insert into data_func_register (func_name, use_type, func_param, 
+      func_desc, create_user, create_time
+      )
+    values (#{funcName,jdbcType=VARCHAR}, #{useType,jdbcType=VARCHAR}, #{funcParam,jdbcType=VARCHAR}, 
+      #{funcDesc,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataFuncRegister">
+    insert into data_func_register
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="funcName != null">
+        func_name,
+      </if>
+      <if test="useType != null">
+        use_type,
+      </if>
+      <if test="funcParam != null">
+        func_param,
+      </if>
+      <if test="funcDesc != null">
+        func_desc,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="funcParamDesc != null">
+        func_param_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="funcName != null">
+        #{funcName,jdbcType=VARCHAR},
+      </if>
+      <if test="useType != null">
+        #{useType,jdbcType=VARCHAR},
+      </if>
+      <if test="funcParam != null">
+        #{funcParam,jdbcType=VARCHAR},
+      </if>
+      <if test="funcDesc != null">
+        #{funcDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="funcParamDesc != null">
+        #{funcParamDesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataFuncRegister">
+    update data_func_register
+    <set>
+      <if test="funcParam != null">
+        func_param = #{funcParam,jdbcType=VARCHAR},
+      </if>
+      <if test="funcDesc != null">
+        func_desc = #{funcDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="funcParamDesc != null">
+        func_param_desc = #{funcParamDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where func_name = #{funcName,jdbcType=VARCHAR}
+      and use_type = #{useType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataFuncRegister">
+    update data_func_register
+    set func_param = #{funcParam,jdbcType=VARCHAR},
+      func_desc = #{funcDesc,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where func_name = #{funcName,jdbcType=VARCHAR}
+      and use_type = #{useType,jdbcType=VARCHAR}
+  </update>
+  <select id="queryAll" parameterType="com.ljz.model.DataFuncRegister" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+     from data_func_register where 1=1
+    <if test="useType != null">
+      and use_type = #{useType,jdbcType=VARCHAR}
+    </if>
+    <if test="funcName != null">
+      and func_name = #{funcName,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="existFunc" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from data_func_register where func_name = #{func_name};
+  </select>
+</mapper>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterface2procMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterface2proc">
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <id column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <result column="proc_database_name" jdbcType="VARCHAR" property="procDatabaseName" />
+    <result column="proc_name" jdbcType="VARCHAR" property="procName" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.ljz.model.DataInterface2procTmp">
+  	<result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+  	<result column="importType" jdbcType="VARCHAR" property="importType" />
+    <result column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <result column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <result column="proc_database_name" jdbcType="VARCHAR" property="procDatabaseName" />
+    <result column="proc_name" jdbcType="VARCHAR" property="procName" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    data_src_abbr, data_interface_no, proc_database_name, proc_name, s_date, e_date
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterface2procKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface2proc
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataInterface2procTmp">
+    delete from data_interface2proc_tmp
+    where 1=1
+      <if test="dataSrcAbbr != null">
+        and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      </if>
+      <if test="dataInterfaceNo != null">
+        and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      </if>
+      <if test="batchNo != null">
+        and batch_no = #{batchNo,jdbcType=VARCHAR}
+      </if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.ljz.model.DataInterface2proc">
+    insert into data_interface2proc (data_src_abbr, data_interface_no, proc_database_name, 
+      proc_name, s_date, e_date)
+    values (#{dataSrcAbbr,jdbcType=VARCHAR}, #{dataInterfaceNo,jdbcType=VARCHAR}, #{procDatabaseName,jdbcType=VARCHAR}, 
+      #{procName,jdbcType=VARCHAR}, #{sDate,jdbcType=DATE}, #{eDate,jdbcType=DATE})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterface2proc">
+    insert into data_interface2proc
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="procDatabaseName != null">
+        proc_database_name,
+      </if>
+      <if test="procName != null">
+        proc_name,
+      </if>
+      <if test="sDate != null">
+        s_date,
+      </if>
+      <if test="eDate != null">
+        e_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="procDatabaseName != null">
+        #{procDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="procName != null">
+        #{procName,jdbcType=VARCHAR},
+      </if>
+      <if test="sDate != null">
+        #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        #{eDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataInterface2proc">
+    update data_interface2proc
+    <set>
+      <if test="procDatabaseName != null">
+        proc_database_name = #{procDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="procName != null">
+        proc_name = #{procName,jdbcType=VARCHAR},
+      </if>
+      <!-- <if test="sDate != null">
+        s_date = #{sDate,jdbcType=DATE},
+      </if> -->
+      <if test="eDate != null">
+        e_date = #{eDate,jdbcType=DATE},
+      </if>
+    </set>
+    where 1=1 and e_date >= #{sDate} and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- <select id="queryAll" resultMap="BaseResultMap">
+		select 
+		b.data_src_abbr,b.data_interface_no,a.data_interface_name,b.proc_database_name,b.proc_name,b.s_date,b.e_date
+    	from data_interface2proc b left join data_interface a on a.data_src_abbr = b.data_src_abbr and a.data_interface_no=b.data_interface_no 
+    	where 1=1 and b.e_date >= #{eDate}
+    	<if test="dataSrcAbbr != null">
+	        and b.data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dataInterfaceNo != null">
+	        and b.data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+	    </if>
+	    order by b.s_date desc
+  </select> -->
+ <!--  <select id="queryAll"  parameterType="com.ljz.model.DataInterface2proc" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface2proc 
+    where 1=1 and e_date >= #{eDate}
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+    </if>
+    <if test="dataInterfaceNo != null">
+       and data_interface_no=#{dataInterfaceNo}
+    </if>
+    order by s_date desc,data_src_abbr,data_interface_no;
+  </select> -->
+  
+  <select id="queryAll"  parameterType="com.ljz.model.DataInterface2proc" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface2proc 
+    where 1=1 and e_date >= #{eDate}
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+    </if>
+    <if test="dataInterfaceNo != null">
+       and data_interface_no=#{dataInterfaceNo}
+    </if>
+    order by data_src_abbr,data_interface_no;
+  </select>
+  
+  <select id="queryAllVersion" resultMap="BaseResultMap">
+		select 
+		b.data_src_abbr,b.data_interface_no,b.proc_database_name,b.proc_name,b.s_date,b.e_date
+    	from data_interface2proc b  
+    	where 1=1
+    	<if test="dataSrcAbbr != null">
+	        and b.data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dataInterfaceNo != null">
+	        and b.data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+	    </if>
+	    order by b.e_date,b.s_date,data_src_abbr,data_interface_no
+  </select>
+  
+  <select id="queryAllTmp" resultMap="BaseResultMap2">
+		select 
+		b.data_src_abbr,b.data_interface_no,b.proc_database_name,b.proc_name,b.s_date,b.e_date,b.batch_no
+    	from data_interface2proc_tmp b 
+    	where 1=1 and b.batch_no=#{batchNo}
+	    order by data_src_abbr,data_interface_no;
+  </select>
+  
+  <insert id="tmpToSave" parameterType="com.ljz.model.DataInterfaceTmp">
+  	  insert into data_interface2proc (data_src_abbr, data_interface_no, proc_database_name, 
+      proc_name, s_date, e_date)
+      SELECT data_interface2proc_tmp.data_src_abbr, data_interface2proc_tmp.data_interface_no, data_interface2proc_tmp.proc_database_name, 
+      data_interface2proc_tmp.proc_name, data_interface2proc_tmp.s_date, data_interface2proc_tmp.e_date
+      FROM data_interface2proc_tmp
+      where 1=1 and data_interface2proc_tmp.data_src_abbr=#{dataSrcAbbr} and data_interface2proc_tmp.data_interface_no=#{dataInterfaceNo} and data_interface2proc_tmp.batch_no=#{batchNo}
+  </insert>
+  
+  <insert id="batchInsert" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterface2procTmp">
+	  insert into data_interface2proc_tmp (data_src_abbr, data_interface_no, proc_database_name, 
+      proc_name, s_date, e_date,batch_no)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.procDatabaseName,jdbcType=VARCHAR}, 
+      		#{model.procName,jdbcType=VARCHAR}, #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE},#{model.batchNo,jdbcType=VARCHAR})
+	    </foreach>
+	</insert>
+	
+	<insert id="batchInsertPro" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterface2proc">
+	  insert into data_interface2proc (data_src_abbr, data_interface_no, proc_database_name, 
+      proc_name, s_date, e_date)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.procDatabaseName,jdbcType=VARCHAR}, 
+      		#{model.procName,jdbcType=VARCHAR}, #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE})
+	    </foreach>
+	</insert>
+</mapper>

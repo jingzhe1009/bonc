@@ -1,0 +1,27 @@
+server:
+  port: 8056 
+spring:
+  datasource: 
+    url: jdbc:hive2://10.97.10.82:6666/sdata_oltp_cfg;MaxWidth=9999;MaxColumnWidth=9999;
+    driver-class-name: org.apache.hive.jdbc.HiveDriver
+    #type: com.alibaba.druid.pool.DruidDataSource
+    username: admin
+    password: tdh@123
+    hikari:
+      minimum-idle: 10 
+      maximum-pool-size: 100
+      auto-commit: true
+      connection-timeout: 3000
+      max-lifetime: 1800000
+      pool-name: boncPool
+      idle-timeout: 300000
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+  jpa: 
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.ljz.model

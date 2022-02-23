@@ -1,0 +1,129 @@
+	<div class="modal fade" id="trainAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <!--弹框标题-->
+	            <div class="modal-header">
+	                <h4 class="modal-title"><span id="versionTable_title"></span>流程</h4>
+	            </div>
+	            <!--模型版本列表-->
+	            <div class="modal-body">
+					<div class="model-content">
+						<div class="main">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="flow">
+										<div class="flowListBox"> </div>
+									</div>
+								</div>
+								<div class="col-md-12" id="flowDiv">
+									<ol id="iList">
+										<div id="contA">
+											<table style="border-collapse:separate; border-spacing:0px 10px;">
+						               			<tr>
+						               				<td style="text-align:right">
+					               						<b>资源:</b>
+												    </td>
+												    <td>
+												    	<label class="radio-inline">
+												    		&nbsp;&nbsp;&nbsp;&nbsp;
+														  星环大数据平台
+														</label>
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div id="contB">
+					                        <div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+											    <div class="zUI-list-tran" id="tran1">
+											        <div class="list-box">
+											            <div class="list-header">登记函数列表</div>
+											            <ul class="left" id="funcList">
+											            </ul>
+											        </div>
+											        <div class="list-box">
+											            <div class="list-header" >已配置函数</div>
+											            <ul class="right" id="configList">
+											            </ul>
+											        </div>
+											        <div class="list-box" style="width:50%">
+											        	<div class="list-header"  style="width:100%">配置参数</div>
+											        	<div class="list-body" >
+											        		<table style="border-collapse:separate; border-spacing:0px 10px;">
+										               			<tr>
+										               				<td style="text-align:left;width:10%">
+										               					<b>语法</b>
+										               				</td>
+										               				<td style="text-align:left">
+										               					<div id="funcParamDesc"></div>
+										               				</td>
+										               			</tr>
+										               			<tr>
+										               				<td style="text-align:left;width:10%">
+										               					<input type=hidden id="funcCode" >
+										               					<b>示例</b>
+										               				</td>
+										               				<td style="text-align:left">
+										               					<div id="funcParam"></div>
+										               				</td>
+										               			</tr>
+										               			<tr>
+										               				<td style="text-align:left" colspan=2>
+										               					<b>参数</b>
+										               					<div><font color="red">未配置</font></div>
+										               				</td>
+										               			</tr>
+										               			<tr>
+										               				<td style="text-align:left" colspan=2>
+										               					<input type="hidden" id="funcId">
+										               					<i class="icon icon-2x icon-pencil" style="color:#02BABC"><b style="font-size: 12px;color:#02BABC" onclick="showParam()"> 配置参数</b></i>
+										               				</td>
+										               			</tr>
+										               		</table>
+											        	</div>
+											        </div>
+											    </div>
+											</div>
+										</div>
+										<div class="contentList" id="contC">这是第三步的信息内容</div>
+										<div class="contentList" id="contD">这是第四步的信息内容</div>
+									</ol> 
+								</div>
+							</div>
+						</div>
+					</div>
+				
+					<div class="foot-btn">
+						<button type="button" class="btn btn-default"  style="float:right; display:none" id="btnok">完成</button>
+						<button type="button" class="btn btn-primary"  style="float:right; margin-right:10px;" id="btnNext">下一步</button>
+						<button type="button" class="btn btn-primary" style="float:right; margin-right:10px;" id="btnBack">上一步</button>
+					</div>
+	            </div>
+	            <!--操作按钮-->
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	
+	<div class="modal fade" id="paramAlert">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--弹框标题-->
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="versionTable_title"></span>参数配置</h4>
+            </div>
+            <!--模型版本列表-->
+            <div class="modal-body">
+				<form class="form-horizontal" data-validator-option="{stopOnError:true}" >
+					<div id="paramList"></div>
+                </form>
+            </div>
+            <!--操作按钮-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>

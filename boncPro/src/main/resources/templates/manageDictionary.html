@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Insert title here</title>
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+   	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<link href="/plugin/DataTables/datatables.min.css" rel="stylesheet">
+	<link href="/common/common.css" rel="stylesheet" />
+	<link href="/common/main.css" rel="stylesheet" />
+	<link href="/common/standard.css" rel="stylesheet" />
+	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/css/modelBase/modelBaseIndex.css" rel="stylesheet"/>
+	<link href="/plugin/zui1.8.1/css/zui.min.css" rel="stylesheet"/>
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/plugin/DataTables/datatables.js"></script>
+	<!-- <script src="/plugin/jquery.cookie.js"></script> -->
+	<!-- <script src="/plugin/ajax-fix.js"></script> -->
+	<!-- <script src="/plugin/moment/moment.min.js"></script> -->
+	<!-- <script src="/js/jquery-pjax.js"></script> -->
+	<style type="text/css">
+    #page-s {
+		position: fixed;
+		left: 0px;
+		right: 0;
+		bottom: 0;
+		top: 0px;
+		z-index: 197;
+		overflow-y: auto;
+	}
+    </style>
+</head>
+<body>
+	<div class="header">
+	</div>
+	<div id="page-s">
+	    <div id="pageBody">
+	        <div id="pageContent">
+	        	<div id="modelBasePageContent">
+		        	<div>
+		        		<div class="tableIcon"><i class="icon icon-cube-alt"> 列表</i></div>
+		        		<div>
+		        			<div>
+			        			<div class="input-group">
+			        				<input type="hidden" th:value="${id}" id="flag">
+									<input data-col="modelGroupName" type="text" class="form-control" name="tableName" id="tableName"
+	                                       placeholder="表英文名">
+	                                <form class="navbar-form navbar-left" role="search" id="form" target="_blank">
+										<input type="hidden" name="ids" id="ids">
+										<input type="hidden" name="ds" id="ds">
+									</form>
+								</div>
+							</div>
+		        		</div>
+	                    <div style="clear: both"></div>
+	                    <div>
+	                        <table id="modelBaseTable"></table>
+	                    </div>
+		        	</div>
+	        	</div>
+	        </div>
+	    </div>
+    </div>
+</body>
+<script src="/js/manageDictionary.js"></script>
+</html>

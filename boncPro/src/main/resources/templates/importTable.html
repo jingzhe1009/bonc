@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>导入表结构excel文件</title>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/plugin/DataTables/datatables.min.css" rel="stylesheet">
+	<link href="/plugin/zui1.8.1/css/zui.min.css" rel="stylesheet"/>
+	<link href="/common/main.css" rel="stylesheet" /><!-- 左侧菜单 -->
+	<link href="/common/common.css" rel="stylesheet" /><!-- 表格 -->
+	<link href="/common/standard.css" rel="stylesheet" /><!-- 按钮 -->
+	<!-- <script src="/js/jquery.min.js"></script> -->
+	<script src="/plugin/jquery.js"></script>
+	<script src="/plugin/validator/dist/jquery.validator.js"></script>
+	<script src="/plugin/validator/dist/local/zh-CN.js"></script>
+	<!-- <script src="/js/bootstrap.min.js"></script> -->
+	<script src="/plugin/DataTables/datatables.js"></script>
+	<script src="/plugin/zui1.8.1/js/zui.js"></script>
+	<script src="/plugin/echarts.js"></script>
+	
+	
+	<link rel="stylesheet" type="text/css" href="/z-UI2/z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-alert/css/z-UI.alert.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-tab/css/z-UI.tab.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-select/css/z-UI.select.css"/>
+    <script type="text/javascript" src="/z-UI2/z-UI.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-alert/js/z-UI.alert.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-tab/js/z-UI.tab.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-select/js/z-UI.select.js"></script>
+</head>
+<body>
+	<div>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h3 class="text-center">
+					接口
+				</h3>
+			</div>
+		</div>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="alert alert-success alert-dismissable">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button>
+					<h4>
+						接口导入excel文件
+					</h4> <strong>Warning!</strong> 请上传.xlsx/.xls文件 <a href="#" class="alert-link"></a>
+				</div>
+			</div>
+		</div>
+		<div class="alert alert-inverse" style="width:200px;display:none" id="loadShow">正在导入，请稍等。。。</div>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<form id="form" enctype="multipart/form-data">
+					<input type=hidden id="batchNo" name="batchNo">
+					<div class="form-group" >
+						<input type="file" id="filename" name="filename" />
+					</div>
+					<button type="button" class="btn btn-primary btn-large " onclick="importExcel()">导入校验</button>
+					<!-- <button type="button" class="btn btn-primary btn-large " onclick="dr()">版本比对</button> -->
+					<button type="button" class="btn btn-primary btn-large " onclick="tmpToSave(1)">导入</button>
+					<button type="button" class="btn btn-primary btn-large " onclick="tmpToSave(2)">全部导入</button>
+					<a class="btn btn-primary btn-large"  href="/interface/exportTable">模板下载</a>
+				</form>
+			</div>
+		</div>
+		<div class="tab-content" id="interfaceContent" style="display:block">
+			<div style="clear: both"></div>
+			<div class="tableIcon"></div>
+			<div class="tableIcon"><!-- <i class="icon icon-cube-alt"> -->需要导入的接口数据列表</i></div>
+	        <div style="clear: both"></div>
+	        <div>
+	            <table id="interfaceTable" style="white-space:nowrap;"></table>
+	        </div>
+		</div>
+	</div>
+	<div th:include="alertHtml/versionAlert"></div>
+</body>
+<script src="/js/interface_tmp.js"></script>
+<script src="/js/interface_version.js"></script>
+<script src="/js/common.js"></script>
+<script type="text/javascript">
+
+	$(function () {
+		var obj={};
+		initInterfaceTable(obj);
+	});
+	//导入校验
+	function importExcel(){
+		var d = new Date();
+		var batchNo = d.getTime();
+		$("#batchNo").val(batchNo);
+		var fileInput = $('#filename').get(0).files[0];
+		if(fileInput){
+			var formData = new FormData($( "#form" )[0]);
+			//$('#loadAlert').modal({'show': 'center', "backdrop": "static"});
+			$.ajax({
+	            //几个参数需要注意一下
+	            type: 'POST',//方法类型
+	            url: "[[@{/interface/importTableExcel}]]",//url
+	            data: formData, 
+	            async: false, 
+	            cache: false, 
+	            contentType: false, 
+	            processData: false, 
+	            success: function (result) {
+	            	//$('#loadAlert').modal('hide');
+	                console.log(result);//打印服务端返回的数据(调试用)
+	                zUI.dialog.alert('<pre>'+result.msgData+'</pre>');
+	                var obj ={};
+	                obj['batchNo']=$("#batchNo").val();
+	                obj['dataSrcAbbr']=result.dataSrcAbbr;
+	                initInterfaceTable(obj);
+	                $("#filename").val('');
+	            },
+	            error : function() {
+	                zUI.dialog.alert('<pre>异常</pre>');
+	            }
+	        });
+		}else{
+			zUI.dialog.alert('<pre>请上传文件</pre>');
+		}
+	}
+	//导入
+	function tmpToSave(flag){
+		var param = {};
+		var arr = [];
+		var chkBoxes = $('#interfaceContent').find('input:checked');
+		var batchNo = $("#batchNo").val();
+		if(batchNo==''){
+			zUI.dialog.alert('<pre>请先导入校验</pre>');
+	        return false;
+		}else{
+			if(flag=='1'){
+				if (chkBoxes.length == 0) {
+			    	zUI.dialog.alert('<pre>请至少选择一条记录</pre>');
+			        return false;
+			    }
+				$(chkBoxes).each(function() {
+			    	arr.push($(this).attr('id'));
+			    });
+				param.dbType='1';
+			}else{
+				$("input[name='items']").each(function(index,item){
+			        var id = $(this).attr("id");
+					arr.push(id);
+			    });
+				param.dbType='2';
+			}
+		}
+		
+	    
+		var url = "/interface/tmpToSaveAll";
+		param.tables = arr;
+		var json = JSON.stringify(param);
+		console.log(json);
+		//$("#loadShow").show();
+		$('#loadAlert').modal({'show': 'center', "backdrop": "static"});
+		$.ajax({
+			url:url,
+			type:"post",
+			data:json,
+			contentType:"application/json;charset=UTF-8",
+			success:function(data){
+				$('#loadAlert').modal('hide');
+				//$("#loadShow").hide();
+				console.log(data);
+				zUI.dialog.alert('<pre>'+data.msgData+'</pre>');
+				var obj ={};
+	            obj['batchNo']=$("#batchNo").val();
+	            obj['dataSrcAbbr']=data.dataSrcAbbr;
+	            initInterfaceTable(obj);
+	            $("#checkedAll").prop("checked", false );
+			}
+		}) 
+	}
+	
+</script>
+</html>

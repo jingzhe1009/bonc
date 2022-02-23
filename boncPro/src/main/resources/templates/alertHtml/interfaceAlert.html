@@ -1,0 +1,113 @@
+<div class="modal fade" id="interfaceAlert">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+                	<!-- <div class="form-group">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <select id="ruleTypeSelector" col-name="dataSrcAbbr" class="form-control">
+                                <option ruleType="ETC" selected>证通</option>
+                                <option ruleType="HON">诚信</option>
+                            </select>
+                        </div>
+                    </div> -->
+                    <div class="form-group">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control" data-rule="数据源缩写:required,length[1~20, true]">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据接口编号</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_dataInterfaceNo" col-name="dataInterfaceNo" type="text" class="form-control" data-rule="数据接口编号:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据接口名</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_dataInterfaceName" col-name="dataInterfaceName" type="text" class="form-control" data-rule="数据接口名:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                       <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据接口描述</label>
+                       <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                           <textarea id="inter_dataInterfaceDesc" col-name="dataInterfaceDesc" type="text" class="form-control" data-rule="数据接口描述:required,length[1~100, true]"></textarea>
+                       </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据加载频率</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_dataLoadFreq" col-name="dataLoadFreq" type="text" class="form-control" data-rule="数据加载频率:required,length[1~10, true]">
+                        </div>
+                    </div>	                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据加载方式</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_dataLoadMthd" col-name="dataLoadMthd" type="text" class="form-control" data-rule="数据加载方式:required,length[1~10, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>字段分割符</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_filedDelim" col-name="filedDelim" type="text" class="form-control" data-rule="字段分割符:required,length[1~10, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>行分隔符</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_lineDelim" col-name="lineDelim" type="text" class="form-control" data-rule="行分隔符:required,length[1~10, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>外表数据库</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_extrnlDatabaseName" col-name="extrnlDatabaseName" type="text" class="form-control" data-rule="外表数据库:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>内表数据库</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_intrnlDatabaseName" col-name="intrnlDatabaseName" type="text" class="form-control" data-rule="内表数据库:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>外表表名</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_extrnlTableName" col-name="extrnlTableName" type="text" class="form-control" data-rule="外表表名:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>内表表名</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_intrnlTableName" col-name="intrnlTableName" type="text" class="form-control" data-rule="内表表名:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>表类型</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_tableType" col-name="tableType" type="text" class="form-control" data-rule="表类型:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <div class="form-group notFirst">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>分桶数</label>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <input id="inter_bucketNumber" col-name="bucketNumber" type="text" class="form-control" data-rule="分桶数:required,length[1~100, true]">
+                        </div>
+                    </div>
+                    <!-- <input id="inter_sDate" col-name="sDate" type="hidden" class="form-control">
+                    <input id="inter_eDate" col-name="eDate" type="hidden" class="form-control"> -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="notView">
+                    <button type="button" class="btn btn-primary" onclick="interfaceModel.save()">保存</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

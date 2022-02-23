@@ -1,0 +1,64 @@
+
+
+#modelVersionTableAlertModal .dropdown-menu,
+.tableIcon{
+    /*color: #3280FC;*/
+    color: var(--colorNormal);
+    margin: 0 0 10px 0px;
+}
+.mustIcon{
+    color: #EA644A;
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 5px;
+}
+.icon-caret-down, .dropdown-menu li, .switch input{
+    cursor: pointer;
+}
+.selfAdaptionLeft{
+    float: left;
+    width: 100%;
+}
+/*鍒楄〃鎼滅储鏍� 涓ゆ爮甯冨眬*/
+.modelBaseContainer .selfAdaptionLeft .input-group{
+    width: 150px;
+    float: left;
+    margin: 0 10px 10px 0;
+}
+.modelBaseContainer .selfAdaptionLeft>div{
+    margin-right: 165px;
+}
+.modelBaseContainer .selfAdaptionRight{
+    position: relative;
+    float: left;
+    width: 600px;
+}
+/*寮规鍐� 涓ゆ爮甯冨眬*/
+#modelVersionTableAlertModal .modal-dialog{
+    width: 1000px;
+}
+#modelVersionTableAlertModal .selfAdaptionLeft .input-group{
+    width: 200px;
+    float: left;
+    margin: 0 10px 10px 0;
+}
+#modelVersionTableAlertModal .selfAdaptionLeft>div{
+    margin-right: 165px;
+}
+#modelVersionTableAlertModal .selfAdaptionRight{
+    position: relative;
+    float: right;
+    width: 160px;
+    margin-left: -160px;
+}
+#modelBaseTable, #modelBaseGroupTable, #ruleSetVersionTable{
+    margin: 8px 0;
+}
+/* 鏃堕棿缁勪欢灏忔寜閽儗鏅壊璁剧疆 */
+.input-group-addon{
+    background-color: #fff;
+    cursor: pointer;
+}
+#modelVersionTableAlertModal .switch>input {
+    position: absolute;
+}

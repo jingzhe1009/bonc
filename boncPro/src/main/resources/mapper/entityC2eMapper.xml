@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.entityC2eMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.entityC2e">
+    <id column="cname" jdbcType="VARCHAR" property="cname" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="ename" jdbcType="VARCHAR" property="ename" />
+    <result column="t_lenb" jdbcType="INTEGER" property="tLenb" />
+    <result column="t_len" jdbcType="INTEGER" property="tLen" />
+    <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    cname, version, ename, t_lenb, t_len, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.entityC2e" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from entity_c2e
+    where cname = #{cname,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.entityC2e">
+    delete from entity_c2e
+    where 1=1 
+    <if test="cname != null">
+        and cname = #{cname,jdbcType=VARCHAR}
+      </if>
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.entityC2e">
+    insert into entity_c2e (cname, version, ename, 
+      t_lenb, t_len, create_date
+      )
+    values (#{cname,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, #{ename,jdbcType=VARCHAR}, 
+      #{tLenb,jdbcType=INTEGER}, #{tLen,jdbcType=INTEGER}, #{createDate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.entityC2e">
+    insert into entity_c2e
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cname != null">
+        cname,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="ename != null">
+        ename,
+      </if>
+      <if test="tLenb != null">
+        t_lenb,
+      </if>
+      <if test="tLen != null">
+        t_len,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cname != null">
+        #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="ename != null">
+        #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="tLenb != null">
+        #{tLenb,jdbcType=INTEGER},
+      </if>
+      <if test="tLen != null">
+        #{tLen,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.entityC2e">
+    update entity_c2e
+    <set>
+      <if test="ename != null">
+        ename = #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="tLenb != null">
+        t_lenb = #{tLenb,jdbcType=INTEGER},
+      </if>
+      <if test="tLen != null">
+        t_len = #{tLen,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where cname = #{cname,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.entityC2e">
+    update entity_c2e
+    set ename = #{ename,jdbcType=VARCHAR},
+      t_lenb = #{tLenb,jdbcType=INTEGER},
+      t_len = #{tLen,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=VARCHAR}
+    where cname = #{cname,jdbcType=VARCHAR}
+  </update>
+  <select id="queryAll" parameterType="com.ljz.model.entityC2e" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from entity_c2e
+    where 1=1 
+    <if test="cname != null">
+    	and cname = #{cname,jdbcType=VARCHAR}
+    </if>
+    order by cname desc;
+  </select>
+  <insert id="batchInsert" useGeneratedKeys="false"  parameterType="com.ljz.model.entityC2e">
+	  insert into entity_c2e (cname, version, ename, 
+      t_lenb, t_len, create_date)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.cname,jdbcType=VARCHAR}, #{model.version,jdbcType=VARCHAR}, #{model.ename,jdbcType=VARCHAR}, 
+	      #{model.tLenb,jdbcType=INTEGER}, #{model.tLen,jdbcType=INTEGER}, #{model.createDate,jdbcType=VARCHAR}
+	      )
+	    </foreach>
+  </insert>
+</mapper>

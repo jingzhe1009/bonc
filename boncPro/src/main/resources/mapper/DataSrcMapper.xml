@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataSrcMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataSrc">
+    <id column="data_src_abbr" jdbcType="CHAR" property="dataSrcAbbr" />
+    <result column="data_src_desc" jdbcType="VARCHAR" property="dataSrcDesc" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="java.lang.String">
+    <id column="data_src_abbr" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    data_src_abbr, data_src_desc, s_date, e_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from data_src
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from data_src
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataSrc">
+    insert into data_src (data_src_abbr, data_src_desc, s_date,
+      e_date)
+    values (#{dataSrcAbbr,jdbcType=VARCHAR}, #{dataSrcDesc,jdbcType=CHAR}, #{sDate,jdbcType=DATE},
+      #{eDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataSrc">
+    insert into data_src
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataSrcDesc != null">
+        data_src_desc,
+      </if>
+      <if test="sDate != null">
+        s_date,
+      </if>
+      <if test="eDate != null">
+        e_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSrcDesc != null">
+        #{dataSrcDesc,jdbcType=CHAR},
+      </if>
+      <if test="sDate != null">
+        #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        #{eDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataSrc">
+    update data_src
+    <set>
+      <if test="dataSrcDesc != null">
+        data_src_desc = #{dataSrcDesc,jdbcType=CHAR},
+      </if>
+      <if test="sDate != null">
+        s_date = #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        e_date = #{eDate,jdbcType=DATE},
+      </if>
+    </set>
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataSrc">
+    update data_src
+    set data_src_desc = #{dataSrcDesc,jdbcType=CHAR},
+      s_date = #{sDate,jdbcType=DATE},
+      e_date = #{eDate,jdbcType=DATE}
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+  </update>
+  <select id="queryAll" parameterType="com.ljz.model.DataSrc" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from data_src where 1=1
+    <!-- and e_date >= #{eDate,jdbcType=DATE} and s_date <= #{eDate,jdbcType=DATE} -->
+    <if test="dataSrcAbbr != null">
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+    </if>
+    order by data_src_desc
+  </select>
+  <select id="queryDataSrc" resultMap="BaseResultMap2">
+    select data_src_abbr from data_src order by data_src_desc
+  </select>
+</mapper>

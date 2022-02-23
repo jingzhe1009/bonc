@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterfaceMapper">
+  <!-- 正式表 -->
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterface">
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <id column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <result column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="data_interface_desc" jdbcType="VARCHAR" property="dataInterfaceDesc" />
+    <result column="data_load_freq" jdbcType="VARCHAR" property="dataLoadFreq" />
+    <result column="data_load_mthd" jdbcType="VARCHAR" property="dataLoadMthd" />
+    <result column="filed_delim" jdbcType="VARCHAR" property="filedDelim" />
+    <result column="line_delim" jdbcType="VARCHAR" property="lineDelim" />
+    <result column="extrnl_database_name" jdbcType="VARCHAR" property="extrnlDatabaseName" />
+    <result column="intrnl_database_name" jdbcType="VARCHAR" property="intrnlDatabaseName" />
+    <result column="extrnl_table_name" jdbcType="VARCHAR" property="extrnlTableName" />
+    <result column="intrnl_table_name" jdbcType="VARCHAR" property="intrnlTableName" />
+    <result column="table_type" jdbcType="VARCHAR" property="tableType" />
+    <result column="bucket_number" jdbcType="INTEGER" property="bucketNumber" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  <!-- 临时表 -->
+  <resultMap id="BaseResultMap2" type="com.ljz.model.DataInterfaceTmp">
+  	<result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+  	<result column="importType" jdbcType="VARCHAR" property="importType" />
+    <result column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <result column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <result column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="data_interface_desc" jdbcType="VARCHAR" property="dataInterfaceDesc" />
+    <result column="data_load_freq" jdbcType="VARCHAR" property="dataLoadFreq" />
+    <result column="data_load_mthd" jdbcType="VARCHAR" property="dataLoadMthd" />
+    <result column="filed_delim" jdbcType="VARCHAR" property="filedDelim" />
+    <result column="line_delim" jdbcType="VARCHAR" property="lineDelim" />
+    <result column="extrnl_database_name" jdbcType="VARCHAR" property="extrnlDatabaseName" />
+    <result column="intrnl_database_name" jdbcType="VARCHAR" property="intrnlDatabaseName" />
+    <result column="extrnl_table_name" jdbcType="VARCHAR" property="extrnlTableName" />
+    <result column="intrnl_table_name" jdbcType="VARCHAR" property="intrnlTableName" />
+    <result column="table_type" jdbcType="VARCHAR" property="tableType" />
+    <result column="bucket_number" jdbcType="INTEGER" property="bucketNumber" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    data_src_abbr, data_interface_no, data_interface_name, data_interface_desc, data_load_freq, 
+    data_load_mthd, filed_delim, line_delim, extrnl_database_name, intrnl_database_name, 
+    extrnl_table_name, intrnl_table_name, table_type, bucket_number, s_date, e_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataInterfaceTmp">
+    delete from data_interface_tmp
+    where 1=1 
+      <if test="dataSrcAbbr != null">
+        and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      </if>
+      <if test="dataInterfaceNo != null">
+        and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      </if>
+      <if test="batchNo != null">
+        and batch_no = #{batchNo,jdbcType=VARCHAR}
+      </if>
+      <if test="condition != null">
+       and data_interface_name in (#{condition,jdbcType=VARCHAR})
+     </if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.ljz.model.DataInterface">
+    insert into data_interface (data_src_abbr, data_interface_no, data_interface_name, 
+      data_interface_desc, data_load_freq, data_load_mthd, 
+      filed_delim, line_delim, extrnl_database_name, 
+      intrnl_database_name, extrnl_table_name, intrnl_table_name, 
+      table_type, bucket_number, s_date, 
+      e_date)
+    values (#{dataSrcAbbr,jdbcType=VARCHAR}, #{dataInterfaceNo,jdbcType=VARCHAR}, #{dataInterfaceName,jdbcType=VARCHAR}, 
+      #{dataInterfaceDesc,jdbcType=VARCHAR}, #{dataLoadFreq,jdbcType=VARCHAR}, #{dataLoadMthd,jdbcType=VARCHAR}, 
+      #{filedDelim,jdbcType=VARCHAR}, #{lineDelim,jdbcType=VARCHAR}, #{extrnlDatabaseName,jdbcType=VARCHAR}, 
+      #{intrnlDatabaseName,jdbcType=VARCHAR}, #{extrnlTableName,jdbcType=VARCHAR}, #{intrnlTableName,jdbcType=VARCHAR}, 
+      #{tableType,jdbcType=VARCHAR}, #{bucketNumber,jdbcType=INTEGER}, #{sDate,jdbcType=DATE}, 
+      #{eDate,jdbcType=DATE})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterface">
+    insert into data_interface
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="dataInterfaceName != null">
+        data_interface_name,
+      </if>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc,
+      </if>
+      <if test="dataLoadFreq != null">
+        data_load_freq,
+      </if>
+      <if test="dataLoadMthd != null">
+        data_load_mthd,
+      </if>
+      <if test="filedDelim != null">
+        filed_delim,
+      </if>
+      <if test="lineDelim != null">
+        line_delim,
+      </if>
+      <if test="extrnlDatabaseName != null">
+        extrnl_database_name,
+      </if>
+      <if test="intrnlDatabaseName != null">
+        intrnl_database_name,
+      </if>
+      <if test="extrnlTableName != null">
+        extrnl_table_name,
+      </if>
+      <if test="intrnlTableName != null">
+        intrnl_table_name,
+      </if>
+      <if test="tableType != null">
+        table_type,
+      </if>
+      <if test="bucketNumber != null">
+        bucket_number,
+      </if>
+      <if test="sDate != null">
+        s_date,
+      </if>
+      <if test="eDate != null">
+        e_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceName != null">
+        #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceDesc != null">
+        #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadFreq != null">
+        #{dataLoadFreq,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadMthd != null">
+        #{dataLoadMthd,jdbcType=VARCHAR},
+      </if>
+      <if test="filedDelim != null">
+        #{filedDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="lineDelim != null">
+        #{lineDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlDatabaseName != null">
+        #{extrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlDatabaseName != null">
+        #{intrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlTableName != null">
+        #{extrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlTableName != null">
+        #{intrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableType != null">
+        #{tableType,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketNumber != null">
+        #{bucketNumber,jdbcType=INTEGER},
+      </if>
+      <if test="sDate != null">
+        #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        #{eDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataInterface">
+    update data_interface
+    <set>
+      <if test="dataInterfaceName != null">
+        data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc = #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadFreq != null">
+        data_load_freq = #{dataLoadFreq,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadMthd != null">
+        data_load_mthd = #{dataLoadMthd,jdbcType=VARCHAR},
+      </if>
+      <if test="filedDelim != null">
+        filed_delim = #{filedDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="lineDelim != null">
+        line_delim = #{lineDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlDatabaseName != null">
+        extrnl_database_name = #{extrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlDatabaseName != null">
+        intrnl_database_name = #{intrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlTableName != null">
+        extrnl_table_name = #{extrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlTableName != null">
+        intrnl_table_name = #{intrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableType != null">
+        table_type = #{tableType,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketNumber != null">
+        bucket_number = #{bucketNumber,jdbcType=INTEGER},
+      </if>
+      <!-- <if test="sDate != null">
+        s_date = #{sDate,jdbcType=DATE},
+      </if> -->
+      <if test="eDate != null">
+        e_date = #{eDate,jdbcType=DATE},
+      </if>
+    </set>
+    where 1=1 and e_date >= #{sDate} 
+     	<if test="dataSrcAbbr != null">
+       		and data_src_abbr=#{dataSrcAbbr}
+	    </if>
+	    <if test="dataInterfaceNo != null">
+	       and data_interface_no=#{dataInterfaceNo}
+	    </if>
+	    <if test="condition != null">
+	        and data_interface_name in (#{condition})
+	     </if>
+	     <if test="dataInterfaceName != null">
+	        and data_interface_name=#{dataInterfaceName}
+	     </if>
+   <!--  and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR} -->
+  </update>
+  
+  <!-- 正式表查询 -->
+  <select id="queryAll"  parameterType="com.ljz.model.DataInterface" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface
+    where 1=1 
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+    </if>
+    <if test="dataInterfaceNo != null">
+       and data_interface_no=#{dataInterfaceNo}
+    </if>
+    and e_date >= #{eDate}
+    order by data_src_abbr,data_interface_no;
+  </select>
+  
+  <!-- 版本查询 -->
+  <select id="queryAllVersion"  parameterType="com.ljz.model.DataInterface" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface
+    where 1=1
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+    </if>
+    <if test="dataInterfaceNo != null">
+       and data_interface_no=#{dataInterfaceNo}
+    </if>
+    <if test="dataInterfaceName != null">
+       and data_interface_name=#{dataInterfaceName}
+    </if>
+    order by e_date,s_date,data_src_abbr,data_interface_no;
+  </select>
+  
+  <select id="queryAllTmpBak"  parameterType="com.ljz.model.DataInterfaceTmp" resultMap="BaseResultMap2">
+    select a.*,(case when (select sum(b.bucket_number) from data_interface b where b.data_interface_no=a.data_interface_no)>0 then '2' else '1' end ) as importType
+    from data_interface_tmp a where a.batch_no=#{batchNo}
+    order by data_src_abbr,data_interface_no;
+  </select>
+  
+  <select id="queryAllTmp"  parameterType="com.ljz.model.DataInterfaceTmp" resultMap="BaseResultMap2">
+    select * from data_interface_tmp  where batch_no=#{batchNo}
+    order by data_src_abbr,data_interface_no
+  </select>
+  
+  <insert id="tmpToSave" parameterType="com.ljz.model.DataInterfaceTmp">
+  	INSERT INTO data_interface (data_src_abbr, data_interface_no, data_interface_name, 
+      data_interface_desc, data_load_freq, data_load_mthd, 
+      filed_delim, line_delim, extrnl_database_name, 
+      intrnl_database_name, extrnl_table_name, intrnl_table_name, 
+      table_type, bucket_number, s_date, e_date) 
+      SELECT data_interface_tmp.data_src_abbr, data_interface_tmp.data_interface_no, data_interface_tmp.data_interface_name, 
+      data_interface_tmp.data_interface_desc, data_interface_tmp.data_load_freq, data_interface_tmp.data_load_mthd, 
+      data_interface_tmp.filed_delim, data_interface_tmp.line_delim, data_interface_tmp.extrnl_database_name, 
+      data_interface_tmp.intrnl_database_name, data_interface_tmp.extrnl_table_name, data_interface_tmp.intrnl_table_name, 
+      data_interface_tmp.table_type, data_interface_tmp.bucket_number, data_interface_tmp.s_date, data_interface_tmp.e_date FROM data_interface_tmp
+      where 1=1 
+      <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+	    </if>
+	    <if test="dataInterfaceNo != null">
+	       and data_interface_no=#{dataInterfaceNo}
+	    </if>
+	    <if test="batchNo != null">
+	       and batch_no=#{batchNo}
+	    </if>
+      <!-- and data_interface_tmp.data_src_abbr=#{dataSrcAbbr} and data_interface_tmp.data_interface_no=#{dataInterfaceNo} and data_interface_tmp.batch_no=#{batchNo} -->
+  </insert>
+  
+  <insert id="batchInsert" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterfaceTmp">
+	  insert into data_interface_tmp (data_src_abbr, data_interface_no, data_interface_name, 
+      data_interface_desc, data_load_freq, data_load_mthd, 
+      filed_delim, line_delim, extrnl_database_name, 
+      intrnl_database_name, extrnl_table_name, intrnl_table_name, 
+      table_type, bucket_number, s_date, e_date,batch_no)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.dataInterfaceName,jdbcType=VARCHAR}, 
+	      #{model.dataInterfaceDesc,jdbcType=VARCHAR}, #{model.dataLoadFreq,jdbcType=VARCHAR}, #{model.dataLoadMthd,jdbcType=VARCHAR}, 
+	      #{model.filedDelim,jdbcType=VARCHAR}, #{model.lineDelim,jdbcType=VARCHAR}, #{model.extrnlDatabaseName,jdbcType=VARCHAR}, 
+	      #{model.intrnlDatabaseName,jdbcType=VARCHAR}, #{model.extrnlTableName,jdbcType=VARCHAR}, #{model.intrnlTableName,jdbcType=VARCHAR}, 
+	      #{model.tableType,jdbcType=VARCHAR}, #{model.bucketNumber,jdbcType=INTEGER}, #{model.sDate,jdbcType=DATE}, 
+	      #{model.eDate,jdbcType=DATE},#{model.batchNo,jdbcType=VARCHAR})
+	    </foreach>
+	</insert>
+	
+	<insert id="batchInsertPro" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterface">
+	  insert into data_interface (data_src_abbr, data_interface_no, data_interface_name, 
+      data_interface_desc, data_load_freq, data_load_mthd, 
+      filed_delim, line_delim, extrnl_database_name, 
+      intrnl_database_name, extrnl_table_name, intrnl_table_name, 
+      table_type, bucket_number, s_date, e_date)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.dataInterfaceName,jdbcType=VARCHAR}, 
+	      #{model.dataInterfaceDesc,jdbcType=VARCHAR}, #{model.dataLoadFreq,jdbcType=VARCHAR}, #{model.dataLoadMthd,jdbcType=VARCHAR}, 
+	      #{model.filedDelim,jdbcType=VARCHAR}, #{model.lineDelim,jdbcType=VARCHAR}, #{model.extrnlDatabaseName,jdbcType=VARCHAR}, 
+	      #{model.intrnlDatabaseName,jdbcType=VARCHAR}, #{model.extrnlTableName,jdbcType=VARCHAR}, #{model.intrnlTableName,jdbcType=VARCHAR}, 
+	      #{model.tableType,jdbcType=VARCHAR}, #{model.bucketNumber,jdbcType=INTEGER}, #{model.sDate,jdbcType=DATE}, 
+	      #{model.eDate,jdbcType=DATE})
+	    </foreach>
+	</insert>
+	
+	<select id="queryByList" resultMap="BaseResultMap">
+		select  <include refid="Base_Column_List" />
+    	from data_interface where 1=1
+		<if test="array !=null and array.length > 0">
+	      and data_interface_no in
+	        <foreach collection="array" item = "tableName" open="(" separator="," close=")" index="index">
+	            #{tableName}
+	        </foreach>
+	    </if>
+	    <if test="dataSrcAbbr != null">
+	        and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+	    </if>
+	    order by s_date desc
+  	</select>
+  	
+  	<insert id="tmpToSaveBatch" useGeneratedKeys="false" parameterType="com.ljz.model.DataInterfaceTmp">
+  	insert into data_interface (data_src_abbr, data_interface_no, data_interface_name, 
+      data_interface_desc, data_load_freq, data_load_mthd, 
+      filed_delim, line_delim, extrnl_database_name, 
+      intrnl_database_name, extrnl_table_name, intrnl_table_name, 
+      table_type, bucket_number, s_date, e_date)
+       <foreach collection="list" item="model">
+		    SELECT data_interface_tmp.data_src_abbr, data_interface_tmp.data_interface_no, data_interface_tmp.data_interface_name, 
+			      data_interface_tmp.data_interface_desc, data_interface_tmp.data_load_freq, data_interface_tmp.data_load_mthd, 
+			      data_interface_tmp.filed_delim, data_interface_tmp.line_delim, data_interface_tmp.extrnl_database_name, 
+			      data_interface_tmp.intrnl_database_name, data_interface_tmp.extrnl_table_name, data_interface_tmp.intrnl_table_name, 
+			      data_interface_tmp.table_type, data_interface_tmp.bucket_number, data_interface_tmp.s_date, data_interface_tmp.e_date
+		    FROM data_interface_tmp
+		    WHERE 1=1  and data_interface_tmp.data_src_abbr = #{model.dataSrcAbbr,jdbcType=VARCHAR}
+		       and data_interface_tmp.data_interface_no = #{model.dataInterfaceNo,jdbcType=VARCHAR}
+		       and data_interface_tmp.batch_no = #{model.batchNo};
+     	</foreach>
+  	</insert>
+  	
+  	<update id="updateBatch" parameterType="com.ljz.model.DataInterface">
+	    <foreach collection="list" item="model" index="index" >
+	      update data_interface
+		       set e_date = #{model.eDate}
+		    where 1=1 and e_date >= #{model.sDate} 
+		       and data_src_abbr = #{model.dataSrcAbbr}
+		       and data_interface_no = #{model.dataInterfaceNo};
+	    </foreach>
+   </update>
+   <delete id="deleteBatch"  parameterType="com.ljz.model.DataInterfaceTmp">
+   		<foreach collection="list" item="model" >
+		    delete from data_interface_tmp
+		    where 1=1  and data_src_abbr = #{model.dataSrcAbbr,jdbcType=VARCHAR}
+		       and data_interface_no = #{model.dataInterfaceNo,jdbcType=VARCHAR}
+		       and batch_no = #{model.batchNo,jdbcType=VARCHAR};
+	   </foreach>
+  </delete>
+  
+  <select id="queryIntNum" resultMap="BaseResultMap" >
+    select data_interface_name,count(*) as bucket_number from data_interface_columns where e_date='3000-12-31' group by data_interface_name
+  </select>
+  
+</mapper>

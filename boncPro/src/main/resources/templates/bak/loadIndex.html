@@ -1,0 +1,31 @@
+       <div id="pageContent">
+	       	<div id="modelBasePageContent">
+	        	<div class="modelBaseContainer modelBaseWrapper">
+	        		<div class="tableIcon"><i class="icon icon-cube-alt"> 列表</i></div>
+	        		<div class="selfAdaptionLeft">
+	        			<div>
+		        			<div class="input-group">
+								<input type="hidden" name="idx" id="idx" th:value="${idx}">
+								<input type="hidden" name="pageSize" id="pageSize" value="10">
+								<input type="hidden" name="pageNum" id="pageNum" value="1">
+								<input type="hidden" name="totalSize" id="totalSize" value="">
+								<input data-col="modelGroupName" type="text" class="form-control" name="tableName" id="tableName"
+	                                      placeholder="表英文名">
+	                               <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+							</div>
+						</div>
+	        		</div>
+	        		<div class="selfAdaptionRight">
+						<button type="button" class="btn btn-primary modelBaseSearch">查询</button>
+						<button type="reset" class="btn btn-primary modelBaseSearch" >重置</button>
+						<a class="btn btn-primary modelBaseSearch" target="_blank">导入表结构</a>
+						<a class="btn btn-primary modelBaseSearch" target="_blank">导入词根</a>
+						<button type="button" class="btn btn-primary modelBaseSearch">物化</button> 
+	                   </div>
+	                   <div style="clear: both"></div>
+	                   <div>
+	                       <table id="modelBaseTable"></table>
+	                   </div>
+	        	</div>
+	       	</div>
+       </div>

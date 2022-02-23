@@ -1,0 +1,52 @@
+    <div class="modal fade" id="dataSourceAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                	<!-- <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <select id="ruleTypeSelector" col-name="dataSrcAbbr" class="form-control">
+	                                <option ruleType="ETC" selected>证通</option>
+	                                <option ruleType="HON">诚信</option>
+	                            </select>
+	                        </div>
+	                    </div> -->
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control" data-rule="数据源缩写:required,length[1~20, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_dataSrcDesc" col-name="dataSrcDesc" type="text" class="form-control"  data-rule="数据源描述:required,length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <!-- <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">生效日期</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_sDate" col-name="sDate" type="text" class="form-control" data-rule="生效日期:required,length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">失效日期</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_eDate" col-name="eDate" type="text" class="form-control" data-rule="失效日期:required,length[~30, true]">
+	                        </div>
+	                    </div> -->
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="dataSrcModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>

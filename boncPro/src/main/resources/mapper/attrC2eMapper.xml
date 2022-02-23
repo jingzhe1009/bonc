@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.attrC2eMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.attrC2e">
+    <id column="cname" jdbcType="VARCHAR" property="cname" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="ename" jdbcType="VARCHAR" property="ename" />
+    <result column="full_ename" jdbcType="VARCHAR" property="fullEname" />
+    <result column="word_num" jdbcType="INTEGER" property="wordNum" />
+    <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    cname, version, ename, full_ename, word_num, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.attrC2e" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from attr_c2e
+    where cname = #{cname,jdbcType=VARCHAR}
+      
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.attrC2e">
+    delete from attr_c2e
+    where 1=1 
+      <if test="cname != null">
+        and cname = #{cname,jdbcType=VARCHAR}
+      </if>
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.attrC2e">
+    insert into attr_c2e (cname, version, ename, 
+      full_ename, word_num, create_date
+      )
+    values (#{cname,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, #{ename,jdbcType=VARCHAR}, 
+      #{fullEname,jdbcType=VARCHAR}, #{wordNum,jdbcType=INTEGER}, #{createDate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.attrC2e">
+    insert into attr_c2e
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cname != null">
+        cname,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="ename != null">
+        ename,
+      </if>
+      <if test="fullEname != null">
+        full_ename,
+      </if>
+      <if test="wordNum != null">
+        word_num,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cname != null">
+        #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="ename != null">
+        #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="fullEname != null">
+        #{fullEname,jdbcType=VARCHAR},
+      </if>
+      <if test="wordNum != null">
+        #{wordNum,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.attrC2e">
+    update attr_c2e
+    <set>
+      <if test="ename != null">
+        ename = #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="fullEname != null">
+        full_ename = #{fullEname,jdbcType=VARCHAR},
+      </if>
+      <if test="wordNum != null">
+        word_num = #{wordNum,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where cname = #{cname,jdbcType=VARCHAR}
+     
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.attrC2e">
+    update attr_c2e
+    set ename = #{ename,jdbcType=VARCHAR},
+      full_ename = #{fullEname,jdbcType=VARCHAR},
+      word_num = #{wordNum,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=VARCHAR}
+    where cname = #{cname,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAll" parameterType="com.ljz.model.attrC2e" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from attr_c2e
+    where 1=1 
+    <if test="cname != null">
+    	and cname = #{cname,jdbcType=VARCHAR}
+    </if>
+    order by ename desc;
+  </select>
+  <insert id="batchInsert" useGeneratedKeys="false"  parameterType="com.ljz.model.attrC2e">
+	  insert into attr_c2e (cname, version, ename, 
+      full_ename, word_num, create_date
+      )
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.cname,jdbcType=VARCHAR}, #{model.version,jdbcType=VARCHAR}, #{model.ename,jdbcType=VARCHAR}, 
+	      #{model.fullEname,jdbcType=VARCHAR}, #{model.wordNum,jdbcType=INTEGER}, #{model.createDate,jdbcType=VARCHAR}
+	      )
+	    </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>物化</title>
+<link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3 class="text-center">
+				需要物化的表
+			</h3>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<table class="table table-bordered">
+				<thead>
+					<tr class="info">
+						<th>
+							数据源
+						</th>
+						<th>
+							接口编号
+						</th>
+						<th>
+							接口名
+						</th>
+						<th>
+							接口描述
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="obj:${list}">
+					  <td th:text="${obj.dataSrcAbbr}"></td> 
+				      <td th:text="${obj.dataInterfaceNo}"></td> 
+				      <td th:text="${obj.dataInterfaceName}"></td> 
+				      <td th:text="${obj.dataInterfaceDesc}"></td> 
+				    </tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<form class="navbar-form navbar-left" role="search" id="form">
+			<div class="form-group">
+				
+				选择要导入的数据库:
+				<select name="dbType" id="dbType" >
+					<option value="tdh" selected>tdh</option>
+					<option value="td">td</option>
+					<option value="mysql">mysql</option>
+				</select>
+				<!-- <div class="btn-group">
+					<button class="btn btn-default">选择数据源</button> 
+					<button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
+					<ul class="dropdown-menu" id="select">
+						<li>
+							 <a href="#" onclick="setDbType('mysql')">mysql</a>
+						</li>
+						<li>
+							 <a href="#" onclick="setDbType('td')">td</a>
+						</li>
+						<li>
+						</li>
+						<li>
+							 <a href="#" onclick="setDbType('tdh')">tdh</a>
+						</li>
+					</ul>
+				</div> -->
+			</div> 
+			<button type="button" class="btn btn-primary btn-large" onclick="createSql()">创建sql</button>
+			<button type="button" class="btn btn-primary btn-large" onclick="createFile()">生成sql文件</button>
+			<button type="button" class="btn btn-primary btn-large" onclick="insertDb()">入库</button>
+			<!-- <button type="button" class="btn btn-primary btn-large" onclick="javascript:history.go(-1)">返回</button> -->
+		</form>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="jumbotron" >
+				<p id="pText"></p>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+	function setDbType(flag){
+		$("#dbType").val(flag);
+	}
+	function common(url){
+		var dbType = $("#dbType").val();
+		var list = [[${list}]];
+		var arr=[]
+		for(var i=0;i<list.length;i++){
+			var obj = list[i];
+			var tableName = obj.dataInterfaceNo;
+			var dataSrcAbbr = obj.dataSrcAbbr;
+			arr.push(tableName);
+		}
+		var param = {};
+		param.dbType = dbType;
+		param.tables = arr;
+		param.dataSrcAbbr = dataSrcAbbr;
+		var json = JSON.stringify(param);
+		$.ajax({
+			url:url,
+			type:"post",
+			data:json,
+			contentType:"application/json;charset=UTF-8",
+			success:function(data){
+				console.log(data)
+				$("#pText").text('');
+				var text = data.split("\n");
+				 for(var i in text){
+					var t = text[i];
+					$("#pText").append("<div>"+t.replace('CREATE','<font color=red>CREATE</font>')+"</div>");
+				}
+			}
+		}) 
+	}
+	function createSql(){
+		var url = "/bonc/createSql";
+		common(url);
+	}
+	function createFile(){
+		var url = "/bonc/createFile";
+		common(url);
+	}
+	function insertDb(){
+		var url = "/bonc/insertDb";
+		common(url);
+	}
+</script>
+</html>

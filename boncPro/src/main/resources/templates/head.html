@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Insert title here</title>
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+   	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<link href="/plugin/DataTables/datatables.min.css" rel="stylesheet">
+	<link href="/common/common.css" rel="stylesheet" />
+	<link href="/common/main.css" rel="stylesheet" />
+	<link href="/common/standard.css" rel="stylesheet" />
+	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/css/modelBase/modelBaseIndex.css" rel="stylesheet"/>
+	<link href="/plugin/zui1.8.1/css/zui.min.css" rel="stylesheet"/>
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/plugin/DataTables/datatables.js"></script>
+	<script src="/plugin/jquery.cookie.js"></script>
+	<!-- <script src="/plugin/ajax-fix.js"></script> -->
+	<script src="/plugin/moment/moment.min.js"></script>
+	<script src="/js/jquery-pjax.js"></script>
+	<script src="/js/common.js"></script>
+	<style type="text/css">
+    .cm-selectPeacock {
+        float: left;
+    }
+
+    .cm-underlineIpt {
+        border-bottom: 1px solid #dbdbdb;
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        outline: none;
+    }
+
+    .row-css {
+        margin: 0 0 0 21px;
+    }
+
+    .row-css > div {
+        margin: 10px 0;
+    }
+	</style>
+</head>
+<body class="compact-mode page-open page-show page-show-in">
+	<div class="head-fixed header">
+		<img class="logoImg" src="/imgs/mainNew/icon_logo_new.png" alt="数据模型管理"/>
+	</div>
+	<div class="righthWrap">
+		<div class="userWrap">
+			<div class="userWrap">
+				<div class="userShow">
+					<div class="userIcon"><img alt="" src="/imgs/main/userIcon.png"/></div>
+					<span id="userName" class="uname">admin</span>
+				</div>
+			</div>
+		</div>
+		<div class="exitSys" title="退出登录" data-toggle="modal" data-target="#exitLogin"></div>
+		<div class="sysMenu dropdown">
+			<i class="icon icon-bars" data-toggle="dropdown"></i>
+			<ul id="sysMenuList" class="dropdown-menu pull-right"><li>日志管理<li></ul>
+		</div>
+	</div>
+	<div id="leftMenu">
+		<div class="ctrlBtn"><i class="icon icon-bars"></i></div>
+		<ul id="menusWrap" class="menusWrap"></ul>
+	</div>

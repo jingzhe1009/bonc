@@ -1,0 +1,91 @@
+	<div class="modal fade" id="columnAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control" data-rule="数据源缩写:required,length[1~10, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据接口编号</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataInterfaceNo" col-name="dataInterfaceNo" type="text" class="form-control" data-rule="数据接口编号:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源接口名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataInterfaceName" col-name="dataInterfaceName" type="text" class="form-control" data-rule="数据源接口名:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>字段编码</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_columnNo" col-name="columnNo" type="text" class="form-control" data-rule="字段编码:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>字段名称</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_columnName" col-name="columnName" type="text" class="form-control" data-rule="字段名称:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据类型</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataType" col-name="dataType" type="text" class="form-control" data-rule="数据类型:required,length[1~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据格式</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataFormat" col-name="dataFormat" type="text" class="form-control" data-rule="数据格式:length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">是否可空</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_nullable" col-name="nullable" type="text" class="form-control" data-rule="是否可空:length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">空值替代值</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_replacenull" col-name="replacenull" type="text" class="form-control" data-rule="空值替代值:length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">分隔符</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_comma" col-name="comma" type="text" class="form-control" data-rule="分隔符:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>字段描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_columnComment" col-name="columnComment" type="text" class="form-control" data-rule="字段描述:required,length[1~200, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">分桶字段</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_isbucket" col-name="isbucket" type="text" class="form-control" data-rule="分桶字段:length[~100, true]">
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="columnModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>

@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>数据模型治理</title>
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+   	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+   	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/plugin/DataTables/datatables.min.css" rel="stylesheet">
+	<link href="/plugin/zui1.8.1/css/zui.min.css" rel="stylesheet"/>
+	<link href="/common/main.css" rel="stylesheet" /><!-- 左侧菜单 -->
+	<link href="/common/common.css" rel="stylesheet" /><!-- 表格 -->
+	<link href="/common/standard.css" rel="stylesheet" /><!-- 按钮 -->
+	<!-- <script src="/js/jquery.min.js"></script> -->
+	<script src="/plugin/jquery.js"></script>
+	<script src="/plugin/validator/dist/jquery.validator.js"></script>
+	<script src="/plugin/validator/dist/local/zh-CN.js"></script>
+	<!-- <script src="/js/bootstrap.min.js"></script> -->
+	<script src="/plugin/DataTables/datatables.js"></script>
+	<script src="/plugin/zui1.8.1/js/zui.js"></script>
+	<script src="/plugin/echarts.js"></script>
+	
+	
+	<link rel="stylesheet" type="text/css" href="/z-UI2/z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-alert/css/z-UI.alert.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-tab/css/z-UI.tab.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-select/css/z-UI.select.css"/>
+    <script type="text/javascript" src="/z-UI2/z-UI.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-alert/js/z-UI.alert.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-tab/js/z-UI.tab.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-select/js/z-UI.select.js"></script>
+    <!-- <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;
+        }
+    </style> -->
+	
+	<!-- <script src="/plugin/jquery.cookie.js"></script> -->
+	<!-- <script src="/plugin/ajax-fix.js"></script> -->
+	<!-- <script src="/plugin/moment/moment.min.js"></script> -->
+	<!-- <script src="/js/jquery-pjax.js"></script> -->
+</head>
+<body class="compact-mode page-open page-show page-show-in">
+	<div class="head-fixed header">
+		<img class="logoImg" src="/imgs/mainNew/icon_logo_new.png" alt="数据模型治理"/>
+	</div>
+	<div class="righthWrap">
+		<div class="userWrap">
+			<div class="userWrap">
+				<div class="userShow">
+					<div class="userIcon"><img alt="" src="/imgs/main/userIcon.png"/></div>
+					<span id="userName" class="uname">admin</span>
+				</div>
+			</div>
+		</div>
+		<div class="exitSys" title="退出登录" ><!-- data-toggle="modal" data-target="#exitLogin" --></div>
+		<!--系统菜单-->
+		<!-- <div class="sysMenu dropdown">
+			<i class="icon icon-bars" data-toggle="dropdown"></i>
+			<ul id="sysMenuList" class="dropdown-menu pull-right">
+				<li idx="1" data="/bonc/log"><a><img src="/imgs/mainNew/icon_rz.png"/>备用菜单</a></li>
+			</ul>
+		</div> -->
+	</div>
+	<!-- 左侧菜单 -->
+	<div id="leftMenu">
+		<!-- <div class="ctrlBtn"><i class="icon icon-bars"></i></div> -->
+		<!-- <ul id="menusWrap" class="menusWrap"></ul> -->
+		<nav class="menu" data-ride="menu" style="width: 200px">
+		  <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
+		    <li class="open">
+		      <a href="#"><i class="icon icon-tasks"></i>数据源</a>
+		      <ul id="menusWrap"></ul>
+		    </li>
+		    <li class="open">
+		      <a href="#"><i class="icon icon-tasks"></i>词根管理</a>
+		      <ul id="dicWrap">
+		        <li idx="table">
+		          <a href="#" onclick="dicColModel.init()"><i class="icon icon-circle-blank"></i>词根表管理</a>
+		        </li>
+		        <li idx="col"><a href="#"><i class="icon icon-circle-blank"></i>词根字段管理</a></li>
+		      </ul>
+		    </li>
+		    <li class="open">
+		      <a href="#"><i class="icon icon-tasks"></i>基础信息</a>
+		      <ul id="baseWrap">
+		      	<li idx="ds">
+		          <a href="#"><i class="icon icon-circle-blank"></i>数据源登记</a>
+		        </li>
+		        <li idx="func">
+		          <a href="#"><i class="icon icon-circle-blank"></i>函数登记</a>
+		        </li>
+		        <li idx="log">
+		          <a href="#"><i class="icon icon-circle-blank"></i>日志查询</a>
+		        </li>
+		        <!-- <li>
+		          <a href="#"><i class="icon icon-circle-blank"></i>接口信息</a>
+		        </li>
+		        <li>
+		          <a href="#"><i class="icon icon-circle-blank"></i>字段信息</a>
+		        </li> -->
+		      </ul>
+		    </li>
+		  </ul>
+		</nav>
+	</div>
+	<div id="page">
+		<div id="pageHeader">
+	        <p>当前位置：<span>接口管理</span></p>
+	    </div>
+	    <div id="pageBody">
+	        <div id="pageContent">
+	        	<div id="modelBasePageContent">
+		        	<div class="modelBaseContainer modelBaseWrapper">
+		        		<!--Tab-->
+		                <div id="tabContainer" class="tableIcon">
+		                    <ul class="nav nav-tabs" id="authorityTab">
+		                        <!-- <li tab-id="0"><a data-toggle="tab">数据源信息</a></li> -->
+		                        <li tab-id="0"><a data-toggle="tab">目录扫描函数配置</a></li>
+		                        <!-- <li tab-id="1"><a data-toggle="tab">数据采集</a></li> -->
+		                        <li tab-id="1"><a data-toggle="tab">文件预处理函数配置</a></li>
+		                        <li tab-id="2"><a data-toggle="tab">数据接口配置</a></li>
+		                        <li tab-id="3"><a data-toggle="tab">数据接口字段配置</a></li>
+		                       <!--  <li tab-id="3"><a data-toggle="tab">ini配置文件预览/生成</a></li> -->
+		                        <li tab-id="4"><a data-toggle="tab">数据建模</a></li>
+		                        <li tab-id="5"><a data-toggle="tab">数据算法加载</a></li>
+		                    </ul>
+		                </div>
+		                <div class="tab-content" id="dataSrcContent">
+		                	<div class="tableIcon"><i class="icon icon-cube-alt">数据源信息</i></div>
+		                	<div>
+		                        <table id="dataSrcShowTable" style="white-space:nowrap;"></table>
+		                        <!-- <div class="indexBox">
+					                <div class="indexChildBoxWrapper">
+					                    <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor indexBoxBtn" onclick="dataSrcModel.show(localStorage.getItem('flag'));">配置数据源</button>
+					                    </div>
+					                     <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor indexBoxBtn" onclick="dicTableModel.importDictionary();">导入词根表</button>
+					                    </div>
+					                    <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor" onclick="interfaceModel.importTable();">导入接口</button>
+					                    </div>
+					                    <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor" onclick="columnModel.importCol();">导入字段</button>
+					                    </div>
+					                    <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor indexBoxBtn" onclick="quickEnter.intoRuleSet();">函数注册</button>
+					                    </div>
+					                    <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor" onclick="quickEnter.intoModel();">文件预处理</button>
+					                    </div>
+					                    
+					                </div>
+				            	</div> -->
+		                    </div>
+		                </div>
+		                <div class="tab-content" id="configDataSrc">
+		                	<div class="tableIcon"><i class="icon icon-cube-alt">数据源配置</i></div>
+		                	<form class="navbar-form navbar-left" role="search" target="_blank">
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="dataSrcAbbr" type="text" class="form-control" placeholder="数据源" >
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="dataSrcModel.search()">查询</button>
+		                			<button type="reset" class="btn btn-primary" onclick="dataSrcModel.init()">重置</button>
+									<button type="button" class="btn btn-primary" onclick="dataSrcModel.add(1,this)">登记</button>
+				                 </div>
+			                 </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dataSrcTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+		                <div class="tab-content" id="dicTableContent">
+		                	<div class="tableIcon"><i class="icon icon-cube-alt">词根表管理</i></div>
+		                	<form class="navbar-form navbar-left" role="search" target="_blank">
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="cname" type="text" class="form-control" placeholder="中文词根">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="dicTableModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary" onclick="dicTableModel.show(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="dicTableModel.importDictionary()">导入词根</a>
+			                 </div>
+			                 </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dicTableTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                <div class="tab-content" id="dicColContent">
+		                	<div class="tableIcon"><i class="icon icon-cube-alt">词根字段管理</i></div>
+		                	<form class="navbar-form navbar-left" role="search" target="_blank">
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="cname" type="text" class="form-control" placeholder="中文词根">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="dicColModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="dicColModel.show(1,this)">新增</button>
+									<!-- <a class="btn btn-primary" target="_blank" onclick="dicColModel.importDictionary()">导入词根</a> -->
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dicColTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                <div class="tab-content" id="interfaceContent">
+			        		<div class="tableIcon"><i class="icon icon-cube-alt">接口列表</i></div>
+			        		<form class="navbar-form navbar-left" role="search" id="form" target="_blank">
+				        		<div class="selfAdaptionLeft">
+				        			<div>
+										<div class="input-group">
+											<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="inter_dataSrcAbbr"  placeholder="数据源">
+											<input data-col="dataInterfaceNo" type="text" class="form-control" id="inter_dataInterfaceNo"  placeholder="接口编号">
+			                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+										</div>
+									</div>
+				        		</div>
+				        		<div class="selfAdaptionRight">
+									<button type="button" class="btn btn-primary" onclick="interfaceModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" onclick='interfaceModel.init(localStorage.getItem("idx"))'>重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.add(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="interfaceModel.importTable()">导入接口</a>
+									<!-- <button type="button" class="btn btn-primary" onclick="createSqlModel.createFile()">生成建表语句文件</button>
+					            	<button type="button" class="btn btn-primary" onclick="createSqlModel.insertDb()">建表入库</button> -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.create()">入库</button>  -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.createPage()">ini文件修改</button>  -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.createPage()">入库</button>  -->
+			                    </div>
+		                    </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="interfaceTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+	                    <div class="tab-content" id="dataModelContent">
+			        		<div class="tableIcon"><i class="icon icon-cube-alt">数据模型列表</i></div>
+			        		<form class="navbar-form navbar-left" role="search" id="form" target="_blank">
+				        		<div class="selfAdaptionLeft">
+				        			<div>
+										<div class="input-group">
+											<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="model_dataSrcAbbr"  placeholder="数据源">
+											<input data-col="dataInterfaceNo" type="text" class="form-control" id="model_dataInterfaceNo"  placeholder="接口编号">
+			                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+										</div>
+									</div>
+				        		</div>
+				        		<div class="selfAdaptionRight">
+									<!-- <button type="button" class="btn btn-primary" onclick="interfaceModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" onclick='interfaceModel.init(localStorage.getItem("idx"))'>重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.add(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="interfaceModel.importTable()">导入接口</a> -->
+									<button type="button" class="btn btn-primary" onclick="createSqlModel.createFile()">生成建表语句文件</button>
+					            	<button type="button" class="btn btn-primary" onclick="createSqlModel.insertDb()">物化(创建)</button>
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.create()">入库</button>  -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.createPage()">ini文件修改</button>  -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.createPage()">入库</button>  -->
+			                    </div>
+		                    </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dataModelTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+	                    <div class="tab-content" id="colContent">
+			        		<div class="tableIcon"><i class="icon icon-cube-alt">字段列表</i></div>
+			        		<form class="navbar-form navbar-left" role="search" id="form" target="_blank">
+				        		<div class="selfAdaptionLeft">
+				        			<div>
+										<div class="input-group">
+											<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="column_dataSrcAbbr"  placeholder="数据源">
+											<input data-col="dataInterfaceNo" type="hidden" class="form-control" id="column_dataInterfaceNo" placeholder="接口编号">
+											<input data-col="columnName" type="text" class="form-control"   placeholder="字段名">
+			                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+										</div>
+									</div>
+				        		</div>
+				        		<div class="selfAdaptionRight">
+				        			<button type="button" class="btn btn-primary" onclick="columnModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<a class="btn btn-primary" target="_blank" onclick="columnModel.importCol()">导入字段</a>
+									<button type="button" class="btn btn-primary btn-large" onclick="columnModel.add(1,this)">新增</button>
+			                    </div>
+		                    </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="columnTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+	                    <div class="tab-content" id="procContent">
+		                	<div class="tableIcon"><i class="icon icon-cube-alt">数据算法加载</i></div>
+		                	<form class="navbar-form navbar-left" role="search" target="_blank">
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="proc_dataSrcAbbr"  placeholder="数据源">
+		                				<input data-col="dataInterfaceNo" type="text" class="form-control" id="proc_dataInterfaceNo" placeholder="接口编号">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="procModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="procModel.add(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="procModel.importProc()">导入数据算法</a>
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="procTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                <div class="tab-content" id="funcContent">
+		                	<div class="tableIcon"><i class="icon icon-cube-alt">函数登记</i></div>
+		                	<!--Tab-->
+			                <div class="tableIcon">
+			                    <ul class="nav nav-tabs" id="funcTab">
+			                        <li tab-id="1"><a data-toggle="tab">目录扫描</a></li>
+			                        <li tab-id="2"><a data-toggle="tab">文件预处理</a></li>
+			                        <li tab-id="3"><a data-toggle="tab">数据加载算法</a></li>
+			                    </ul>
+			                </div>
+		                	<form class="navbar-form navbar-left" role="search" target="_blank">
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="funcName" type="text" class="form-control" placeholder="函数名">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="funcModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="funcModel.add(1,this)">新增</button>
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="funcTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                <div class="tab-content" id="configFuncContent">
+		                	<!-- <div class="tableIcon"><i class="icon icon-cube-alt">函数配置</i></div> -->
+		                	<!-- <div class="form-group">
+		                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon"></i>trans_function</label>
+		                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+		                            
+		                        </div>
+		                    </div> -->
+		                	<div>
+		                		<table id="dataSrcShowTable" style="white-space:nowrap;"></table>
+			                	<div class="indexBox" >
+					                <div class="indexChildBoxWrapper">
+					                    <div class="indexChildBox">
+					                        <!-- <button type="button" class="btn btn-minor indexBoxBtn" >trans_function</button> -->
+						                        <!-- <div class="form-group">
+							                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>函数类型</label>
+							                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+							                            <select id="ruleTypeSelector" col-name="dataSrcAbbr" class="form-control">
+							                                <option ruleType="trans_function" selected>trans_function</option>
+							                                <option ruleType="rename_function">rename_function</option>
+							                                <option ruleType="unzip_function">unzip_function</option>
+							                                <option ruleType="decry_function">decry_function</option>
+							                            </select>
+							                        </div>
+							                    </div> -->
+						                        <div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+	
+												    <div class="zUI-list-tran" id="tran1">
+												        <div class="list-box">
+												            <div class="list-header">函数列表</div>
+												            <ul class="left" id="funcList">
+												            </ul>
+												        </div>
+												        <div class="list-box">
+												            <div class="list-header" id="configList">已配置</div>
+												            <ul class="right">
+												            </ul>
+												        </div>
+												    </div>
+												    <br>
+												    <!-- <button class="zUI-btn info" onclick="zUI.dialog.alert('<pre>'+JSON.stringify(zUI.select.getListTranData('#tran1'),null,2)+'</pre>')">获得结果</button> -->
+													<button onclick='getResult(1)'>保存</button>
+												</div>
+					                    </div>
+					                    <div class="indexChildBox">
+					                    	<div class="jumbotron" >
+												<p id="pText"></p>
+											</div>
+					                    </div>
+					                    <!--  <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor indexBoxBtn" >rename_function</button>
+					                        <div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+
+											    <div class="zUI-list-tran" id="tran2">
+											        <div class="list-box">
+											            <div class="list-header">函数列表</div>
+											            <ul class="left" id="funcList">
+											            </ul>
+											        </div>
+											        <div class="list-box">
+											            <div class="list-header">已配置</div>
+											            <ul class="right">
+											            </ul>
+											        </div>
+											    </div>
+											    <br>
+											    <button class="zUI-btn info" onclick="zUI.dialog.alert('<pre>'+JSON.stringify(zUI.select.getListTranData('#tran2'),null,2)+'</pre>')">获得结果</button>
+											</div>
+					                    </div>
+					                    <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor">unzip_function</button>
+					                        <div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+
+											    <div class="zUI-list-tran" id="tran3">
+											        <div class="list-box">
+											            <div class="list-header">函数列表</div>
+											            <ul class="left" id="funcList">
+											            </ul>
+											        </div>
+											        <div class="list-box">
+											            <div class="list-header">已配置</div>
+											            <ul class="right">
+											            </ul>
+											        </div>
+											    </div>
+											    <br>
+											    <button class="zUI-btn info" onclick="zUI.dialog.alert('<pre>'+JSON.stringify(zUI.select.getListTranData('#tran3'),null,2)+'</pre>')">获得结果</button>
+											</div>
+					                    </div>
+					                    <div class="indexChildBox">
+					                        <button type="button" class="btn btn-minor" >decry_function</button>
+					                        <div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+
+											    <div class="zUI-list-tran" id="tran4">
+											        <div class="list-box">
+											            <div class="list-header">函数列表</div>
+											            <ul class="left" id="funcList">
+											            </ul>
+											        </div>
+											        <div class="list-box">
+											            <div class="list-header">已配置</div>
+											            <ul class="right">
+											            </ul>
+											        </div>
+											    </div>
+											    <br>
+											    <button class="zUI-btn info" onclick="zUI.dialog.alert('<pre>'+JSON.stringify(zUI.select.getListTranData('#tran4'),null,2)+'</pre>')">获得结果</button>
+											</div>
+					                    </div> -->
+					                </div>
+				            	</div>
+				            </div>
+		                </div>
+		                <div class="tab-content" id="logContent">
+		                	<div class="tableIcon"><i class="icon icon-cube-alt">日志列表</i></div>
+		                	<form class="navbar-form navbar-left" role="search" target="_blank">
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="actionId" type="text" class="form-control" placeholder="日志id">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="createSqlModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="logTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		        	</div>
+	        	</div>
+	        </div>
+	    </div>
+    </div>
+    <!-- <th:#include file="/add.html" > -->
+    <!--数据源弹窗-->
+    <div class="modal fade" id="dataSourceAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                	<!-- <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <select id="ruleTypeSelector" col-name="dataSrcAbbr" class="form-control">
+	                                <option ruleType="ETC" selected>证通</option>
+	                                <option ruleType="HON">诚信</option>
+	                            </select>
+	                        </div>
+	                    </div> -->
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control" data-rule="数据源缩写:required,length[1~10, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据源描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_dataSrcDesc" col-name="dataSrcDesc" type="text" class="form-control"  data-rule="数据源描述:required,length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <!-- <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">生效日期</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_sDate" col-name="sDate" type="text" class="form-control" data-rule="生效日期:required,length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">失效日期</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="ds_eDate" col-name="eDate" type="text" class="form-control" data-rule="失效日期:required,length[~30, true]">
+	                        </div>
+	                    </div> -->
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="dataSrcModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+    <!-- 接口 -->
+    <div class="modal fade" id="modelBaseGroupAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                	<!-- <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <select id="ruleTypeSelector" col-name="dataSrcAbbr" class="form-control">
+	                                <option ruleType="ETC" selected>证通</option>
+	                                <option ruleType="HON">诚信</option>
+	                            </select>
+	                        </div>
+	                    </div> -->
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control" data-rule="数据源缩写:required,length[1~10, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据接口编号</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_dataInterfaceNo" col-name="dataInterfaceNo" type="text" class="form-control" data-rule="数据接口编号:required,length[1~10, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据接口名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_dataInterfaceName" col-name="dataInterfaceName" type="text" class="form-control" data-rule="数据接口名:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                       <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据接口描述</label>
+	                       <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                           <textarea id="inter_dataInterfaceDesc" col-name="dataInterfaceDesc" type="text" class="form-control" data-rule="数据接口描述:length[~100, true]"></textarea>
+	                       </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据加载频率</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_dataLoadFreq" col-name="dataLoadFreq" type="text" class="form-control" data-rule="数据加载频率:length[~5, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据加载方式</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_dataLoadMthd" col-name="dataLoadMthd" type="text" class="form-control" data-rule="数据加载方式:length[~1, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">字段分割符</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_filedDelim" col-name="filedDelim" type="text" class="form-control" data-rule="字段分割符:length[~10, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">行分隔符</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_lineDelim" col-name="lineDelim" type="text" class="form-control" data-rule="行分隔符:length[~10, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">外表数据库</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_extrnlDatabaseName" col-name="extrnlDatabaseName" type="text" class="form-control" data-rule="外表数据库:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">内表数据库</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_intrnlDatabaseName" col-name="intrnlDatabaseName" type="text" class="form-control" data-rule="内表数据库:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">外表表名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_extrnlTableName" col-name="extrnlTableName" type="text" class="form-control" data-rule="外表表名:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">内表表名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_intrnlTableName" col-name="intrnlTableName" type="text" class="form-control" data-rule="内表表名:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">表类型</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_tableType" col-name="tableType" type="text" class="form-control" data-rule="表类型:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group notFirst">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">分桶数</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="inter_bucketNumber" col-name="bucketNumber" type="text" class="form-control" data-rule="分桶数:length[~100, true]">
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="interfaceModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!--模型各版本查看列表 弹框-->
+	<div class="modal fade" id="modelVersionTableAlertModal">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <!--弹框标题-->
+	            <div class="modal-header">
+	                <h4 class="modal-title"><span id="versionTable_title"></span>版本列表</h4>
+	            </div>
+	            <!--模型版本列表-->
+	            <div class="modal-body">
+	                <div style="clear: both"></div>
+	                <div>
+	                    <table id="modelVersionTable"></table>
+	                </div>
+	            </div>
+	            <!--操作按钮-->
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!--字段查看列表 弹框-->
+	<div class="modal fade" id="columnQueryAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <!--弹框标题-->
+	            <div class="modal-header">
+	                <h4 class="modal-title"><span id="versionTable_title"></span>字段列表</h4>
+	                <form class="navbar-form navbar-left" role="search" target="_blank">
+		        		<div class="selfAdaptionLeft">
+		        			<div>
+								<div class="input-group">
+									<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="detail_dataSrcAbbr"  placeholder="数据源">
+									<input data-col="dataInterfaceNo" type="hidden" class="form-control" id="detail_dataInterfaceNo"  placeholder="接口编号">
+									<input data-col="columnName" type="text" class="form-control" id="detail_columnNo"  placeholder="字段名">
+	                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+								</div>
+							</div>
+		        		</div>
+		        		<div class="selfAdaptionRight">
+							<button type="button" class="btn btn-primary" onclick="detailModel.search()">查询</button>
+							<button type="reset" class="btn btn-primary" >重置</button>
+							<!-- <a class="btn btn-primary" target="_blank" onclick="columnModel.importCol()">导入字段</a>
+							<button type="button" class="btn btn-primary btn-large" onclick="columnModel.add(1,this)">新增</button> -->
+							<!-- <button type="button" class="btn btn-primary btn-large" onclick='interfaceModel.init(localStorage.getItem("idx"))'>返回</button> -->
+	                    </div>
+                    </form>
+	            </div>
+	            <!--模型版本列表-->
+	            <div class="modal-body">
+	                <div style="clear: both"></div>
+	                <div>
+	                    <table id="detailTable"></table>
+	                </div>
+	            </div>
+	            <!--操作按钮-->
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	<!--物化 弹框-->
+	<div class="modal fade" id="createSqlAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <!--弹框标题-->
+	            <div class="modal-header">
+	                <h4 class="modal-title"><span id="versionTable_title"></span>表结构入库</h4>
+	            </div>
+	            <!-- <form>
+	            	<input  col-name="ds" type="hidden" class="form-control" >
+	            	<input  col-name="ids" type="hidden" class="form-control" >
+	            </form>
+	            模型版本列表
+	            <div class="modal-body">
+	                <div style="clear: both"></div>
+	                <div>
+	                    <table id="createSqlTable"></table>
+	                </div>
+	            </div> -->
+	           	<!--  选择要导入的数据库:
+				<select name="dbType" id="dbType" >
+					<option value="tdh" selected>tdh</option>
+					<option value="td">td</option>
+					<option value="mysql">mysql</option>
+				</select>
+	            操作按钮
+	            <div class="modal-footer">
+	            	<button type="button" class="btn btn-primary" onclick="createSqlModel.createSqlSave()">创建sql语句</button>
+	            	<button type="button" class="btn btn-primary" onclick="createSqlModel.createFile()">创建sql文件</button>
+	            	<button type="button" class="btn btn-primary" onclick="createSqlModel.insertDb()">建表sql入库</button>
+	                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	            </div> -->
+	            <div class="jumbotron" >
+					<p id="pText"></p>
+				</div>
+	        </div>
+	    </div>
+	</div>
+	</div>
+	<!-- 字段 -->
+	<div class="modal fade" id="columnAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control" data-rule="数据源缩写:required,length[1~3, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据接口编号</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataInterfaceNo" col-name="dataInterfaceNo" type="text" class="form-control" data-rule="数据接口编号:required,length[1~5, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据源接口名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataInterfaceName" col-name="dataInterfaceName" type="text" class="form-control" data-rule="数据源接口名:length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>字段编码</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_columnNo" col-name="columnNo" type="text" class="form-control" data-rule="字段编码:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">字段名称</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_columnName" col-name="columnName" type="text" class="form-control" data-rule="字段名称:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据类型</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataType" col-name="dataType" type="text" class="form-control" data-rule="数据类型:length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据格式</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_dataFormat" col-name="dataFormat" type="text" class="form-control" data-rule="数据格式:length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">是否可空</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_nullable" col-name="nullable" type="text" class="form-control" data-rule="是否可空:length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">空值替代值</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_replacenull" col-name="replacenull" type="text" class="form-control" data-rule="空值替代值:length[~30, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">分隔符</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_comma" col-name="comma" type="text" class="form-control" data-rule="分隔符:length[~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">字段描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_columnComment" col-name="columnComment" type="text" class="form-control" data-rule="字段描述:length[~200, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">分桶字段</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="col_isbucket" col-name="isbucket" type="text" class="form-control" data-rule="分桶字段:length[~100, true]">
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="columnModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!-- 词根-表 -->
+	<div class="modal fade" id="dicTable">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">实体名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="cname" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">表名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="ename" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">实体名长度</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="tLenb" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">表名长度</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="tLen" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">添加日期</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="createDate" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="dicTableModel.saveRuleSetGourp()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!-- 词根-字段 -->
+	<div class="modal fade" id="dicColumn">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">中文词根</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="cname" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">英文缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="ename" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">英文全拼</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="fullEname" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">字符数统计</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="wordNum" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">添加日期</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input col-name="createDate" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="dicColModel.saveRuleSetGourp()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!-- 加载算法新增窗口 -->
+	<div class="modal fade" id="procAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="proc_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">数据接口号</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="proc_dataInterfaceNo" col-name="dataInterfaceNo" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">存储过程数据库名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="proc_procDatabaseName" col-name="procDatabaseName" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">存储过程</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="proc_procName" col-name="procName" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="procModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!-- 函数登记-->
+	<div class="modal fade" id="funcRegisterAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>函数名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="reg_funcName"  col-name="funcName" type="text" class="form-control" data-rule="函数名:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">函数描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="reg_funcDesc" col-name="funcDesc" type="text" class="form-control" data-rule="函数描述:length[~200, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">参数</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="reg_funcParam" col-name="funcParam" type="text" class="form-control" data-rule="参数:length[~200, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">参数描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="reg_funcParamDesc" col-name="funcParamDesc" type="text" class="form-control" data-rule="参数描述:length[~200, true]">
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="funcModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!--提示消息弹框-->
+	<div class="modal fade" id="msgAlertModal">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <!--弹框标题-->
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+	                    <span class="sr-only">关闭</span></button>
+	                <h4 class="modal-title">提示</h4>
+	            </div>
+	            <!--提示消息-->
+	            <div class="modal-body">
+	                <span id="msgText"></span>
+	            </div>
+	            <!--操作按钮-->
+	            <div class="modal-footer">
+	                <button id="msgConfirm" type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+	                <button id="msgCancel" type="button" class="btn btn-minor" data-dismiss="modal">取消</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</body>
+<script src="/js/manageDictionary.js"></script>
+<script src="/js/version.js"></script>
+<script src="/js/column.js"></script>
+<!-- <script src="/js/common.js"></script> -->
+<script src="/js/dataSrc.js"></script>
+<script src="/js/createSql.js"></script>
+<script src="/js/interface.js"></script>
+<script src="/js/newIndex.js"></script>
+<script src="/js/proc.js"></script>
+<script src="/js/func.js"></script>
+<script src="/js/log.js"></script>
+<script src="/js/model.js"></script>
+<script src="/js/detail.js"></script>
+<!-- <script src="/js/monitorConfig.js"></script> -->
+</html>

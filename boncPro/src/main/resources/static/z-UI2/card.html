@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <title>z-UI-form</title>
+    <link rel="stylesheet" type="text/css" href="z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-tab/css/z-UI.tab.css"/>
+    <script type="text/javascript" src="z-UI.js"></script>
+    <script type="text/javascript" src="z-UI-tab/js/z-UI.tab.js"></script>
+    <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;
+        }
+        pre{
+            font-family:"Times New Roman", Times, serif;
+        }
+    </style>
+</head>
+<body class="zUI-full">
+
+<div class="zUI-full" style="padding: 20px;float: left">
+    <div class="zUI-bar line md" id="tab1">
+        <div class="bar-box">
+            <div class="nav active">
+                面板
+            </div>
+            <div class="nav">
+                面板组
+            </div>
+        </div>
+        <div class="content">
+            <div class="wrap zUI-show">
+                <div class="zUI-card sm" style="width: 100%;">
+                    <div class="zUI-card-title">
+                        <div class="text">普通面板</div>
+                    </div>
+                    <div class="zUI-card-wrap">
+                        js调用方式<br>
+                        <pre>
+                <script>
+                document.write(zUI.util.htmlEncode('zUI.tab.loadPanel({\n' +
+                    '                   elem:\'.zUI-card\',\n' +
+                    '               });'))
+            </script>
+            </pre>
+                    </div>
+                </div>
+                <div class="zUI-card sm" zUI-close="true" style="width: 100%;">
+                    <div class="zUI-card-title" style="background-color: #d9edf7;color: black">
+                        <div class="text">可关闭面板</div>
+                    </div>
+                    <div class="zUI-card-wrap">
+                        带关闭按钮的面板，在面板div上增加zUI-close属性<br>
+                        <pre>
+                <script>
+                document.write(zUI.util.htmlEncode('zUI.tab.loadPanel({\n' +
+                    '                   elem:\'.zUI-card\',\n' +
+                    '                   close:function(){\n' +
+                    '                       console.log(\'close\');\n' +
+                    '                       //return false时取消关闭\n' +
+                    '                   }\n' +
+                    '               });'))
+            </script>
+            </pre>
+                    </div>
+                </div>
+                <div class="zUI-card md" zUI-folder="show" style="width: 100%;">
+                    <div class="zUI-card-title zUI-bg-blue zUI-white">
+                        <div class="text">折叠面板</div>
+                    </div>
+                    <div class="zUI-card-wrap">
+                        这是一个可折叠面板<br>
+                        <pre>
+                <script>
+                document.write(zUI.util.htmlEncode('zUI.tab.loadPanel({\n' +
+                    '                   elem:\'.zUI-card\',\n' +
+                    '                   change:function(type){\n' +
+                    '                       console.log(type);\n' +
+                    '                       //type=\'show\'时标识展开，\'hide\'时表示折叠\n' +
+                    '                   }\n' +
+                    '               });'))
+            </script>
+            </pre>
+                    </div>
+                </div>
+                <div class="zUI-card md" zUI-folder="hide" zUI-close="true" style="width: 100%;">
+                    <div class="zUI-card-title zUI-bg-green zUI-white">
+                        <div class="text">折叠面板</div>
+                    </div>
+                    <div class="zUI-card-wrap">
+                        <br>初始状态折叠起来的面板<br>
+                        指定zUI-folder属性为hide
+                    </div>
+                </div>
+            </div>
+            <div class="wrap">
+
+                <div class="zUI-card md" zUI-folder="show" zUI-card-group="group1" style="width: 100%;">
+                    <div class="zUI-card-title zUI-bg-blue zUI-white">
+                        <div class="text">《喜外弟卢纶见宿》</div>
+                    </div>
+                    <div class="zUI-card-wrap">
+            <pre>
+                《喜外弟卢纶见宿》
+            静夜四无邻，荒居旧业贫。
+            雨中黄叶树，灯下白头人。
+            以我独沈久，愧君相见频。
+            平生自有分，况是蔡家亲。
+
+        【评析】：
+        诗意在写自己贫居，遇外弟留宿而自道近况的。卢纶的《晚次鄂州》（卷六）
+        中，也有“旧业已随征战尽”句，与此诗中的“荒居旧业贫”句，正好印证，说明表
+        兄弟两人，此时处境都很艰难，环境使其更能互相体恤。
+        ??诗的前半首写静夜荒村，陋室贫居，雨中黄叶树，灯下白发人，构成一个活生生
+        的画面，表达了自我的辛酸和悲哀。后半首写表弟卢纶来访，在悲凉中见到亲友，自
+        然喜出望外。这一悲一喜，互相映衬，深刻地表现了主题。
+
+            </pre>
+                    </div>
+                </div>
+                <div class="zUI-card md" zUI-card-group="group1" style="width: 100%;">
+                    <div class="zUI-card-title zUI-bg-blue zUI-white">
+                        <div class="text">《春晓》</div>
+                    </div>
+                    <div class="zUI-card-wrap">
+            <pre>
+                《春晓》
+            春眠不觉晓，处处闻啼鸟。
+            夜来风雨声，花落知多少。
+
+        注释：
+        　　1．春晓：春天的早晨。
+        　　2．闻：听。
+        　　赏析：
+        　　诗歌从春鸟的啼鸣、春风春雨的吹打、春花的谢落等声音，让读者通过听觉，
+        然后运用想象的思维方法，转换到视觉，在眼前展开一夜风雨后的春天景色，构
+        思非常独到。诗歌语言自然朴素，通俗易懂，却又耐人寻味：不知不觉的又来到
+        了一个春天的早晨，不知不觉的又开始了一次花开花落。思想着这一年一度的春
+        色，人生的感慨便会油然而起，或淡或浓地萦回心头。
+            </pre>
+                    </div>
+                </div>
+                <div class="zUI-card md" zUI-card-group="group1" style="width: 100%;">
+                    <div class="zUI-card-title zUI-bg-blue zUI-white">
+                        <div class="text">《积雨辋川庄作》</div>
+                    </div>
+                    <div class="zUI-card-wrap">
+            <pre>
+                《积雨辋川庄作》
+            积雨空林烟火迟，蒸藜炊黍饷东菑。
+            漠漠水田飞白鹭，阴阴夏木啭黄鹂。
+            山中习静观朝槿，松下清斋折露葵。
+            野老与人争席罢，海鸥何事更相疑。
+
+        【评析】：
+        诗意在描写积雨后辋川庄的景物，叙述隐退后闲适生活。首联写田家生活，是诗
+        人山上静观所见：连雨时节，天阴地湿，炊烟缓升；农家早炊，饷田野食，怡然自乐
+        的农村生活。颔联写自然景色：广漠平畴，白鹭飞行，深山密林，黄鹂和唱，积雨后
+        的辋川，画意盎然。颈联写诗人独处空山之中、幽栖松林之下，观木槿，食露葵，避
+        尘世的幽居生活。末联连用两典：一是《庄子·寓言》载的阳子居学道归来后客人不
+        再让座，却与之争座。说明诗人与村夫野老打成一片了。二是《列子·皇帝篇》载：
+        海上有人与鸥鸟亲近，互不猜疑每日有百来只与他相游。一天，他父亲要他把海鸥抓
+        回家去，他再到海边时，鸥鸟都在天上飞舞、不肯停下。说明心术不正，就破坏了他
+        与鸥鸟的关系。两典正反结合，抒写了诗人淡泊的心志。
+        ??这首诗唐人李肇《国史补》说王维：“维有诗名，然好取人文章佳句……漠漠水
+        田飞白鹭，阴阴夏木啭黄鹂，李嘉佑诗也。”据传李有“水田飞白鹭，夏木啭黄鹂”
+        句，但李集中无此。明人胡应麟《诗薮·内篇》说：“摩诘盛唐，嘉佑中唐，安得前
+        人预偷来者？此正嘉佑用摩诘诗。”李与王同时而稍晚，谁袭谁诗，难以说清。宋人
+        叶梦得《石林诗话》说：“此两句好处，正在添‘漠漠’、‘阴阴’四字，此乃摩诘
+        为嘉佑点化，以自见其妙。如李光弼将郭子仪军，一号令之，精彩数倍。“王维诗中
+        的意境，显然要比嘉佑的来得开阔，深邃，色彩更为明朗。
+            </pre>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script>
+    zUI.onLoad(function () {
+        zUI.tab.loadTab({
+            elem:'.zUI-bar',
+        });
+        zUI.tab.loadPanel({
+            elem:'.zUI-card',
+            change: function(type){
+                console.log(type);
+            },
+            close:function(){
+                console.log('close');
+                //return false时取消关闭
+            }
+        });
+    });
+
+
+</script>
+
+
+</html>

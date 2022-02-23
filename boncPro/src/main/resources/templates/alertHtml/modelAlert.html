@@ -1,0 +1,64 @@
+	<div class="modal fade" id="modelAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal">
+	                	<input type="hidden" id="model_ds">
+	                	<input type="hidden" id="model_inter">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">表类型</label>
+                        	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <select id="model_dbType" class="form-control">
+	                            	<option value="0" selected>全部</option>
+	                                <option value="1">外表</option>
+	                                <option value="2">内表</option>
+	                            </select>
+                        	</div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="dataModelModel.createSql()">确定</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	<div class="modal fade" id="delModelAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal">
+	                	<input type="hidden" id="delModel_ds">
+	                	<input type="hidden" id="delModel_outer">
+	                	<input type="hidden" id="delModel_inner">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">表类型</label>
+                        	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <select id="delModel_dbType" class="form-control">
+	                            	<option value="0" selected>全部</option>
+	                                <option value="1" >外表</option>
+	                                <option value="2">内表</option>
+	                            </select>
+                        	</div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="dataModelModel.delModelFunc()">确定</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>

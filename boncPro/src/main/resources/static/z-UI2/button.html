@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <title>z-UI-button</title>
+    <link rel="stylesheet" type="text/css" href="z-UI.css"/>
+    <script type="text/javascript" src="z-UI.js"></script>
+    <script type="text/javascript" src="z-UI-tab/js/z-UI.tab.js"></script>
+    <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;
+        }
+    </style>
+</head>
+<body class="zUI-full">
+<div class="zUI-full" style="padding: 20px;">
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">纯色按钮</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <a class="zUI-btn ssm">极小</a>
+            <button class="zUI-btn info ssm">极小</button>
+            <a class="zUI-btn success">小按钮</a>
+            <a class="zUI-btn md danger">中按钮</a>
+
+            <a class="zUI-btn lg warn">大按钮</a>
+            <a class="zUI-btn lgg disable" >极大</a><br>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">空心按钮</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <a class="zUI-btn zUI-btn-null success ssm">小按钮</a>
+            <button class="zUI-btn zUI-btn-null info sm">中按钮</button>
+            <button class="zUI-btn zUI-btn-null danger md">中按钮</button>
+            <button class="zUI-btn zUI-btn-null warn lg">中按钮</button>
+            <button class="zUI-btn zUI-btn-null disable lgg">中按钮</button>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">图标按钮</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <button class="zUI-btn success"><i class="zUI-icon icon-notification"></i>小按钮</button>
+            <button class="zUI-btn md danger"><i class="zUI-icon icon-search"></i>中按钮</button>
+            <button class="zUI-btn zUI-btn-null md danger"><i class="zUI-icon icon-search"></i>中按钮</button>
+
+            <button class="zUI-btn zUI-btn-null lg warn"><i class="zUI-icon icon-pencil"></i>大按钮</button><br>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    zUI.tab.loadPanel({
+        elem:'.zUI-card',
+        change: function(type){
+            console.log(type);
+        },
+        close:function(){
+            console.log('close');
+            //return false时取消关闭
+        }
+    });
+</script>
+
+
+</html>

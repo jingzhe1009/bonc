@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <title>z-UI-alert</title>
+    <link rel="stylesheet" type="text/css" href="z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-alert/css/z-UI.alert.css"/>
+    <script type="text/javascript" src="z-UI.js"></script>
+    <script type="text/javascript" src="z-UI-alert/js/z-UI.alert.js"></script>
+    <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div style="width: 100%;height: 100%;overflow-y: auto;box-sizing: border-box;padding: 20px;">
+    <a class="zUI-btn md info" onclick="doa1()">普通弹窗</a>
+    <a class="zUI-btn md info" onclick="doa2()">带遮罩</a>
+    <a class="zUI-btn md info" onclick="doa3()">带按钮</a>
+    <a class="zUI-btn md info" onclick="doa4()">可拖拽</a>
+    <a class="zUI-btn zUI-btn-null success md" onclick="doa5()">右下角拖动缩放大小</a>
+    <a class="zUI-btn zUI-btn-null success md" onclick="doa6()">加载中</a>
+
+
+</div>
+</body>
+
+<script>
+    function doa6() {
+        zUI.dialog.showMask({delay:3000});
+    }
+    function doa1() {
+        zUI.dialog.alertUI({
+            id:'a1',
+            shadow:false,
+            content:'Hello World',
+            resizable:false,
+            draggable:false,
+        })
+    }
+    function doa2() {
+        zUI.dialog.alertUI({
+            id:'a1',
+            content:'Hello World',
+            resizable:false,
+            draggable:false,
+        })
+    }
+    function doa3() {
+        zUI.dialog.alertUI({
+            id:'a1',
+            //shadow:false,
+            content:'Hello World',
+            width:'220px',
+            resizable:false,
+            draggable:false,
+            btns:{
+                '确定':function(){
+                    return true;
+                }}
+        })
+    }
+    function doa4() {
+        zUI.dialog.alertUI({
+            id:'a1',
+            //shadow:false,
+            content:'Hello World',
+            width:'220px',
+            resizable:false,
+            draggable:true,
+            btns:{
+                '保存':function(){
+                    return false;
+                },
+                '取消':function(){
+                    return true;
+                }}
+        })
+    }
+    function doa5() {
+        zUI.dialog.alertUI({
+            id:'a1',
+            //shadow:false,
+            content:'Hello World',
+            width:'220px',
+            resizable:true,
+            draggable:true,
+            btns:{
+                '保存':function(){
+                    return false;
+                },
+                '取消':function(){
+                    return true;
+                }}
+        })
+    }
+
+</script>
+
+
+</html>

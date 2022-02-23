@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <title>z-UI-alert</title>
+    <link rel="stylesheet" type="text/css" href="z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-alert/css/z-UI.alert.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-tab/css/z-UI.tab.css"/>
+    <script type="text/javascript" src="z-UI.js"></script>
+    <script type="text/javascript" src="z-UI-alert/js/z-UI.alert.js"></script>
+    <script type="text/javascript" src="z-UI-tab/js/z-UI.tab.js"></script>
+    <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;background-color: white;
+        }
+    </style>
+</head>
+<body class="zUI-full">
+<div class="zUI-full" style="padding: 20px;">
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">鼠标悬浮层提示</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <a class="zUI-btn md info" id="btn1" zUI-title="向左弹出提示">向左</a>
+            <a class="zUI-btn md info" id="btn2" zUI-title="向右弹出提示">向右</a>
+            <a class="zUI-btn md info" id="btn3" zUI-title="向上弹出提示">向上</a>
+            <a class="zUI-btn md info" id="btn4" zUI-title="向下弹出提示">向下</a>
+            <a class="zUI-btn md info" id="btn5" zUI-title="我不会自动消失，除非你点击按钮或者重新移入鼠标" zUI-title-stay="true">弹出保留</a>
+            <a class="zUI-btn md info" id="btn6" zUI-title="#function:hoverHtml1#" zUI-title-stay="true">弹出html1</a>
+            <a class="zUI-btn md info" id="btn7" zUI-title="#function:hoverHtml2#" zUI-title-stay="true">弹出html2</a>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">顶部信息提示</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <a class="zUI-btn md info" onclick="zUI.dialog.message({content:'保存成功'+(++i),timer:false,delay:5000,close:false});">5秒自动消失的提示</a>
+            <a class="zUI-btn md info" onclick="zUI.dialog.message({content:'带关闭按钮的提示'+(++i),timer:false,delay:3000,level:'error'});">带关闭按钮的提示</a>
+            <a class="zUI-btn md info" onclick="zUI.dialog.message({content:'保存成功'+(++i),level:'warn'});">带进度条的提示</a>
+            <a class="zUI-btn md success" onclick="zUI.dialog.message({content:'保存成功'+(++i),timer:false,level:'success'});">success提示</a>
+            <a class="zUI-btn md info" onclick="zUI.dialog.message({content:'会话已超时'+(++i),level:'info',delay:3000});">info提示</a>
+            <a class="zUI-btn md warn" onclick="zUI.dialog.message({content:'会话已超时'+(++i),timer:false,level:'warn'});">warn提示</a>
+            <a class="zUI-btn md danger" onclick="zUI.dialog.message({content:'操作失败操作失败操作失败操作失败操作失败操作失败'+(++i),level:'error',dir:'center',delay:3000});">error提示</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="zUI-btn md info" onclick="zUI.dialog.message({content:'操作失败'+(++i),timer:false,delay:3000,level:arr[i%4],dir:'right'});">右边弹出</a>
+
+        </div>
+    </div>
+
+
+
+
+
+</div>
+</body>
+
+<script>
+    var i = 1;
+    var arr = ['info','warn','error','success'];
+    function hoverHtml1(){
+        var obj = zUI.dom.createElem({name:'div',html:'<h1>我是html1</h1>'});
+        return obj;
+    }
+    function hoverHtml2(){
+        return '<div><h1>我是html2</h1></div>';
+    }
+    zUI.onLoad(function(){
+        zUI.dialog.message({content:'会话已超时，请重新登陆',level:'info',delay:7000});
+        zUI.dialog.hoverTip({elem:'#btn1',dir:'left'});
+        zUI.dialog.hoverTip({elem:'#btn2',dir:'right'});
+        zUI.dialog.hoverTip({elem:'#btn3',dir:'up'});
+        zUI.dialog.hoverTip({elem:'#btn4',dir:'down'});
+        zUI.dialog.hoverTip({elem:'#btn5',dir:'down'});
+        zUI.dialog.hoverTip({elem:'#btn6',dir:'down'});
+        zUI.dialog.hoverTip({elem:'#btn7',dir:'down'});
+        zUI.tab.loadPanel({
+            elem:'.zUI-card',
+            change: function(type){
+                console.log(type);
+            },
+            close:function(){
+                console.log('close');
+                //return false时取消关闭
+            }
+        });
+    });
+
+</script>
+
+
+</html>

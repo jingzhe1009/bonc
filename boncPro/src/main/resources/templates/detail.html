@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>表字段详情</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/common.js"></script>
+</head>
+<body onload="init()">
+	<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3 class="text-center">
+				表字段详情
+			</h3>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<form class="navbar-form navbar-left" role="search" id="form">
+			<input type="hidden" name="ids" id="ids">
+			<input type="hidden" name="pageSize" id="pageSize" value="10">
+			<input type="hidden" name="pageNum" id="pageNum" value="1">
+			<input type="hidden" name="totalSize" id="totalSize" value="">
+			<input type="hidden" name="tableName" id="tableName" th:value="${tableName}">
+			<div class="form-group">
+				字段英文名:<input type="text" class="form-control" name="ename" id="ename"/>
+			</div> 
+			<button type="button" class="btn btn-primary btn-large" onclick="query()">查询</button>
+			<button type="reset" class="btn btn-primary btn-large" >重置</button>
+			<button type="button" class="btn btn-primary btn-large" onclick="edit()">修改</button>
+		</form>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<table class="table table-bordered">
+				<thead>
+					<tr class="info">
+						<th>
+							 全选&nbsp;<input type="checkbox" id="checkedAll"> 
+						</th>
+						<th>
+							序号
+						</th> 
+						<th>
+							表英文名
+						</th>
+						<th>
+							表中文名
+						</th>
+						<th>
+							字段英文名
+						</th>
+						<th>
+							字段中文名
+						</th>
+						<th>
+							类型
+						</th>
+						<th>
+							是否为空
+						</th>
+						<th>
+							是否主键
+						</th>
+					</tr>
+				</thead>
+				<tbody id="tbody">
+					<!-- <tr th:each="map:${list}">
+						<td width="7%"><input type="checkbox" th:id="${map.ename}" ></td>
+						<td th:text="${map.table_ename}"></td> 
+				      	<td th:text="${map.table_cname}"></td> 
+				      	<td th:text="${map.ename}"></td> 
+				      	<td th:text="${map.cname}"></td> 
+				      	<td th:text="${map.column_type}"></td> 
+				      	<td th:text="${map.null_flag}"></td> 
+				      	<td th:text="${map.pk_flag}"></td> 
+				    </tr> -->
+				</tbody>
+			</table>
+			<ul class="pagination" id="page">
+			</ul>
+		</div>
+	</div>
+	</div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+	
+	function init(){
+		$("#checkedAll").prop("checked", false );
+		query();
+	}
+	
+	function query(){
+		var obj = new Object();
+		obj.pageSize=$("#pageSize").val();
+		obj.pageNum=$("#pageNum").val();
+		obj.table_ename = $("#tableName").val();
+		obj.ename =$("#ename").val();
+		var json = JSON.stringify(obj);
+		console.log("ajax send: "+json);
+		
+		$.ajax({
+			url:"/bonc/findDetailPage",
+			type:"post",
+			data:json,
+			contentType:"application/json;charset=UTF-8",
+			success: function(result){
+				console.log("ajax recieve: ");
+				console.log(result);
+				var data = result.content;
+				var html = "";
+				for(var i in data){
+					var obj = data[i];
+					html += '<tr>';
+					html += '<td width="7%"><input type="checkbox" id="'+obj.ename+'" name="items"></td>';
+					html += '<td width="7%">'+(parseInt(i)+1)+'</td>';
+					html += '<td>'+obj.tableEname+'</td>';
+					html += '<td>'+obj.tableCname+'</td>';
+					html += '<td>'+obj.ename+'</td>';
+					html += '<td>'+obj.cname+'</td>';
+					html += '<td>'+obj.columnType+'</td>';
+					html += '<td>'+obj.nullFlag+'</td>';
+					html += '<td>'+obj.pkFlag+'</td>';
+					html += '</tr>';
+				}
+				$("#tbody").html(html);
+				setPage(result);
+			}
+		})
+	}
+	
+	function edit(){
+		var chkBoxes = $('#tbody').find('input:checked');
+		if (chkBoxes.length != 1) {
+		    alert('请选择一条记录');
+		    return false;
+		}
+		var ename ='';
+		$(chkBoxes).each(function() {
+			ename=$(this).attr('id');
+	        //name=$(this).attr('name');
+	    });
+		var tableName = $("#tableName").val();
+		window.open("/bonc/edit?ename="+ename+"&tableName="+tableName,'newwindow','height=550,width=800,top=200,left=550,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+	}
+	
+	$("#checkedAll").click(function(){
+		var checked =$(this).prop("checked")
+		$('[name=items]:checkbox').prop("checked", checked ); //所有checkbox跟着全选的checkbox走。
+	});
+</script>
+</html>

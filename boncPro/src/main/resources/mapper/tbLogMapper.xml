@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.tbLogMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.tbLog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="bonc_date" jdbcType="VARCHAR" property="boncDate" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="inter_name" jdbcType="VARCHAR" property="interName" />
+    <result column="step" jdbcType="VARCHAR" property="step" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
+    <result column="msg" jdbcType="VARCHAR" property="msg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bonc_date, source, inter_name, step, result, msg
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.tbLog">
+    insert into tb_log (id, bonc_date, source, 
+      inter_name, step, result, 
+      msg)
+    values (#{id,jdbcType=INTEGER}, #{boncDate,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, 
+      #{interName,jdbcType=VARCHAR}, #{step,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR}, 
+      #{msg,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.tbLog">
+    insert into tb_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="boncDate != null">
+        bonc_date,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="interName != null">
+        inter_name,
+      </if>
+      <if test="step != null">
+        step,
+      </if>
+      <if test="result != null">
+        result,
+      </if>
+      <if test="msg != null">
+        msg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="boncDate != null">
+        #{boncDate,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="interName != null">
+        #{interName,jdbcType=VARCHAR},
+      </if>
+      <if test="step != null">
+        #{step,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=VARCHAR},
+      </if>
+      <if test="msg != null">
+        #{msg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.tbLog">
+    update tb_log
+    <set>
+      <if test="boncDate != null">
+        bonc_date = #{boncDate,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="interName != null">
+        inter_name = #{interName,jdbcType=VARCHAR},
+      </if>
+      <if test="step != null">
+        step = #{step,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        result = #{result,jdbcType=VARCHAR},
+      </if>
+      <if test="msg != null">
+        msg = #{msg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.tbLog">
+    update tb_log
+    set bonc_date = #{boncDate,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
+      inter_name = #{interName,jdbcType=VARCHAR},
+      step = #{step,jdbcType=VARCHAR},
+      result = #{result,jdbcType=VARCHAR},
+      msg = #{msg,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+		<include refid="Base_Column_List" />
+		from tb_log where 1=1
+		<if test="boncDate!=null and boncDate!=''">
+			and bonc_date = #{boncDate}
+		</if>
+	</select>
+</mapper>

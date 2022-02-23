@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterfaceColumnsMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterfaceColumns">
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <id column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <id column="column_no" jdbcType="INTEGER" property="columnNo" />
+    <result column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="column_name" jdbcType="VARCHAR" property="columnName" />
+    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
+    <result column="data_format" jdbcType="VARCHAR" property="dataFormat" />
+    <result column="nullable" jdbcType="INTEGER" property="nullable" />
+    <result column="replacenull" jdbcType="INTEGER" property="replacenull" />
+    <result column="comma" jdbcType="VARCHAR" property="comma" />
+    <result column="column_comment" jdbcType="VARCHAR" property="columnComment" />
+    <result column="isbucket" jdbcType="VARCHAR" property="isbucket" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.ljz.model.DataInterfaceColumnsTmp">
+  	<result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+  	<result column="importType" jdbcType="VARCHAR" property="importType" />
+    <result column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <result column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <result column="column_no" jdbcType="INTEGER" property="columnNo" />
+    <result column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="column_name" jdbcType="VARCHAR" property="columnName" />
+    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
+    <result column="data_format" jdbcType="VARCHAR" property="dataFormat" />
+    <result column="nullable" jdbcType="INTEGER" property="nullable" />
+    <result column="replacenull" jdbcType="INTEGER" property="replacenull" />
+    <result column="comma" jdbcType="VARCHAR" property="comma" />
+    <result column="column_comment" jdbcType="VARCHAR" property="columnComment" />
+    <result column="isbucket" jdbcType="VARCHAR" property="isbucket" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    data_src_abbr, data_interface_no, column_no, data_interface_name, column_name, data_type, 
+    data_format, nullable, replacenull, comma, column_comment, isbucket, s_date, e_date
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceColumns" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_columns
+    where data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and column_no = #{columnNo,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataInterfaceColumnsTmp">
+    delete from data_interface_columns_tmp
+    where 1=1
+      <if test="dataSrcAbbr != null">
+       and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceNo != null">
+       and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+     </if>
+     <if test="columnNo != null">
+       and column_no = #{columnNo,jdbcType=VARCHAR}
+     </if>
+     <if test="batchNo != null">
+        and batch_no = #{batchNo,jdbcType=VARCHAR}
+      </if>
+      <if test="condition != null">
+       and data_interface_name in (#{condition})
+     </if>
+     <if test="dataInterfaceName != null">
+       and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+     </if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.ljz.model.DataInterfaceColumns">
+    insert into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
+      data_interface_name, column_name, data_type, 
+      data_format, nullable, replacenull, 
+      comma, column_comment, isbucket, 
+      s_date, e_date)
+    values (#{dataSrcAbbr,jdbcType=VARCHAR}, #{dataInterfaceNo,jdbcType=VARCHAR}, #{columnNo,jdbcType=INTEGER}, 
+      #{dataInterfaceName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, 
+      #{dataFormat,jdbcType=VARCHAR}, #{nullable,jdbcType=INTEGER}, #{replacenull,jdbcType=INTEGER}, 
+      #{comma,jdbcType=VARCHAR}, #{columnComment,jdbcType=VARCHAR}, #{isbucket,jdbcType=VARCHAR}, 
+      #{sDate,jdbcType=DATE}, #{eDate,jdbcType=DATE})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterfaceColumns">
+    insert into data_interface_columns
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="columnNo != null">
+        column_no,
+      </if>
+      <if test="dataInterfaceName != null">
+        data_interface_name,
+      </if>
+      <if test="columnName != null">
+        column_name,
+      </if>
+      <if test="dataType != null">
+        data_type,
+      </if>
+      <if test="dataFormat != null">
+        data_format,
+      </if>
+      <if test="nullable != null">
+        nullable,
+      </if>
+      <if test="replacenull != null">
+        replacenull,
+      </if>
+      <if test="comma != null">
+        comma,
+      </if>
+      <if test="columnComment != null">
+        column_comment,
+      </if>
+      <if test="isbucket != null">
+        isbucket,
+      </if>
+      <if test="sDate != null">
+        s_date,
+      </if>
+      <if test="eDate != null">
+        e_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="columnNo != null">
+        #{columnNo,jdbcType=INTEGER},
+      </if>
+      <if test="dataInterfaceName != null">
+        #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null">
+        #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null">
+        #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataFormat != null">
+        #{dataFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="nullable != null">
+        #{nullable,jdbcType=INTEGER},
+      </if>
+      <if test="replacenull != null">
+        #{replacenull,jdbcType=INTEGER},
+      </if>
+      <if test="comma != null">
+        #{comma,jdbcType=VARCHAR},
+      </if>
+      <if test="columnComment != null">
+        #{columnComment,jdbcType=VARCHAR},
+      </if>
+      <if test="isbucket != null">
+        #{isbucket,jdbcType=VARCHAR},
+      </if>
+      <if test="sDate != null">
+        #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        #{eDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataInterfaceColumns">
+    update data_interface_columns
+    <set>
+      <if test="dataInterfaceName != null">
+        data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnName != null">
+        column_name = #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null">
+        data_type = #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataFormat != null">
+        data_format = #{dataFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="nullable != null">
+        nullable = #{nullable,jdbcType=INTEGER},
+      </if>
+      <if test="replacenull != null">
+        replacenull = #{replacenull,jdbcType=INTEGER},
+      </if>
+      <if test="comma != null">
+        comma = #{comma,jdbcType=VARCHAR},
+      </if>
+      <if test="columnComment != null">
+        column_comment = #{columnComment,jdbcType=VARCHAR},
+      </if>
+      <if test="isbucket != null">
+        isbucket = #{isbucket,jdbcType=VARCHAR},
+      </if>
+      <!-- <if test="sDate != null">
+        s_date = #{sDate,jdbcType=DATE},
+      </if> -->
+      <if test="eDate != null">
+        e_date = #{eDate,jdbcType=DATE},
+      </if>
+    </set>
+    where 1=1 and e_date >= #{sDate} 
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceNo != null">
+       and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+     </if>
+     <if test="columnNo != null">
+       and column_no = #{columnNo,jdbcType=INTEGER}
+     </if>
+     <if test="condition != null">
+       and data_interface_name in (#{condition})
+     </if>
+     <if test="dataInterfaceName != null">
+       and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+     </if>
+    <!-- and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR} -->
+      <!-- and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and column_no = #{columnNo,jdbcType=INTEGER} -->
+      <!-- <if test="columnName != null">
+      	and column_name = #{columnName,jdbcType=VARCHAR}
+      </if> -->
+  </update>
+  
+  <select id="queryAll" parameterType="com.ljz.model.DataInterfaceColumns" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_columns
+    where 1=1 
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceNo != null">
+       and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+     </if>
+     <if test="columnNo != null">
+       and column_no = #{columnNo,jdbcType=INTEGER}
+     </if>
+     and e_date >= #{eDate}
+     order by data_src_abbr,data_interface_no,column_no
+  </select>
+  
+  <select id="queryAllVersion" parameterType="com.ljz.model.DataInterfaceColumns" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_columns
+    where 1=1
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceNo != null">
+       and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+     </if>
+     <if test="columnNo != null">
+       and column_no = #{columnNo,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceName != null">
+       and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+     </if>
+     order by e_date,s_date,data_src_abbr,data_interface_no,column_no
+  </select>
+  
+  <select id="queryAllTmp" parameterType="com.ljz.model.DataInterfaceColumnsTmp" resultMap="BaseResultMap2">
+    select * from data_interface_columns_tmp  where batch_no=#{batchNo}
+    order by data_src_abbr,data_interface_no,column_no
+  </select>
+  
+  <select id="queryAllTmpBak" parameterType="com.ljz.model.DataInterfaceColumnsTmp" resultMap="BaseResultMap2">
+    select a.*,
+    (case when (select sum(b.column_no) from data_interface_columns b where b.data_src_abbr=a.data_src_abbr 
+    and b.data_interface_no=a.data_interface_no and b.column_name=a.column_name)>0 
+    then '2' else '1' end ) as importType
+    from data_interface_columns_tmp a where a.batch_no=#{batchNo}
+    order by data_src_abbr,data_interface_no,column_no
+  </select>
+  
+  <insert id="tmpToSave" parameterType="com.ljz.model.DataInterfaceColumnsTmp">
+  	INSERT into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
+      data_interface_name, column_name, data_type, 
+      data_format, nullable, replacenull, 
+      comma, column_comment, isbucket,s_date, e_date)
+    SELECT data_interface_columns_tmp.data_src_abbr, data_interface_columns_tmp.data_interface_no, data_interface_columns_tmp.column_no, 
+      data_interface_columns_tmp.data_interface_name, data_interface_columns_tmp.column_name, data_interface_columns_tmp.data_type, 
+      data_interface_columns_tmp.data_format, data_interface_columns_tmp.nullable, data_interface_columns_tmp.replacenull, 
+      data_interface_columns_tmp.comma, data_interface_columns_tmp.column_comment, data_interface_columns_tmp.isbucket,
+      data_interface_columns_tmp.s_date, data_interface_columns_tmp.e_date
+    FROM data_interface_columns_tmp
+    WHERE 1=1 
+    
+    <!-- and data_interface_columns_tmp.data_src_abbr=#{dataSrcAbbr}  and data_interface_columns_tmp.column_no=#{columnNo} 
+    and data_interface_columns_tmp.data_interface_no=#{dataInterfaceNo} and data_interface_columns_tmp.batch_no=#{batchNo} -->
+    <if test="dataSrcAbbr != null">
+       and data_interface_columns_tmp.data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceNo != null">
+       and data_interface_columns_tmp.data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+     </if>
+     <if test="columnNo != null">
+       and data_interface_columns_tmp.column_no = #{columnNo,jdbcType=VARCHAR}
+     </if>
+     <if test="batchNo != null">
+       and data_interface_columns_tmp.batch_no = #{batchNo,jdbcType=VARCHAR}
+     </if>
+  </insert>
+  
+  <insert id="tmpToSaveBatch" useGeneratedKeys="false" parameterType="com.ljz.model.DataInterfaceColumnsTmp">
+  	INSERT into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
+      data_interface_name, column_name, data_type, 
+      data_format, nullable, replacenull, 
+      comma, column_comment, isbucket,s_date, e_date)
+       <foreach collection="list" item="model">
+		    SELECT data_interface_columns_tmp.data_src_abbr, data_interface_columns_tmp.data_interface_no, data_interface_columns_tmp.column_no, 
+		      data_interface_columns_tmp.data_interface_name, data_interface_columns_tmp.column_name, data_interface_columns_tmp.data_type, 
+		      data_interface_columns_tmp.data_format, data_interface_columns_tmp.nullable, data_interface_columns_tmp.replacenull, 
+		      data_interface_columns_tmp.comma, data_interface_columns_tmp.column_comment, data_interface_columns_tmp.isbucket,
+		      data_interface_columns_tmp.s_date, data_interface_columns_tmp.e_date
+		    FROM data_interface_columns_tmp
+		    WHERE 1=1 
+		       and data_interface_columns_tmp.data_src_abbr = #{model.dataSrcAbbr,jdbcType=VARCHAR}
+		       and data_interface_columns_tmp.data_interface_no = #{model.dataInterfaceNo,jdbcType=VARCHAR}
+		       and data_interface_columns_tmp.column_no = #{model.columnNo,jdbcType=INTEGER}
+		       and data_interface_columns_tmp.batch_no = #{model.batchNo,jdbcType=VARCHAR};
+     	</foreach>
+  </insert>
+  
+  <insert id="batchInsert" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterfaceColumnsTmp">
+	  insert into data_interface_columns_tmp (data_src_abbr, data_interface_no, column_no, 
+      data_interface_name, column_name, data_type, 
+      data_format, nullable, replacenull, 
+      comma, column_comment, isbucket, 
+      s_date, e_date,batch_no)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.columnNo,jdbcType=INTEGER}, 
+	      #{model.dataInterfaceName,jdbcType=VARCHAR}, #{model.columnName,jdbcType=VARCHAR}, #{model.dataType,jdbcType=VARCHAR}, 
+	      #{model.dataFormat,jdbcType=VARCHAR}, #{model.nullable,jdbcType=INTEGER}, #{model.replacenull,jdbcType=INTEGER}, 
+	      #{model.comma,jdbcType=VARCHAR}, #{model.columnComment,jdbcType=VARCHAR}, #{model.isbucket,jdbcType=VARCHAR}, 
+	      #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE},#{model.batchNo,jdbcType=VARCHAR})
+	    </foreach>
+   </insert>
+   <insert id="batchInsertPro" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterfaceColumns">
+	  insert into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
+      data_interface_name, column_name, data_type, 
+      data_format, nullable, replacenull, 
+      comma, column_comment, isbucket, 
+      s_date, e_date)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.columnNo,jdbcType=INTEGER}, 
+	      #{model.dataInterfaceName,jdbcType=VARCHAR}, #{model.columnName,jdbcType=VARCHAR}, #{model.dataType,jdbcType=VARCHAR}, 
+	      #{model.dataFormat,jdbcType=VARCHAR}, #{model.nullable,jdbcType=INTEGER}, #{model.replacenull,jdbcType=INTEGER}, 
+	      #{model.comma,jdbcType=VARCHAR}, #{model.columnComment,jdbcType=VARCHAR}, #{model.isbucket,jdbcType=VARCHAR}, 
+	      #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE})
+	    </foreach>
+   </insert>
+   <update id="updateBatch" parameterType="com.ljz.model.DataInterfaceColumns">
+	    <foreach collection="list" item="model" index="index" >
+	      update data_interface_columns
+		       set e_date = #{model.eDate}
+		    where 1=1 and e_date >= #{model.sDate} 
+		       and data_src_abbr = #{model.dataSrcAbbr}
+		       and data_interface_no = #{model.dataInterfaceNo}
+		       and column_no = #{model.columnNo};
+	    </foreach>
+   </update>
+   <delete id="deleteBatch"  parameterType="com.ljz.model.DataInterfaceTmp">
+   		<foreach collection="list" item="model" >
+		    delete from data_interface_columns_tmp
+		    where 1=1  and data_src_abbr = #{model.dataSrcAbbr,jdbcType=VARCHAR}
+		       and data_interface_no = #{model.dataInterfaceNo,jdbcType=VARCHAR}
+		       and column_no = #{model.columnNo,jdbcType=INTEGER}
+		       and batch_no = #{model.batchNo,jdbcType=VARCHAR};
+	   </foreach>
+  </delete>
+</mapper>

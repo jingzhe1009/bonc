@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <title>z-UI表单</title>
+    <link rel="stylesheet" type="text/css" href="z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-alert/css/z-UI.alert.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-tab/css/z-UI.tab.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-validate/css/validate.css"/>
+    <script type="text/javascript" src="z-UI.js"></script>
+    <script type="text/javascript" src="z-UI-alert/js/z-UI.alert.js"></script>
+    <script type="text/javascript" src="z-UI-tab/js/z-UI.tab.js"></script>
+    <script type="text/javascript" src="z-UI-validate/js/verify.js"></script>
+    <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;
+        }
+    </style>
+</head>
+<body>
+
+<div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+    <div class="zUI-card sm" >
+        <div class="zUI-card-title">
+            <div class="text">自适应表单容器</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <form class="zUI-form" id="form1">
+                <div class="zUI-items">
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label required">
+                            姓名
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="username" type="text" value="张三">
+                        </div>
+                    </div>
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label">
+                            密码
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="password" type="password" value="123456">
+                        </div>
+                    </div>
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label">
+                            手机号手机号手机号手机号手机号
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="phone" type="text">
+                        </div>
+                    </div>
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label">
+                            性别
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="sex" type="radio" value="1" title="男" disabled="disabled">
+                            <input class="zUI-input" name="sex" type="radio" value="2" title="女" checked>
+                        </div>
+                    </div>
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label">
+                            爱好
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="love" type="checkbox" value="1" title="音乐" checked>
+                            <input class="zUI-input" name="love" type="checkbox" value="2" title="游泳">
+                            <input class="zUI-input" name="love" type="checkbox" value="3" title="旅游" checked disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="zUI-form-line zUI-form-btns">
+                        <button type="button" class="zUI-btn info" onclick="zUI.dialog.alert('<pre>'+JSON.stringify(zUI.form.getData('#form1'),null,2)+'</pre>')">获得数据</button>
+                        <button type="button" class="zUI-btn error" onclick="zUI.form.reset('#form1')">重置</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="zUI-card sm zUI-hide" zUI-folder="show" id="alertForm" style="width: 400px;">
+        <div class="zUI-card-title">
+            <div class="text">个人信息</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <form class="zUI-form" zUI-form id="form2">
+                <div class="zUI-items">
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label required">
+                            姓名
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="username" type="text" value="Mr.zhou" zUI-verify zUI-tip="姓名不能为空">
+                        </div>
+                    </div>
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label required">
+                            密码
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="password" type="password" value="12" zUI-verify="letter_number,length[8-16]" zUI-tip="密码为8-16位的字母、数字或下划线">
+                        </div>
+                    </div>
+                    <div class="zUI-form-line">
+                        <div class="zUI-form-label">
+                            QQ号
+                        </div>
+                        <div class="zUI-form-item">
+                            <input class="zUI-input" name="phone" type="text" value="2250884056" zUI-verify="integer,length[10]" zUI-tip="QQ号格式为10位的数字">
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <button type="button" class="zUI-btn info" onclick="alertDom()">弹出隐藏的表单</button>
+
+
+
+</div>
+</body>
+
+<script>
+    function alertDom(){
+        zUI.dialog.alertDom({
+            target:'#alertForm',
+            title:'个人信息录入',
+            btns:{
+                '提交': function () {
+                    zUI.dialog.alert('<pre>'+JSON.stringify(zUI.form.getData('#form2'),null,2)+'</pre>');
+                    return false;
+                },
+                '提交并关闭': function () {
+                    zUI.dialog.alert('<pre>'+JSON.stringify(zUI.form.getData('#form2'),null,2)+'</pre>');
+                },
+                '表单验证': function () {
+                    if(zUI.validate.verify('#form2')){
+                        zUI.dialog.alert('验证通过');
+                    }else{
+                        return false;
+                    }
+                },
+                '关闭1': function () {
+
+                },
+                '关闭2': function () {
+
+                }
+            }
+        });
+        zUI.tab.loadPanel({
+            elem:'#alertForm',
+            change: function(type){
+                console.log(type);
+            },
+            close:function(){
+                console.log('close');
+                //return false时取消关闭
+            }
+        });
+        zUI.validate.init("#form2");
+    }
+    zUI.onLoad(function () {
+        zUI.validate.extend({
+            msgSec:'<br>',
+            errorCallback:function(msg){
+                zUI.dialog.alert(msg);
+            }
+        });
+    })
+
+</script>
+
+
+</html>

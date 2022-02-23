@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>数据模型治理</title>
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+   	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+   	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<!-- <link href="/plugin/DataTables/datatables.min.css" rel="stylesheet"> -->
+	<!-- <link href="/plugin/zui1.8.1/css/zui.min.css" rel="stylesheet"/> -->
+	
+	<link href="/plugin/zui1.8.1/css/zui.min.css?v=1.10.0" rel="stylesheet">
+	<link href="/common/main.css" rel="stylesheet" /><!-- 左侧菜单 -->
+	<link href="/common/common.css" rel="stylesheet" /><!-- 表格 -->
+	<link href="/common/standard.css" rel="stylesheet" /><!-- 按钮 -->
+	<link href="/common/flow.css" rel="stylesheet" />
+	
+	<!-- 函数配置 -->
+	<link rel="stylesheet" type="text/css" href="/z-UI2/z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-alert/css/z-UI.alert.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-tab/css/z-UI.tab.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-select/css/z-UI.select.css"/>
+	<!-- <script src="/js/jquery.min.js"></script> -->
+	<script src="/plugin/jquery.js"></script>
+	<script src="/plugin/flow.js"></script>
+	<script src="/plugin/validator/dist/jquery.validator.js"></script>
+	<script src="/plugin/validator/dist/local/zh-CN.js"></script>
+	<!-- <script src="/js/bootstrap.min.js"></script> -->
+	<script src="/plugin/DataTables/datatables.js"></script>
+	
+    
+	<script src="/plugin/zui1.8.1/js/zui.js?v=1.10.0"></script>
+	<script src="/plugin/echarts.js"></script>
+	<script src="/plugin/zui1.8.1/lib/prettify/prettify.js?v=1.10.0"></script>
+	<!-- 函数配置 -->
+	<script type="text/javascript" src="/z-UI2/z-UI.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-alert/js/z-UI.alert.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-tab/js/z-UI.tab.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-select/js/z-UI.select.js"></script>
+	
+    <!-- <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;
+        }
+    </style> -->
+	
+	<!-- <script src="/plugin/jquery.cookie.js"></script> -->
+	<!-- <script src="/plugin/ajax-fix.js"></script> -->
+	<!-- <script src="/plugin/moment/moment.min.js"></script> -->
+	<!-- <script src="/js/jquery-pjax.js"></script> -->
+	<link href="css/flow.css" rel="stylesheet" type="text/css"  />
+	<style>
+* {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+}
+html, body {
+	height: 100%;
+	width: 100%;
+}
+#alert {
+	z-index: 2;
+	border: 1px solid rgba(0,0,0,.2);
+	width: 598px;
+	height: auto;
+	border-radius: 6px;
+	box-shadow: 0 5px 15px rgba(0,0,0,.5);
+	background: #fff;
+	z-index: 1000;
+	position: absolute;
+	left: 50%;
+	top: 15%;
+	margin-left: -299px;
+	display: none;
+}
+.model-head {
+	padding: 15px;
+	color: #73879C;
+	border-bottom: 1px solid #e5e5e5;
+}
+.close {
+	padding: 0;
+	cursor: pointer;
+	background: 0 0;
+	border: 0;
+	float: right;
+	font-size: 14px !important;
+	font-weight: 700;
+	text-shadow: 0 1px 0 #fff;
+	opacity: 0.4;
+	margin-top: 5px;
+}
+#close:hover {
+	cursor: pointer;
+	color: #000;
+}
+#mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: #000;
+	opacity: 0.3;
+	display: none;
+	z-index: 1;
+}
+.model-content {
+	position: relative;
+	padding: 15px;
+}
+.model-foot {
+	padding: 15px;
+	text-align: right;
+}
+#alert {
+
+    border: 0px solid rgba(0,0,0,.2);
+    box-shadow: 0px 0px 19px 1px rgba(0, 0, 0, 0.15);
+
+}
+#mask {
+    opacity: 0.8;
+}
+	#iList{text-align: center}
+</style>
+</head>
+<body>
+	<div class="head-fixed header">
+		<!-- <img class="logoImg" src="/imgs/mainNew/icon_logo_new.png" alt="数据模型治理"/> -->
+		<img class="logoImg" />
+	</div>
+	<!-- 左侧菜单 -->
+	<div id="leftMenu">
+		<!-- <div class="ctrlBtn"><i class="icon icon-bars"></i></div> -->
+		<!-- <ul id="menusWrap" class="menusWrap"></ul> -->
+		<nav class="menu" data-ride="menu" style="width: 200px">
+		  <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
+		    <li class="open">
+		      <a href="#">数据源</a>
+		      <ul id="menusWrap"></ul>
+		    </li>
+		    <li class="open">
+		      <a href="#">词根管理</a>
+		      <ul id="dicWrap">
+		        <li idx="table">
+		          <a href="#" onclick="dicColModel.init()">词根表管理</a>
+		        </li>
+		        <li idx="col"><a href="#">词根字段管理</a></li>
+		      </ul>
+		    </li>
+		    <li class="open">
+		      <a href="#">基础信息</a>
+		      <ul id="baseWrap">
+		      	<li idx="ds">
+		          <a href="#">数据源登记</a>
+		        </li>
+		        <li idx="func">
+		          <a href="#">公共函数登记</a>
+		        </li>
+		        <li idx="log">
+		          <a href="#">日志查询</a>
+		        </li>
+		        <li idx="proc">
+		          <a href="#">接口入库算法配置</a>
+		        </li>
+		        <li idx="info">
+		          <a href="#">数据源信息查询</a>
+		        </li>
+		        <li idx="excel">
+		          <a href="#">模版导出</a>
+		        </li>
+		        <!-- <li>
+		          <a href="#"><i class="icon icon-circle-blank"></i>字段信息</a>
+		        </li> -->
+		      </ul>
+		    </li>
+		  </ul>
+		</nav>
+	</div>
+	<!-- 主体内容 -->
+	<div id="page">
+		<div id="pageHeader">
+	        <p>当前位置：<span>接口管理</span></p>
+	    </div>
+	    <div id="pageBody">
+	        <div id="pageContent">
+		        	<div class="modelBaseContainer modelBaseWrapper">
+		        		<!--Tab-->
+		                <div class="tableIcon" id="tabContainer">
+		                    <ul class="nav nav-tabs" id="authorityTab">
+		                        <!-- <li tab-id="0"><a data-toggle="tab">数据源信息</a></li> -->
+		                        <li tab-id="8"><a data-toggle="tab">配置信息</a></li>
+		                        <li tab-id="9"><a data-toggle="tab">预处理函数配置</a></li>
+		                        <li tab-id="10"><a data-toggle="tab">一键导入</a></li>
+		                        <!-- <li tab-id="0"><a data-toggle="tab">目录扫描函数配置</a></li> -->
+		                        <!-- <li tab-id="1"><a data-toggle="tab">数据采集</a></li> -->
+		                        <!-- <li tab-id="1"><a data-toggle="tab">文件预处理函数配置</a></li> -->
+		                        <li tab-id="2"><a data-toggle="tab">数据接口配置</a></li>
+		                        <li tab-id="3"><a data-toggle="tab">数据接口字段配置</a></li>
+		                       	<!--  <li tab-id="3"><a data-toggle="tab">ini配置文件预览/生成</a></li> -->
+		                        <li tab-id="4"><a data-toggle="tab">数据建模</a></li>
+		                        <li tab-id="5"><a data-toggle="tab">数据算法加载</a></li>
+		                    </ul>
+		                </div>
+		                
+		                <!-- 数据源信息标签内容 -->
+		                <div class="tab-content" id="dataSrcContent">
+		                	<div class="tableIcon">数据源信息</div>
+		                	<div>
+		                        <table id="dataSrcShowTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+	                	<div class="tab-content" id="baseContent">
+							<div style="height:60px">
+			               	</div>
+			               	<div align="center" style="height:60px">
+			               		<b class="base_title" style="font-size: 16px;color:#02BABC"></b>
+			               	</div>
+			               	<div style="font-size: 14px;height:150px" align="center">
+			               		<table style="border-collapse:separate; border-spacing:0px 10px;">
+			               			<tr>
+			               				<td style="text-align:right">
+		               						<b>数据结构:</b>
+									    </td>
+									    <td>
+									    	<label class="radio-inline">
+									    		&nbsp;&nbsp;&nbsp;&nbsp;
+											  <input type="radio" name="radioOptionsExample"> 结构化数据
+											</label>
+											<label class="radio-inline">
+											  <input type="radio" name="radioOptionsExample"> 非结构化数据
+											</label>
+									    </td>
+			               			</tr>
+			               			<tr>
+			               				<td style="text-align:right">
+		               						<b>数据库类型:</b>
+			               				</td>
+			               				<td style="text-align:left">
+			               					<label class="radio-inline">
+			               						<select class="form-control" style="width:200px">
+												  <option value="tdh">星环HIVE</option>
+												  <option value="td">TERADATA</option>
+												  <option value="mysql">MYSQL</option>
+												</select>
+											</label>
+			               				</td>
+			               			</tr>
+			               			<tr>
+			               				<td style="text-align:right">
+		               						<b>文件命名规则:</b>
+			               				</td>
+			               				<td style="text-align:left">
+			               					<label class="radio-inline">
+			               						[数据源机构编码]_[接口标识]_[版本号]_[数据日期]_[排批次号]_[增量/全量标识].[文件扩展名]
+			               					</label>
+			               				</td>
+			               			</tr>
+			               			<tr>
+			               				<td style="text-align:right">
+		               						<b>示例:</b>
+			               				</td>
+			               				<td style="text-align:left">
+			               					<label class="radio-inline">
+			               						SSE_J0101_V01_20141105_0000_Z.CSV
+			               					</label>
+			               				</td>
+			               			</tr>
+			               		</table>
+			              	</div>
+			             </div>
+		                <div class="tab-content" id="configFuncContent3">
+		                	<div style="height:60px">
+		                	</div>
+		                	<div align="center" style="height:60px">
+		                		<b class="base_title" style="font-size: 16px;"></b>
+		                	</div>
+		                	<div align="center" style="height:150px">
+		                		<i class="icon icon-2x icon-plus-sign" style="color:#02BABC"><b style="font-size: 18px;color:#02BABC" onclick="showTrain()"> 配置函数</b></i>
+		                	</div>
+		                	<div align="center" style="height:60px">
+		                		<table style="border-collapse:separate; border-spacing:0px 10px;">
+		                			<tr><td><b class="base_title" style="font-size: 16px;"></b></td></tr>
+		                			<tr><td><b style="font-size: 16px;">数据结构: 结构化</b></td></tr>
+		                			<tr><td><b style="font-size: 16px;">预处理函数配置信息</b></td><td><i class="icon icon-2x icon-edit" style="color:#02BABC"></i></td></tr>
+		                			<tr><td><b style="font-size: 16px;">[CSF]</b></td></tr>
+		                		</table>
+		                	</div>
+		                </div>
+		                <!-- 目录扫描函数/文件预处理配置标签内容 -->
+		                <div class="tab-content" id="configFuncContent" style="display:none">
+		                	<!-- <form class="form-horizontal" >
+		                        <div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+								    <div class="zUI-list-tran" id="tran1">
+								    	<div class="list-box" style="width:30%">
+								        	<div class="list-header" >参数登记信息</div>
+								        	<input  type="hidden" id="reg_name">
+								        	<input  type="text" class="form-control" id="param" onblur="funcModel.editParam(this,1)">
+								        	<textarea class="form-control" style="height: 90px;" id="reg_param" onblur="funcModel.editParam(this,1)"></textarea>
+								        	<div class="list-header" >参数描述信息</div>
+								        	<textarea class="form-control" style="height: 100px;" id="reg_desc"></textarea>
+								        </div>
+								        <div class="list-box">
+								            <div class="list-header">登记函数列表</div>
+								            <ul class="left" id="funcList">
+								            </ul>
+								        </div>
+								        <div class="list-box">
+								            <div class="list-header" >已配置函数</div>
+								            <ul class="right" id="configList">
+								            </ul>
+								        </div>
+								        <div class="list-box">
+								        	<div class="list-header" >函数功能描述</div>
+								        	<textarea class="form-control" style="height: 20%" id="regDesc"></textarea>
+								        	<div class="list-header" >配置参数</div>
+								        	<input  type="hidden" id="name">
+								        	<textarea class="form-control" style="height: 68%" id="param" onblur="funcModel.editParam(this,1)"></textarea>
+								        </div>
+								        <div class="list-box" style="width:60%">
+								        	<div class="list-header" >函数功能描述</div>
+								        	<input type="hidden" id="regDesc">
+								        	<textarea class="form-control" style="height: 50px;" id="regDesc" ></textarea>
+								        	<div class="list-header" >配置参数</div>
+								        	<input  type="hidden" id="name">
+								        	<input  type="text" class="form-control" id="param" onblur="funcModel.editParam(this,1)">
+								        	<textarea class="form-control" style="height: 60px;" id="param" onblur="funcModel.editParam(this,1)"></textarea>
+								        	<input  type="text" id="param" class="form-control"  onblur="funcModel.editParam(this,1)">
+								        	<div class="list-header" >配置参数描述</div>
+								        	<textarea class="form-control" style="height: 94%" id="desc"></textarea>
+								        </div>
+								    </div>
+								    <br>
+								    <button class="zUI-btn info" onclick="zUI.dialog.alert('<pre>'+JSON.stringify(zUI.select.getListTranData('#tran1'),null,2)+'</pre>')">获得结果</button>
+									<a class="btn btn-primary" onclick="funcModel.clear(1)">清空配置</a>
+									<a class="btn btn-primary" onclick="funcModel.getResult(1)">保存</a>
+									<a class="btn btn-primary" onclick="funcModel.getContent(1)">查看配置</a>
+									<a class="btn btn-primary btn-large"  href="/func/downMonitor">下载配置</a>
+								</div>
+							</form> -->
+		                	<!-- <div class="indexBox" >
+				                <div class="indexChildBoxWrapper">
+				                    <div class="indexChildBox">
+				                        
+				                    </div>
+				                    <div class="indexChildBox" style="display:none">
+				                    	<div class="jumbotron" >
+											<p id="pText" class="text-success"></p>
+										</div>
+				                    </div>
+				                </div>
+			            	</div> -->
+		                </div>
+		                
+		                <div class="tab-content" id="configFuncContent2" style="display:none">
+		                	<form class="form-horizontal" >
+		                        <div style="overflow-y: auto;box-sizing: border-box;padding: 20px;" class="zUI-full">
+								    <div class="zUI-list-tran2" id="tran2">
+								        <div class="list-box">
+								            <div class="list-header">函数列表</div>
+								            <ul class="left" id="funcList2">
+								            </ul>
+								        </div>
+								        <div class="list-box">
+								            <div class="list-header" >已配置函数</div>
+								            <ul class="right" id="configList2">
+								            </ul>
+								        </div>
+								        <div class="list-box">
+								        	<div class="list-header" >函数功能描述</div>
+								        	<textarea class="form-control" style="height: 20%" id="regDesc2"></textarea>
+								        	<div class="list-header" >配置参数</div>
+								        	<input  type="hidden" id="name2">
+								        	<textarea class="form-control" id="param2" style="height: 68%" onblur="funcModel.editParam(this,2)"></textarea>
+								        </div>
+								        <div class="list-box" style="width:60%">
+								        	<div class="list-header" >配置参数描述</div>
+								        	<textarea class="form-control" id="desc2" style="height:94%" ></textarea>
+								        </div>
+								    </div>
+								    <br>
+								    <!-- <button class="zUI-btn info" onclick="zUI.dialog.alert('<pre>'+JSON.stringify(zUI.select.getListTranData('#tran1'),null,2)+'</pre>')">获得结果</button> -->
+									<!-- <a class="btn btn-primary" onclick="funcModel.clear(2)">清空配置</a> -->
+									<a class="btn btn-primary" onclick="funcModel.getResult(2)">保存</a>
+									<a class="btn btn-primary" onclick="funcModel.getContent(2)">查看配置</a>
+									<!-- <a class="btn btn-primary btn-large"  href="/func/downTranFile">下载配置</a> -->
+								</div>
+							</form>
+		                	<!-- <div class="indexBox" >
+				                <div class="indexChildBoxWrapper">
+				                    <div class="indexChildBox">
+				                        
+				                    </div>
+				                    <div class="indexChildBox" style="display:none">
+				                    	<div class="jumbotron" >
+											<p id="pText2" class="text-success"></p>
+										</div>
+				                    </div>
+				                </div>
+			            	</div> -->
+		                </div>
+		                
+		                <!-- 接口配置标签内容 -->
+		                <div class="tab-content" id="interfaceContent">
+			        		<div class="tableIcon">接口列表</i></div>
+			        		<form class="navbar-form navbar-left" role="search" id="form" >
+				        		<div class="selfAdaptionLeft">
+				        			<div>
+										<div class="input-group">
+											<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="inter_dataSrcAbbr"  placeholder="数据源">
+											<input data-col="dataInterfaceNo" type="text" class="form-control" id="inter_dataInterfaceNo"  placeholder="接口编号">
+			                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+										</div>
+									</div>
+				        		</div>
+				        		<div class="selfAdaptionRight">
+									<button type="button" class="btn btn-primary" onclick="interfaceModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" ><!-- onclick='interfaceModel.init(localStorage.getItem("idx"))' -->重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.add(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="interfaceModel.importTable()">导入接口</a>
+									<!-- <button type="button" class="btn btn-primary" onclick="createSqlModel.createFile()">生成建表语句文件</button>
+					            	<button type="button" class="btn btn-primary" onclick="createSqlModel.insertDb()">建表入库</button> -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.create()">入库</button>  -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.createPage()">ini文件修改</button>  -->
+									<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.createPage()">入库</button>  -->
+			                    </div>
+		                    </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="interfaceTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+	                    
+		                <!-- 字段配置标签内容 -->
+	                    <div class="tab-content" id="colContent">
+			        		<div class="tableIcon">字段列表</i></div>
+			        		<form class="navbar-form navbar-left" role="search" id="form" >
+				        		<div class="selfAdaptionLeft">
+				        			<div>
+										<div class="input-group">
+											<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="column_dataSrcAbbr"  placeholder="数据源">
+											<input data-col="dataInterfaceNo" type="text" class="form-control" id="column_dataInterfaceNo" placeholder="接口编号">
+											<input data-col="columnNo" type="hidden" class="form-control"   placeholder="字段编号">
+			                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+										</div>
+									</div>
+				        		</div>
+				        		<div class="selfAdaptionRight">
+				        			<button type="button" class="btn btn-primary" onclick="columnModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="columnModel.add(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="columnModel.importCol()">导入字段</a>
+			                    </div>
+		                    </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="columnTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+	                    
+	                    <!-- 数据模型标签内容 -->
+	                    <div class="tab-content" id="dataModelContent">
+			        		<div class="tableIcon">数据模型列表</i></div>
+			        		<form class="navbar-form navbar-left" role="search" id="form" >
+				        		<div class="selfAdaptionLeft">
+				        			<div>
+										<div class="input-group">
+											<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="model_dataSrcAbbr"  placeholder="数据源">
+											<input data-col="dataInterfaceNo" type="text" class="form-control" id="model_dataInterfaceNo"  placeholder="接口编号">
+			                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+										</div>
+									</div>
+				        		</div>
+				        		<div class="selfAdaptionRight">
+				        			<button type="button" class="btn btn-primary" onclick="dataModelModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary" onclick="dataModelModel.createFile()">生成建表语句文件</button>
+					            	<button type="button" class="btn btn-primary" onclick="dataModelModel.insertDb()">物化(创建)</button>
+			                    </div>
+		                    </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dataModelTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+	                    
+	                    <!-- 数据算法加载标签内容 -->
+	                    <div class="tab-content" id="procContent">
+		                	<div class="tableIcon">数据算法加载</i></div>
+		                	<form class="navbar-form navbar-left" role="search" >
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="proc_dataSrcAbbr"  placeholder="数据源">
+		                				<input data-col="dataInterfaceNo" type="text" class="form-control" id="proc_dataInterfaceNo" placeholder="接口编号">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="procModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="procModel.add(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="procModel.importProc()">导入数据算法</a>
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="procTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                
+	                    <!-- 词根表管理标签内容 -->
+		                <div class="tab-content" id="dicTableContent">
+		                	<div class="tableIcon">词根表管理</i></div>
+		                	<form class="navbar-form navbar-left" role="search"  >
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="cname" type="text" class="form-control" placeholder="中文词根">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="dicTableModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary" onclick="dicTableModel.show(1,this)">新增</button>
+									<a class="btn btn-primary" target="_blank" onclick="dicTableModel.importDictionary()">导入词根</a>
+			                 </div>
+			                 </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dicTableTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                
+		                <!-- 词根字段管理标签内容 -->
+		                <div class="tab-content" id="dicColContent">
+		                	<div class="tableIcon">词根字段管理</i></div>
+		                	<form class="navbar-form navbar-left" role="search" >
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="cname" type="text" class="form-control" placeholder="中文词根">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="dicColModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary btn-large" onclick="dicColModel.show(1,this)">新增</button>
+									<!-- <a class="btn btn-primary" target="_blank" onclick="dicColModel.importDictionary()">导入词根</a> -->
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dicColTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                
+		                <!-- 数据源登记标签内容 -->
+		                <div class="tab-content" id="configDataSrc">
+		                	<div class="tableIcon">数据源登记</i></div>
+		                	<form class="navbar-form navbar-left" role="search" >
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="dataSrcAbbr" type="text" class="form-control" placeholder="数据源" >
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="dataSrcModel.search()">查询</button>
+		                			<button type="reset" class="btn btn-primary" onclick="dataSrcModel.init()">重置</button>
+									<button type="button" class="btn btn-primary" onclick="dataSrcModel.add(1,this)">登记</button>
+				                 </div>
+			                 </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dataSrcTable" style="white-space:nowrap;"></table>
+		                    </div>
+	                    </div>
+		                
+		                <!-- 函数登记标签内容 -->
+		                <div class="tab-content" id="funcContent">
+		                	<div class="tableIcon">函数登记</i></div>
+		                	<!--Tab-->
+			                <div class="tableIcon">
+			                    <ul class="nav nav-tabs" id="funcTab">
+			                        <li tab-id="1"><a data-toggle="tab">目录扫描</a></li>
+			                        <li tab-id="2"><a data-toggle="tab">文件预处理</a></li>
+			                        <li tab-id="3"><a data-toggle="tab">数据加载算法登记</a></li>
+			                    </ul>
+			                </div>
+		                	<form class="navbar-form navbar-left" role="search" >
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="funcName" type="text" class="form-control" placeholder="函数名">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="funcModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+									<button type="button" class="btn btn-primary btn-large" id="addFunc" onclick="funcModel.add(1,this)">登记</button>
+									<button type="button" class="btn btn-primary btn-large" id="addProc" onclick="funcModel.addProc(1,this)">登记</button>
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="funcTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                
+		                <!-- 日志查询标签内容 -->
+		                <div class="tab-content" id="logContent">
+		                	<div class="tableIcon">日志查询</i></div>
+		                	<form class="navbar-form navbar-left" role="search" >
+		                		<div class="selfAdaptionLeft">
+		                			<div class="input-group">
+		                				<input data-col="actionId" type="text" class="form-control" placeholder="日志id">
+		                			</div>
+		                		</div>
+		                		<div class="selfAdaptionRight">
+		                			<button type="button" class="btn btn-primary" onclick="createSqlModel.search()">查询</button>
+									<button type="reset" class="btn btn-primary" >重置</button>
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="logTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                <!-- 数据加载算法登记 -->
+		                <div class="tab-content" id="regProcContent">
+		                	<div class="tableIcon">接口入库算法配置</i></div>
+		                	<!-- onkeydown="if(event.keyCode=13)return false;" -->
+		                	<form class="navbar-form navbar-left" role="search" >
+		                		<div class="selfAdaptionRight">
+									<button type="button" class="btn btn-primary btn-large" id="addProc" onclick="funcModel.addProc(1,this)">登记</button>
+				                 </div>
+			                </form>
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="regProcTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                <div class="tab-content" id="dataSrcInfoContent">
+		                	<div class="tableIcon">数据源信息查询</i></div>
+		                	
+		                    <div style="clear: both"></div>
+		                    <div>
+		                        <table id="dataSrcInfoTable" style="white-space:nowrap;"></table>
+		                    </div>
+		                </div>
+		                <!-- 导出模版 -->
+		                <div class="tab-content" id="excelContent" >
+		                	<div class="indexBox" >
+				                <div class="indexChildBoxWrapper">
+				                    <div class="indexChildBox">
+				                    	<img alt="" src="/imgs/index/icon_tjzb.png">
+				                    	<a class="btn btn-minor indexBoxBtn"  href="/dic/exportDictionary">词根模版导出</a>
+				                    </div>
+				                    <div class="indexChildBox">
+				                    	<img alt="" src="/imgs/index/icon_tjzb.png">
+				                    	<a class="btn btn-minor indexBoxBtn"  href="/interface/exportTable">接口模版导出</a>
+				                    </div>
+				                    <div class="indexChildBox">
+				                    	<img alt="" src="/imgs/index/icon_tjzb.png">
+				                    	<a class="btn btn-minor indexBoxBtn"  href="/col/exportCol">字段模版导出</a>
+				                    </div>
+				                    <div class="indexChildBox">
+				                    	<img alt="" src="/imgs/index/icon_tjzb.png">
+				                    	<a class="btn btn-minor indexBoxBtn"  href="/model/exportProc">数据加载算法模版导出</a>
+				                    </div>
+				                </div>
+			            	</div>
+		                </div>
+	        	</div>
+	        </div>
+	    </div>
+    </div>
+    
+    
+    <!-- 只写选择器，这里指fragment名称，则加载本页面对应的fragment -->
+    <!-- <div th:include="::#dataSourceAlert"></div> -->
+    <!-- <th:#include file="/add.html" > -->
+    <!--数据源弹窗-->
+    <div th:include="alertHtml/dataSourceAlert"></div>
+    <!-- 接口 -->
+    <div th:include="alertHtml/interfaceAlert"></div>
+    <!-- 字段 -->
+	<div th:include="alertHtml/columnAlert"></div>
+	<!--模型各版本查看列表 弹框-->
+	<div th:include="alertHtml/versionAlert"></div>
+	<div th:include="alertHtml/trainAlert"></div>
+	<div th:include="alertHtml/colVersionAlert"></div>
+	<div th:include="alertHtml/procVersionAlert"></div>
+	<!--字段查看列表 弹框-->
+	<div th:include="alertHtml/detailAlert"></div>
+	<!--物化 弹框-->
+	<div th:include="alertHtml/modelAlert"></div>
+	<div th:include="alertHtml/createSqlAlert"></div>
+	<!-- 词根-表 -->
+	<div th:include="alertHtml/dicTableAlert"></div>
+	<!-- 词根-字段 -->
+	<div th:include="alertHtml/dicColumnAlert"></div>
+	<!-- 加载算法新增窗口 -->
+	<div th:include="alertHtml/procAlert"></div>
+	<!-- 函数登记-->
+	<div th:include="alertHtml/funcAlert"></div>
+	<!-- 公共-->
+	<div th:include="common/common"></div>
+</body>
+<!-- <script src="/js/monitor.js"></script> -->
+<script src="/js/manageDictionary.js"></script>
+<!-- <script src="/js/version.js"></script> -->
+<script src="/js/interface_version.js"></script>
+<script src="/js/column_version.js"></script>
+<script src="/js/proc_version.js"></script>
+<script src="/js/column.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/dataSrc.js"></script>
+<script src="/js/createSql.js"></script>
+<script src="/js/interface.js"></script>
+<script src="/js/index.js"></script>
+<script src="/js/proc.js"></script>
+<script src="/js/func.js"></script>
+<script src="/js/log.js"></script>
+<script src="/js/model.js"></script>
+<script src="/js/detail.js"></script>
+<!-- <script src="/js/monitorConfig.js"></script> -->
+</html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DbInfoMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DbInfo">
+    <id column="db_type" jdbcType="VARCHAR" property="dbType" />
+    <result column="driver" jdbcType="VARCHAR" property="driver" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="db_name" jdbcType="VARCHAR" property="dbName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    db_type, driver, url, username, password, db_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from db_info
+    where db_type = #{dbType,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from db_info
+    where db_type = #{dbType,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DbInfo">
+    insert into db_info (db_type, driver, url, 
+      username, password, db_name
+      )
+    values (#{dbType,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{dbName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DbInfo">
+    insert into db_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dbType != null">
+        db_type,
+      </if>
+      <if test="driver != null">
+        driver,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="dbName != null">
+        db_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dbType != null">
+        #{dbType,jdbcType=VARCHAR},
+      </if>
+      <if test="driver != null">
+        #{driver,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="dbName != null">
+        #{dbName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DbInfo">
+    update db_info
+    <set>
+      <if test="driver != null">
+        driver = #{driver,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="dbName != null">
+        db_name = #{dbName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where db_type = #{dbType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DbInfo">
+    update db_info
+    set driver = #{driver,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      db_name = #{dbName,jdbcType=VARCHAR}
+    where db_type = #{dbType,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

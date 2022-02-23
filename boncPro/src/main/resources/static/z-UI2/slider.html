@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <title>z-UI-form</title>
+    <link rel="stylesheet" type="text/css" href="z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-alert/css/z-UI.alert.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-select/css/z-UI.select.css"/>
+    <script type="text/javascript" src="z-UI.js"></script>
+    <script type="text/javascript" src="z-UI-tab/js/z-UI.tab.js"></script>
+    <script type="text/javascript" src="z-UI-alert/js/z-UI.alert.js"></script>
+    <script type="text/javascript" src="z-UI-select/js/z-UI.select.js"></script>
+    <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;
+        }
+    </style>
+</head>
+<body class="zUI-full">
+<div class="zUI-full" style="padding: 20px;">
+    <div class="zUI-card" zUI-folder="show" style="width: 30%;">
+        <div class="zUI-card-title">
+            <div class="text">普通滑块</div>
+        </div>
+        <div class="zUI-card-wrap" style="padding: 20px;">
+            <div id="slider1" class="zUI-slider" zUI-slider-data="37"><div class="zUI-slider-now"><div class="zUI-slider-bar"></div></div></div>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 30%;">
+        <div class="zUI-card-title">
+            <div class="text">提示显示格式化</div>
+        </div>
+        <div class="zUI-card-wrap" style="padding: 20px;">
+            <div id="slider2" class="zUI-slider" zUI-slider-data="64"><div class="zUI-slider-now"><div class="zUI-slider-bar"></div></div></div>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 30%;">
+        <div class="zUI-card-title">
+            <div class="text">禁用滑块</div>
+        </div>
+        <div class="zUI-card-wrap" style="padding: 20px;">
+            <div id="slider3" class="zUI-slider disabled" zUI-slider-data="64"><div class="zUI-slider-now"><div class="zUI-slider-bar"></div></div></div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    zUI.tab.loadPanel({
+        elem:'.zUI-card',
+        change: function(type){
+            console.log(type);
+        },
+        close:function(){
+            console.log('close');
+            //return false时取消关闭
+        }
+    });
+    zUI.select.loadSlider({
+        elem:'#slider1,#slider3'
+    });
+    zUI.select.loadSlider({
+        elem:'#slider2',
+        format:function (v) {
+            return v+'Mb';
+        }
+    });
+</script>
+
+
+</html>

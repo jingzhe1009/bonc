@@ -1,0 +1,90 @@
+	<div class="modal fade" id="funcRegisterAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>函数名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="reg_funcName"  col-name="funcName" type="text" class="form-control" data-rule="函数名:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">函数描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="reg_funcDesc" col-name="funcDesc" type="text" class="form-control" data-rule="函数描述:length[~200, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">参数</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <!-- <input id="reg_funcParam" col-name="funcParam" type="text" class="form-control" data-rule="参数:length[~200, true]"> -->
+	                            <textarea class="form-control" id="reg_funcParam" style="height:100px" col-name="funcParam" data-rule="参数:length[~400, true]"></textarea>
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">参数描述</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                           <!--  <input id="reg_funcParamDesc" col-name="funcParamDesc" type="text" class="form-control" data-rule="参数描述:length[~200, true]"> -->
+	                            <textarea class="form-control" id="reg_funcParamDesc" style="height:300px" col-name="funcParamDesc" data-rule="参数描述:length[~2000, true]"></textarea>
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="funcModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<div class="modal fade" id="procRegisterAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>存储过程数据库名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input class="form-control" id="reg_funcName"  col-name="funcName" type="text"  data-rule="存储过程数据库名:required,length[1~100, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>存储过程数据库中文名称</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input class="form-control" id="reg_funcDesc" col-name="funcDesc" type="text"  data-rule="存储过程数据库中文名称:required,length[1~200, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>存储过程</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <!-- <input id="reg_funcParam" col-name="funcParam" type="text" class="form-control" data-rule="参数:length[~200, true]"> -->
+	                            <textarea class="form-control" id="reg_funcParam" style="height:100px" col-name="funcParam" data-rule="存储过程:required,length[1~400, true]"></textarea>
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>存储过程名称</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                           <!--  <input id="reg_funcParamDesc" col-name="funcParamDesc" type="text" class="form-control" data-rule="参数描述:length[~200, true]"> -->
+	                            <textarea class="form-control" id="reg_funcParamDesc" style="height:100px" col-name="funcParamDesc" data-rule="存储过程名称:required,length[1~2000, true]"></textarea>
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="funcModel.saveProc()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>

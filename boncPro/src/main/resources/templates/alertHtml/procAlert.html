@@ -1,0 +1,52 @@
+	<div class="modal fade" id="procAlert">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title"></h4>
+	            </div>
+	            <div class="modal-body">
+	                <form class="form-horizontal" data-validator-option="{stopOnError:true}">
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据源缩写</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="proc_dataSrcAbbr" col-name="dataSrcAbbr" type="text" class="form-control">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>数据接口号</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="proc_dataInterfaceNo" col-name="dataInterfaceNo" type="text" class="form-control" data-rule="数据接口号:required,length[1~50, true]">
+	                        </div>
+	                    </div>
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">存储过程数据库名</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <!-- <input id="proc_procDatabaseName" col-name="procDatabaseName" type="text" class="form-control" value="sdata_oltp_cfg"> -->
+	                        	<select id="proc_procDatabaseName" col-name="procDatabaseName" class="form-control">
+	                            </select>
+	                        </div>
+	                    </div>
+	                    <!-- <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">存储过程</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <input id="proc_procName" col-name="procName" type="text" class="form-control">
+	                        </div>
+	                    </div> -->
+	                    <div class="form-group">
+	                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">存储过程</label>
+	                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+	                            <select id="proc_procName" col-name="procName" class="form-control">
+	                            </select>
+	                        </div>
+	                    </div>
+	                </form>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="notView">
+	                    <button type="button" class="btn btn-primary" onclick="procModel.save()">保存</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>

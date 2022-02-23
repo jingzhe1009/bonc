@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataLogMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataLog">
+    <id column="action_id" jdbcType="VARCHAR" property="actionId" />
+    <result column="action_user" jdbcType="VARCHAR" property="actionUser" />
+    <result column="action_desc" jdbcType="VARCHAR" property="actionDesc" />
+    <result column="action_time" jdbcType="VARCHAR" property="actionTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    action_id, action_user, action_desc, action_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_log
+    where action_id = #{actionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from data_log
+    where action_id = #{actionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataLog">
+    insert into data_log (action_id, action_user, action_desc, 
+      action_time)
+    values (#{actionId,jdbcType=VARCHAR}, #{actionUser,jdbcType=VARCHAR}, #{actionDesc,jdbcType=VARCHAR}, 
+      #{actionTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataLog">
+    insert into data_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="actionId != null">
+        action_id,
+      </if>
+      <if test="actionUser != null">
+        action_user,
+      </if>
+      <if test="actionDesc != null">
+        action_desc,
+      </if>
+      <if test="actionTime != null">
+        action_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="actionId != null">
+        #{actionId,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUser != null">
+        #{actionUser,jdbcType=VARCHAR},
+      </if>
+      <if test="actionDesc != null">
+        #{actionDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTime != null">
+        #{actionTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataLog">
+    update data_log
+    <set>
+      <if test="actionUser != null">
+        action_user = #{actionUser,jdbcType=VARCHAR},
+      </if>
+      <if test="actionDesc != null">
+        action_desc = #{actionDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="actionTime != null">
+        action_time = #{actionTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where action_id = #{actionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataLog">
+    update data_log
+    set action_user = #{actionUser,jdbcType=VARCHAR},
+      action_desc = #{actionDesc,jdbcType=VARCHAR},
+      action_time = #{actionTime,jdbcType=VARCHAR}
+    where action_id = #{actionId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_log
+  </select>
+</mapper>

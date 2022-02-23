@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.TableListMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.TableList">
+    <id column="table_ename" jdbcType="VARCHAR" property="tableEname" />
+    <id column="ename" jdbcType="VARCHAR" property="ename" />
+    <result column="table_cname" jdbcType="VARCHAR" property="tableCname" />
+    <result column="cname" jdbcType="VARCHAR" property="cname" />
+    <result column="pk_flag" jdbcType="VARCHAR" property="pkFlag" />
+    <result column="column_type" jdbcType="VARCHAR" property="columnType" />
+    <result column="null_flag" jdbcType="VARCHAR" property="nullFlag" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    table_ename, ename, table_cname, cname, pk_flag, column_type, null_flag, create_time, 
+    create_user, batch_no
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.TableListKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from table_list
+    where table_ename = #{tableEname,jdbcType=VARCHAR}
+      and ename = #{ename,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.TableListKey">
+    delete from table_list
+    where table_ename = #{tableEname,jdbcType=VARCHAR}
+      and ename = #{ename,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.TableList">
+    insert into table_list (table_ename, ename, table_cname, 
+      cname, pk_flag, column_type, 
+      null_flag, create_time, create_user, 
+      batch_no)
+    values (#{tableEname,jdbcType=VARCHAR}, #{ename,jdbcType=VARCHAR}, #{tableCname,jdbcType=VARCHAR}, 
+      #{cname,jdbcType=VARCHAR}, #{pkFlag,jdbcType=VARCHAR}, #{columnType,jdbcType=VARCHAR}, 
+      #{nullFlag,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{batchNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.TableList">
+    insert into table_list
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tableEname != null">
+        table_ename,
+      </if>
+      <if test="ename != null">
+        ename,
+      </if>
+      <if test="tableCname != null">
+        table_cname,
+      </if>
+      <if test="cname != null">
+        cname,
+      </if>
+      <if test="pkFlag != null">
+        pk_flag,
+      </if>
+      <if test="columnType != null">
+        column_type,
+      </if>
+      <if test="nullFlag != null">
+        null_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tableEname != null">
+        #{tableEname,jdbcType=VARCHAR},
+      </if>
+      <if test="ename != null">
+        #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="tableCname != null">
+        #{tableCname,jdbcType=VARCHAR},
+      </if>
+      <if test="cname != null">
+        #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="pkFlag != null">
+        #{pkFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="columnType != null">
+        #{columnType,jdbcType=VARCHAR},
+      </if>
+      <if test="nullFlag != null">
+        #{nullFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.TableList">
+    update table_list
+    <set>
+      <if test="tableCname != null">
+        table_cname = #{tableCname,jdbcType=VARCHAR},
+      </if>
+      <if test="cname != null">
+        cname = #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="pkFlag != null">
+        pk_flag = #{pkFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="columnType != null">
+        column_type = #{columnType,jdbcType=VARCHAR},
+      </if>
+      <if test="nullFlag != null">
+        null_flag = #{nullFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where table_ename = #{tableEname,jdbcType=VARCHAR}
+      and ename = #{ename,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.TableList">
+    update table_list
+    set table_cname = #{tableCname,jdbcType=VARCHAR},
+      cname = #{cname,jdbcType=VARCHAR},
+      pk_flag = #{pkFlag,jdbcType=VARCHAR},
+      column_type = #{columnType,jdbcType=VARCHAR},
+      null_flag = #{nullFlag,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      batch_no = #{batchNo,jdbcType=VARCHAR}
+    where table_ename = #{tableEname,jdbcType=VARCHAR}
+      and ename = #{ename,jdbcType=VARCHAR}
+  </update>
+  
+	<select id="selectPage"  resultMap="BaseResultMap" parameterType="java.util.Map">
+	  	select 
+	  	<include refid="Base_Column_List" />
+	  	from table_list where 1=1 
+	  	<if test="table_ename!=null and table_ename!=''">
+			and table_ename = #{table_ename}
+		</if>
+	  	group by table_ename
+	</select>
+	
+	<select id="selectDetailPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+		<include refid="Base_Column_List" />
+		from table_list where 1=1
+		<if test="table_ename!=null and table_ename!=''">
+			and table_ename = #{table_ename}
+		</if>
+		<if test="ename!=null and ename!=''">
+			and ename = #{ename}
+		</if>
+	</select>
+	
+	<insert id="batchInsert" useGeneratedKeys="false"  parameterType="com.ljz.model.TableList">
+	  replace into table_list (table_ename,table_cname,ename,cname,pk_flag,
+	  							column_type,null_flag,create_time,create_user,batch_no)
+	  values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.tableEname},#{model.tableCname},#{model.ename},#{model.cname},#{model.pkFlag},
+	       #{model.columnType},#{model.nullFlag}, #{model.createTime},#{model.createUser},#{model.batchNo})
+	    </foreach>
+	</insert>
+	
+	<select id="queryTableList" resultMap="BaseResultMap">
+		select * from table_list where 1=1
+		<if test="array !=null and array.length > 0">
+	      and table_ename in
+	        <foreach collection="array" item = "tableName" open="(" separator="," close=")" index="index">
+	            #{tableName}
+	        </foreach>
+	    </if>
+		group by table_ename
+	</select>
+</mapper>

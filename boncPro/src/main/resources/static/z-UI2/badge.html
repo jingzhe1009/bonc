@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
+    <title>z-UI-form</title>
+    <link rel="stylesheet" type="text/css" href="z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="z-UI-alert/css/z-UI.alert.css"/>
+    <script type="text/javascript" src="z-UI.js"></script>
+    <script type="text/javascript" src="z-UI-tab/js/z-UI.tab.js"></script>
+    <script type="text/javascript" src="z-UI-alert/js/z-UI.alert.js"></script>
+    <style>
+		html,body{
+            width: 100%;height: 100%;
+            margin:0;
+        }
+    </style>
+</head>
+<body class="zUI-full">
+<div class="zUI-full" style="padding: 20px;">
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">不同大小的徽章</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <span class="zUI-badge ssm">9</span>
+            <span class="zUI-badge sm">小徽章</span>
+            <span class="zUI-badge">中徽章</span>
+            <span class="zUI-badge lg">大徽章</span>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">不同颜色的徽章</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <span class="zUI-badge zUI-bg-black">6</span>
+            <span class="zUI-badge zUI-bg-blue">12</span>
+            <span class="zUI-badge zUI-bg-green">24</span>
+            <span class="zUI-badge zUI-bg-red">99+</span>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">带关闭按钮</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <span class="zUI-badge zUI-badge-close ssm">zl<span onclick="zUI.dialog.alert('关闭zl');zUI.dom.remove(this.parentNode)"></span></span>
+            <span class="zUI-badge zUI-badge-close sm">张三<span onclick="zUI.dialog.alert('关闭张三');zUI.dom.remove(this.parentNode)"></span></span>
+            <span class="zUI-badge zUI-badge-close">李四<span onclick="zUI.dialog.alert('关闭李四');zUI.dom.remove(this.parentNode)"></span></span>
+            <span class="zUI-badge zUI-badge-close lg">王大锤<span onclick="zUI.dialog.alert('关闭王大锤');zUI.dom.remove(this.parentNode)"></span></span>
+        </div>
+    </div>
+    <div class="zUI-card" zUI-folder="show" style="width: 100%;">
+        <div class="zUI-card-title">
+            <div class="text">圆点徽章</div>
+        </div>
+        <div class="zUI-card-wrap">
+            <span class="zUI-badge pointer ssm zUI-bg-black"></span>
+            <span class="zUI-badge pointer sm zUI-bg-blue"></span>
+            <span class="zUI-badge pointer zUI-bg-green"></span>
+            <span class="zUI-badge pointer lg zUI-bg-red"></span>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script>
+    zUI.tab.loadPanel({
+        elem:'.zUI-card',
+        change: function(type){
+            console.log(type);
+        },
+        close:function(){
+            console.log('close');
+            //return false时取消关闭
+        }
+    });
+</script>
+
+
+</html>

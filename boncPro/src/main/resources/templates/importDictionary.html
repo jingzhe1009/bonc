@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>导入词根excel文件</title>
+<link href="/plugin/zui1.8.1/css/zui.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/z-UI2/z-UI.css"/>
+<link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-alert/css/z-UI.alert.css"/>
+<script src="/js/jquery.min.js"></script>
+<script src="/plugin/zui1.8.1/js/zui.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/z-UI2/z-UI.js"></script>
+<script type="text/javascript" src="/z-UI2/z-UI-alert/js/z-UI.alert.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h3 class="text-center">
+					词根
+				</h3>
+			</div>
+		</div>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="alert alert-success alert-dismissable">
+					 <button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button>
+					<h4>
+						词根导入excel文件
+					</h4> <strong>Warning!</strong> 请上传.xlsx/.xls文件 <a href="#" class="alert-link"></a>
+				</div>
+			</div>
+		</div>
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<form id="form" enctype="multipart/form-data">
+					<div class="form-group">
+						<label for="exampleInputFile">导入excel文件</label><input type="file" id="filename" name="filename" />
+						<p class="help-block">
+							建议上传.xlsx/.xls文件
+						</p>
+					</div>
+					<button type="submit" class="btn btn-primary btn-large" onclick="importExcel()">导入</button>
+					<a class="btn btn-primary btn-large"  href="/dic/exportDictionary">模板下载</a>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+		
+		/* function importExcel(){
+			var form = document.getElementById('form');
+			var fileInput = $('#filename').get(0).files[0];
+			if(fileInput){
+				form.action = "/excel/importDictionary";
+				form.submit();
+			}else{
+				alert("请上传文件");
+			}
+		} */
+		
+		function importExcel(){
+			
+			var fileInput = $('#filename').get(0).files[0];
+			if(fileInput){
+				var formData = new FormData($("#form")[0]);
+				$.ajax({
+		            //几个参数需要注意一下
+		            type: 'POST',//方法类型
+		            url: "[[@{/dic/importDictionary}]]",
+		            data: formData, 
+		            async: false, 
+		            cache: false, 
+		            contentType: false, 
+		            processData: false, 
+		            success: function (result) {
+		                console.log(result);//打印服务端返回的数据(调试用)
+		                alert(result);
+		                //(".alert-success").append('<pre>'+result+'</pre>');
+		            },
+		            error : function() {
+		                alert('异常！');
+		                //zUI.dialog.alert('<pre>异常！</pre>');
+		            }
+		        });
+			}else{
+				alert("请上传文件");
+			}
+		}
+</script>
+</html>
