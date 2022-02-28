@@ -254,7 +254,46 @@
 													        </div>
 													    </div>
 													</div>
-													<div class="contentList" id="contC">这是第三步的信息内容</div>
+													<div class="contentList" id="contC">
+														<!--Tab-->
+									                    <div class="tableIcon" id="tabContainer2">
+									                        <ul class="nav nav-tabs" id="authorityTab2">
+									                            <li tab-id="1"><a data-toggle="tab" >数据接口</a></li>
+									                            <li tab-id="2"><a data-toggle="tab" >数据接口字段配置</a></li>
+									                            <li tab-id="3"><a data-toggle="tab" >数据算法加载</a></li>
+									                        </ul>
+									                    </div>
+									
+									                    <!-- 数据接口 -->
+									                    <div class="tab-content2" id="interfaceContent">
+									<!--                        <form class="navbar-form navbar-left" role="search" id="form">-->
+									<!--                            <div class="selfAdaptionRight">-->
+									<!--                                <button type="reset" class="btn btn-primary" onclick='infoModel.init(localStorage.getItem("idx"))'></button>-->
+									<!--                                -->
+									<!--                            </div>-->
+									<!--                        </form>-->
+									                        <div style="clear: both"></div>
+									                        <div>
+									                            <table id="interfaceTable" style="white-space:nowrap;"></table>
+									                        </div>
+									                    </div>
+									
+									                    <!-- 字段配置标签内容 -->
+									                    <div class="tab-content2" id="colContent">
+									                        <div style="clear: both"></div>
+									                        <div>
+									                            <table id="columnTable" style="white-space:nowrap;"></table>
+									                        </div>
+									                    </div>
+									
+									                    <!-- 数据算法加载标签内容 -->
+									                    <div class="tab-content2" id="procContent">
+									                        <div style="clear: both"></div>
+									                        <div>
+									                            <table id="procTable" style="white-space:nowrap;"></table>
+									                        </div>
+									                    </div>
+													</div>
 													<div class="contentList" id="contD">这是第四步的信息内容</div>
 												</ol> 
 											</div>
@@ -485,4 +524,8 @@
 <!-- <script src="/js/detail.js"></script> -->
 <script src="/js/toTmpToSave.js"></script>
 <script src="/js/infoImportTmp.js"></script>
+<script src="/js/interface_tmp.js"></script>
+<script src="/js/column_tmp.js"></script>
+<script src="/js/proc_tmp.js"></script>
+<script src="/js/indexTmp.js"></script>
 </html>
