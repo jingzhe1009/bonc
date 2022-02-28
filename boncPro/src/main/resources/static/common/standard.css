@@ -677,3 +677,77 @@ html, body {
     opacity: 0.8;
 }
 #iList{text-align: center}
+
+#table1 tbody {
+    table-layout: fixed;
+}
+
+.tab-import {
+    margin-left: 10%;
+    margin-top: 3%;
+}
+
+.indexImport {
+    display: inline-block;
+    text-align: center;
+    margin-right: 1%;
+    width: 75%;
+}
+
+.indexImport h1 {
+    color: var(--colorNormal);
+    margin-left: auto;
+    margin-right: auto
+}
+
+.importH1 {
+    display: inline-block;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.importH11 {
+    display: inline-block;
+    text-align: left;
+    padding-left: 20px;
+}
+
+.importA {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    margin: auto;
+    width: 100%;
+    margin: 10px 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.importB {
+    display: flex;
+    flex-grow: 1;
+    width: 20%;
+}
+
+.importC {
+    margin: 0 auto;
+    width: 75%;
+    border: 1px solid var(--colorNormal);
+    padding: 10px 10px;
+}
+
+.importD {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.importE {
+    width: 50%;
+    text-align: left;
+}
+
+.importF {
+    width: 50%;
+    text-align: right;
+}

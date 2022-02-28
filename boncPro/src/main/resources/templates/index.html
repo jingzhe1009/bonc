@@ -102,44 +102,176 @@
 	                <div class="tableIcon" id="tabContainer">
 	                    <ul class="nav nav-tabs" id="authorityTab">
 	                        <!-- <li tab-id="0"><a data-toggle="tab">数据源信息</a></li> -->
-	                        <li tab-id="10"><a data-toggle="tab">一键导入</a></li>
-	                        <li tab-id="11"><a data-toggle="tab">信息下载</a></li>
+	                        <li tab-id="13"><a data-toggle="tab">配置说明</a></li>
+	                        <li tab-id="14"><a data-toggle="tab">接口信息导入</a></li>
+	                        <!-- <li tab-id="10"><a data-toggle="tab">一键导入</a></li> -->
+	                        <li tab-id="11"><a data-toggle="tab">接口信息下载</a></li>
 	                        <li tab-id="12"><a data-toggle="tab">接口查看</a></li>
 	                    </ul>
 	                </div>
 	                
-	                <div class="tab-content" id="importContent">
-			            <div class="modal-body">
-							<div class="model-content">
-								<div class="main">
-									<div class="row">
-										<div class="col-md-12">
-											<div class="flow">
-												<div class="flowListBox"> </div>
-											</div>
+	                <div class="tab-content" id="baseContent">
+		                <div style="height:60px">
+		               	</div>
+		               	<div align="center" style="height:60px">
+		               		<b class="base_title" style="font-size: 16px;color:#02BABC"></b>
+		               	</div>
+		               	<div style="font-size: 14px;height:150px" align="center">
+		               		<table style="border-collapse:separate; border-spacing:0px 10px;">
+		               			<tr>
+		               				<td style="text-align:right">
+	               						<b>数据结构:</b>
+								    </td>
+								    <td>
+								    	<label class="radio-inline">
+								    		&nbsp;&nbsp;&nbsp;&nbsp;
+										  <input type="radio" name="radioOptionsExample"> 结构化数据
+										</label>
+										<label class="radio-inline">
+										  <input type="radio" name="radioOptionsExample"> 非结构化数据
+										</label>
+								    </td>
+		               			</tr>
+		               			<tr>
+		               				<td style="text-align:right">
+	               						<b>数据库类型:</b>
+		               				</td>
+		               				<td style="text-align:left">
+		               					<label class="radio-inline">
+		               						<select class="form-control" style="width:200px">
+											  <option value="tdh">星环HIVE</option>
+											  <option value="td">TERADATA</option>
+											  <option value="mysql">MYSQL</option>
+											</select>
+										</label>
+		               				</td>
+		               			</tr>
+		               			<tr>
+		               				<td style="text-align:right">
+	               						<b>文件命名规则:</b>
+		               				</td>
+		               				<td style="text-align:left">
+		               					<label class="radio-inline">
+		               						[数据源机构编码]_[接口标识]_[版本号]_[数据日期]_[排批次号]_[增量/全量标识].[文件扩展名]
+		               					</label>
+		               				</td>
+		               			</tr>
+		               			<tr>
+		               				<td style="text-align:right">
+	               						<b>示例:</b>
+		               				</td>
+		               				<td style="text-align:left">
+		               					<label class="radio-inline">
+		               						SSE_J0101_V01_20141105_0000_Z.CSV
+		               					</label>
+		               				</td>
+		               			</tr>
+		               		</table>
+		              	</div>
+	              	</div>
+	              	
+	              	<!-- 接口信息导入（首页） -->
+					<div class="tab-content tab-import" id="interfaceContent">
+						<div id="syContent">
+							<div class="indexImport">
+								<h1>当前数据源：上交所（SSE）</h1>
+								<h2 class="importH1">当前数据结构：结构化</h2>
+								<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
+								<div class="importA">
+									<div class="importB">
+										<div class="importC"><img src="imgs/index/home.png">最新需求规范版本<br/>最新需求规范版本</div>
+									</div>
+									<div class="importB">
+										<div class="importC"><img src="imgs/index/home.png">接口总数<br/>接口总数</div>
+									</div>
+									<div class="importB">
+										<div class="importC"><img src="imgs/index/home.png">新增接口个数<br/>新增接口个数</div>
+									</div>
+									<div class="importB">
+										<div class="importC"><img src="imgs/index/home.png">修改接口个数<br/>修改接口个数</div>
+									</div>
+									<div class="importB">
+										<div class="importC"><img src="imgs/index/home.png">最后修改时间<br/>最后修改时间</div>
+									</div>
+								</div>
+	
+								<form class="navbar-form navbar-left" role="search" style="width: 100%">
+	
+									<div class="selfAdaptionRight1 importD">
+										<div class="importE">
+											<h2>版本信息</h2>
 										</div>
-										<div class="col-md-12" id="flowDiv">
-											<ol id="iList">
-												<div id="contA">
-													
+										<div class="importF">
+											<a class="btn btn-primary" target="_blank" onclick="yjdr()" style="line-height: normal">一键导入</a>
+										</div>
+									</div>
+								</form>
+								<div style="clear: both"></div>
+								<table id="procTable" style="white-space:nowrap;"></table>
+							</div>
+							<div style="display: inline-block; height: 100%">
+								<div style="height: 80%">
+									<div><img src="imgs/index/history.png">历史信息</div>
+									<div><img src="imgs/index/down.png">生成上线脚本</div>
+								</div>
+							</div>
+						</div>
+						
+						<div id="importContent">
+				            <div class="modal-body">
+								<div class="model-content">
+									<div class="main">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="flow">
+													<div class="flowListBox"> </div>
 												</div>
-												<div id="contB">这是第二步的信息内容</div>
-												<div class="contentList" id="contC">这是第三步的信息内容</div>
-												<div class="contentList" id="contD">这是第四步的信息内容</div>
-											</ol> 
+											</div>
+											<div class="col-md-12" id="flowDiv">
+												<ol id="iList">
+													<div id="contA">
+														
+													</div>
+													<div id="contB">
+														<div >
+													        <div class="alert alert-inverse" style="width:200px;display:none" id="loadShow">正在导入，请稍等。。。</div>
+													        <div class="row clearfix">
+													            <div class="col-md-12 column">
+													                <form id="form"  enctype="multipart/form-data">
+													                    <input type=hidden id="batchNo" name="batchNo">
+													                    <span  style="font-family: PingFangSC-Medium;font-size: 18px;color: #333333;width: 167px;height: 25px">选择EXCEL接口文件  </span>
+													                    <div class="ehdel_upload_show">
+													                        <input id="ehdel_upload_text" type="text" name="txt" />
+													                        <input id="ehdel_upload_btn" type="button" style="background-color: #1890FF;font-size: 12px;color: white;border-radius: 4px;" value="选择文件" />
+													                    </div>
+													                    <div class="clear"></div>
+													                    <input id="filename" type="file" name="filename" onchange="ehdel_upload_text.value=this.value" class="ehdel_upload" />
+													                    <a class="btn btn-primary btn-large" style="font-size: 12px;background: #1890FF;border-radius: 4px;" href="/interface/exportTable">模板下载</a>
+													                    <p style="padding-left: 170px;font-family: PingFangSC-Regular;font-size: 14px;color: #E34747;">注：请上传扩展名为xlsx、xls文件</p>
+													                    <a class="btn btn-primary btn-large " href="#" style="position:relative;left:300px;top:400px" onclick="importExcel()" >上传</a>
+													                </form>
+													            </div>
+													        </div>
+													    </div>
+													</div>
+													<div class="contentList" id="contC">这是第三步的信息内容</div>
+													<div class="contentList" id="contD">这是第四步的信息内容</div>
+												</ol> 
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						
-							<div class="foot-btn">
-								<button type="button" class="btn btn-primary"  style="float:right; margin-right:10px;" id="btnNext">下一步</button>
-								<button type="button" class="btn btn-primary" style="float:right; margin-right:10px;" id="btnBack">上一步</button>
-							</div>
-			            </div>
-	                </div>
+							
+								<div class="foot-btn">
+									<button type="button" class="btn btn-primary"  style="float:right; margin-right:10px;" id="btnNext">下一步</button>
+									<button type="button" class="btn btn-primary" style="float:right; margin-right:10px;" id="btnBack">上一步</button>
+								</div>
+				            </div>
+		                </div>
+		                <!-- 火车图 -->
+					</div>
 	        	</div>
-	        	<!-- 火车图 -->
+	        	
 	        	
 	        	<!-- 词根表管理标签内容 -->
                 <div class="tab-content" id="dicTableContent">
@@ -337,18 +469,20 @@
 
 <!-- 基础信息 -->
 <script src="/js/manageDictionary.js"></script>
-<script src="/js/interface_version.js"></script>
-<script src="/js/column_version.js"></script>
+<!-- <script src="/js/interface_version.js"></script> -->
+<!-- <script src="/js/column_version.js"></script> -->
 <script src="/js/proc_version.js"></script>
-<script src="/js/column.js"></script>
+<!-- <script src="/js/column.js"></script> -->
 <script src="/js/common.js"></script>
 <script src="/js/dataSrc.js"></script>
 <script src="/js/createSql.js"></script>
-<script src="/js/interface.js"></script>
+<!-- <script src="/js/interface.js"></script> -->
 <script src="/js/index.js"></script>
 <script src="/js/proc.js"></script>
 <script src="/js/func.js"></script>
 <script src="/js/log.js"></script>
 <script src="/js/model.js"></script>
-<script src="/js/detail.js"></script>
+<!-- <script src="/js/detail.js"></script> -->
+<script src="/js/toTmpToSave.js"></script>
+<script src="/js/infoImportTmp.js"></script>
 </html>

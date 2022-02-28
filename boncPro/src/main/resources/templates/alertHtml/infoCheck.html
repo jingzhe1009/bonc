@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>一键导入excel文件</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/plugin/DataTables/datatables.min.css" rel="stylesheet">
+    <link href="/plugin/zui1.8.1/css/zui.min.css" rel="stylesheet"/>
+<!--    <link href="/common/main.css" rel="stylesheet" />&lt;!&ndash; 左侧菜单 &ndash;&gt;-->
+    <link href="/common/common.css" rel="stylesheet" /><!-- 表格 -->
+    <link href="/common/standard.css" rel="stylesheet" /><!-- 按钮 -->
+    <!-- <script src="/js/jquery.min.js"></script> -->
+    <script src="/plugin/jquery.js"></script>
+    <script src="/plugin/validator/dist/jquery.validator.js"></script>
+    <script src="/plugin/validator/dist/local/zh-CN.js"></script>
+    <!-- <script src="/js/bootstrap.min.js"></script> -->
+    <script src="/plugin/DataTables/datatables.js"></script>
+    <script src="/plugin/zui1.8.1/js/zui.js"></script>
+    <script src="/plugin/echarts.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-alert/css/z-UI.alert.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-tab/css/z-UI.tab.css"/>
+    <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-select/css/z-UI.select.css"/>
+    <script type="text/javascript" src="/z-UI2/z-UI.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-alert/js/z-UI.alert.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-tab/js/z-UI.tab.js"></script>
+    <script type="text/javascript" src="/z-UI2/z-UI-select/js/z-UI.select.js"></script>
+
+</head>
+
+
+<body>
+
+    <div id="page">
+    <div id="pageBody">
+        <div id="pageContent">
+            <div id="modelBasePageContent">
+                <div class="modelBaseContainer modelBaseWrapper">
+                    <!--Tab-->
+                    <div class="tableIcon" id="tabContainer">
+                        <ul class="nav nav-tabs" id="authorityTab">
+                            <li tab-id="1"><a data-toggle="tab" >数据接口</a></li>
+                            <li tab-id="2"><a data-toggle="tab" >数据接口字段配置</a></li>
+                            <li tab-id="3"><a data-toggle="tab" >数据算法加载</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- 数据接口 -->
+                    <div class="tab-content" id="interfaceContent">
+<!--                        <form class="navbar-form navbar-left" role="search" id="form">-->
+<!--                            <div class="selfAdaptionRight">-->
+<!--                                <button type="reset" class="btn btn-primary" onclick='infoModel.init(localStorage.getItem("idx"))'></button>-->
+<!--                                -->
+<!--                            </div>-->
+<!--                        </form>-->
+                        <div style="clear: both"></div>
+                        <div>
+                            <table id="interfaceTable" style="white-space:nowrap;"></table>
+                        </div>
+                    </div>
+
+                    <!-- 字段配置标签内容 -->
+                    <div class="tab-content" id="colContent">
+                        <div style="clear: both"></div>
+                        <div>
+                            <table id="columnTable" style="white-space:nowrap;"></table>
+                        </div>
+                    </div>
+
+                    <!-- 数据算法加载标签内容 -->
+                    <div class="tab-content" id="procContent">
+                        <div style="clear: both"></div>
+                        <div>
+                            <table id="procTable" style="white-space:nowrap;"></table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div>
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <form id="form" enctype="multipart/form-data">
+                    <input type=hidden id="batchNo" name="batchNo">
+                    <button type="button" class="btn btn-primary btn-large" style="position:relative;left:800px;top:400px" onclick="tmpToSave(2)">下一步</button> <!--导入正式表-->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:include="alertHtml/versionAlert"></div>
+
+</body>
+
+<script src="/js/toTmpToSave.js"></script>
+<!--<script src="/js/infoImportTmp.js"></script>-->
+<script src="/js/interface_tmp.js"></script>
+<!--<script src="/js/interface_version.js"></script>-->
+<script src="/js/column_tmp.js"></script>
+<!--<script src="/js/column_version.js"></script>-->
+<script src="/js/proc_tmp.js"></script>
+<!--<script src="/js/proc_version.js"></script>-->
+<!--<script src="/js/common.js"></script>-->
+<script src="/js/indexTmp.js"></script>
+
+
+
+</html>

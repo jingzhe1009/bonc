@@ -27,7 +27,7 @@ function initMenu(){
 		    	if(i==0){
 		    		localStorage.setItem("idx",idx);
 		    		localStorage.setItem("desc",desc);
-		    		changeTab(10);//0:目录扫描函数配置
+		    		changeTab(13);//0:目录扫描函数配置
 		    		active = "active";
 		    	}
 		    	htmlstr=htmlstr+'<li idx="'+idx+'" desc="'+desc+'" link="'+basePath+'/newIndex?idx='+idx+'" class="'+active+'"><a href=#>'+desc+'('+idx+')'+'</a></li>';
@@ -45,7 +45,7 @@ function initMenu(){
 		$(this).addClass('active');
 		localStorage.setItem("idx",idx);
 		localStorage.setItem("desc",desc);
-		changeTab(10);//0:数据源
+		changeTab(13);//0:数据源
 	});
 	
 	//监听目录扫描函数配置
@@ -266,7 +266,21 @@ function changeTab(tabId){
 	} else if(tabId == '10'){
 		$("#importContent").show();
     	$("#pageHeader").html('<p>当前位置：一键导入</p>');
+	} else if(tabId == '13'){
+		$("#baseContent").show();
+		$('.base_title').html('当前数据源:'+desc+"("+idx+")");
+    	$("#pageHeader").html('<p>当前位置：配置说明</p>');
+	} else if(tabId == '14'){
+		$("#interfaceContent").show();
+		$("#syContent").show();
+		$("#importContent").hide();
+    	$("#pageHeader").html('<p>当前位置：接口信息导入</p>');
 	}
+}
+
+function yjdr(){
+	$("#syContent").hide();
+	$("#importContent").show();
 }
 
 //定义success主题提示消息
