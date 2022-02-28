@@ -38,7 +38,13 @@ public class DataInterfaceColumns implements Serializable {
     
     private String condition;
 
-
+    private String iskey; 
+    
+    private String isvalid;
+    
+    private String incrementfield;
+    
+    
     public String getDataSrcAbbr() {
         return dataSrcAbbr;
     }
@@ -167,7 +173,31 @@ public class DataInterfaceColumns implements Serializable {
 		this.condition = condition;
 	}
 
-	@Override
+	public String getIskey() {
+		return iskey;
+	}
+
+	public void setIskey(String iskey) {
+		this.iskey = iskey;
+	}
+
+	public String getIsvalid() {
+		return isvalid;
+	}
+
+	public void setIsvalid(String isvalid) {
+		this.isvalid = isvalid;
+	}
+
+    public String getIncrementfield() {
+        return incrementfield;
+    }
+
+    public void setIncrementfield(String incrementfield) {
+        this.incrementfield = incrementfield;
+    }
+
+    @Override
 	public String toString() {
 		return "[dataInterfaceName=" + dataInterfaceName + ", columnName=" + columnName
 				+ ", dataType=" + dataType + ", dataFormat=" + dataFormat + ", nullable=" + nullable + ", replacenull="
@@ -175,10 +205,14 @@ public class DataInterfaceColumns implements Serializable {
 				+ ", sDate=" + sDate + ", eDate=" + eDate + ", dataSrcAbbr=" + dataSrcAbbr + ", dataInterfaceNo="
 				+ dataInterfaceNo + ", columnNo=" + columnNo;
 	}
-	
-	public String toStr() {
-		return dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName +columnName+ dataType +  dataFormat + nullable + replacenull + columnComment +isbucket;
-	}
+
+    public String toStr(){
+//        return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable + replacenull + comma + columnComment + isbucket;
+        return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable +
+                replacenull + comma + columnComment + isbucket + iskey + isvalid + incrementfield;
+
+
+    }
 
 	public DataInterfaceColumns( String dataType, String dataFormat,
 			Integer nullable, Integer replacenull, String comma, String columnComment) {

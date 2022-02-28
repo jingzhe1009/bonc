@@ -41,6 +41,12 @@ public class DataInterfaceColumnsTmp implements Serializable {
     
     private String condition;
 
+    private String iskey;
+
+    private String isvalid;
+
+    private String incrementfield;
+
     public String getDataSrcAbbr() {
         return dataSrcAbbr;
     }
@@ -153,8 +159,6 @@ public class DataInterfaceColumnsTmp implements Serializable {
 		this.eDate = eDate;
 	}
 
-	
-
 	public String getCondition() {
 		return condition;
 	}
@@ -163,7 +167,31 @@ public class DataInterfaceColumnsTmp implements Serializable {
 		this.condition = condition;
 	}
 
-	@Override
+    public String getIskey() {
+        return iskey;
+    }
+
+    public void setIskey(String iskey) {
+        this.iskey = iskey;
+    }
+
+    public String getIsvalid() {
+        return isvalid;
+    }
+
+    public void setIsvalid(String isvalid) {
+        this.isvalid = isvalid;
+    }
+
+    public String getIncrementfield() {
+        return incrementfield;
+    }
+
+    public void setIncrementfield(String incrementfield) {
+        this.incrementfield = incrementfield;
+    }
+
+    @Override
 	public String toString() {
 		return "DataInterfaceColumnsTmp [dataSrcAbbr=" + dataSrcAbbr + ", dataInterfaceNo=" + dataInterfaceNo
 				+ ", columnNo=" + columnNo + ", dataInterfaceName=" + dataInterfaceName + ", columnName=" + columnName
@@ -193,11 +221,13 @@ public class DataInterfaceColumnsTmp implements Serializable {
 	}
 	
 	public String toStr() {
-		return dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName +columnName+ dataType +  dataFormat + nullable + replacenull + columnComment +isbucket;
+//		return dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable + replacenull + comma + columnComment + isbucket;
+        return dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable +
+                replacenull + comma + columnComment + isbucket + iskey + isvalid + incrementfield;
 	}
-	
 	public DataInterfaceColumnsTmp(String dataSrcAbbr, String dataInterfaceNo, Integer columnNo,
-			String dataInterfaceName, String columnName, String dataType, String dataFormat, String comma, String columnComment, String isbucket) {
+			String dataInterfaceName, String columnName, String dataType, String dataFormat, String comma, String columnComment, String isbucket,
+                                   String iskey,String isvalid,String incrementfield) {
 		super();
 		this.dataSrcAbbr = dataSrcAbbr;
 		this.dataInterfaceNo = dataInterfaceNo;
@@ -209,6 +239,9 @@ public class DataInterfaceColumnsTmp implements Serializable {
 		this.comma = comma;
 		this.columnComment = columnComment;
 		this.isbucket = isbucket;
+		this.iskey = iskey;
+		this.isvalid = isvalid;
+		this.incrementfield = incrementfield;
 	}
 
 	public DataInterfaceColumnsTmp() {

@@ -40,4 +40,7 @@ public interface DataInterfaceMapper {
     
     List<DataInterface> queryIntNum();
     
+    List<DataInterface> queryDsAndInfaceName(String dataSrc);
+    
+    List<String> queryDbName();
 }

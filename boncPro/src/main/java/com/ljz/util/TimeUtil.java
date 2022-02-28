@@ -30,6 +30,11 @@ public class TimeUtil {
 		return new java.sql.Date(new Date().getTime());
 	}
 	
+	public static String getDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(date);
+	}
+	
 	public static Date getTy(){
 		return new Date();
 	}

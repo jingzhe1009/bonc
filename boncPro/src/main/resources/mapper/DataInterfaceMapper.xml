@@ -410,5 +410,10 @@
   <select id="queryIntNum" resultMap="BaseResultMap" >
     select data_interface_name,count(*) as bucket_number from data_interface_columns where e_date='3000-12-31' group by data_interface_name
   </select>
-  
+  <select id="queryDsAndInfaceName" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select data_interface_name,data_interface_desc,intrnl_table_name from data_interface where data_src_abbr=#{data_src_abbr}
+   </select>
+   <select id="queryDbName" resultType="java.lang.String">
+     select item_type from data_code_config where item_name = '存储过程数据库名' AND database_code = 'tdh' AND database_name = 'dataLoadProc'
+   </select>
 </mapper>

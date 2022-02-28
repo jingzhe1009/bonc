@@ -11,10 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
-
-
-
+import javax.annotation.Resource;
 
 import com.ljz.mapper.*;
 
@@ -41,6 +38,7 @@ import com.ljz.model.DataInterface2procTmp;
 import com.ljz.model.DataInterfaceColumns;
 import com.ljz.model.DataInterfaceColumnsTmp;
 import com.ljz.model.DataInterfaceTmp;
+import com.ljz.model.DataRvsdRecordTmp;
 import com.ljz.model.attrC2e;
 import com.ljz.model.entityC2e;
 import com.ljz.service.IExcelService;
@@ -48,7 +46,6 @@ import com.ljz.util.ExcelUtil;
 import com.ljz.util.TimeUtil;
 import com.ljz.util.TransUtil;
 
-import javax.annotation.Resource;
 
 @Service
 public class ExcelServiceImpl implements IExcelService{
@@ -453,8 +450,11 @@ public class ExcelServiceImpl implements IExcelService{
 				TransUtil.sb=new StringBuffer();
 				TransUtil.sb = new StringBuffer();
 				String bucketField = obj.getCellValue(row.getCell(11));
-				String startDate = obj.getCellValue(row.getCell(12));
-				String endDate = obj.getCellValue(row.getCell(13));
+				String iskey = obj.getCellValue(row.getCell(12));
+				String isvalid = obj.getCellValue(row.getCell(13));
+				String incrementfield = obj.getCellValue(row.getCell(14));
+				String startDate = obj.getCellValue(row.getCell(15));
+				String endDate = obj.getCellValue(row.getCell(16));
 				StringBuffer temp = new StringBuffer();
 				temp.append(verifyFieldInfo(dataSrcAbbr,infaceNo,infaceName,orderNumber,fieldName, dataType,
 						format,comma,fieldDesc,bucketField));
@@ -462,18 +462,18 @@ public class ExcelServiceImpl implements IExcelService{
 				if (!string.equals("") && !string.isEmpty() && string!=null){
 					stringBuffer.append("第"+(i+1)+"行:"+"\n");
 					stringBuffer.append(temp.toString());
-					if (stringBuffer.length() >= 300) {
-						stringBuffer.append("......"+"\n"+"错误信息过多，请输入正确数据"+"\n");
+					//if (stringBuffer.length() >= 300) {
+					//	stringBuffer.append("......"+"\n"+"错误信息过多，请输入正确数据"+"\n");
 //						break;
-						msgMap.put("msgData", "导入失败\r\n" + stringBuffer);
-						msgMap.put("dataSrcAbbr", ds);
-						return msgMap;
-					}
+					//	msgMap.put("msgData", "导入失败\r\n" + stringBuffer);
+					//	msgMap.put("dataSrcAbbr", ds);
+					//	return msgMap;
+					//}
 //					continue;
 				}
 				DataInterfaceColumnsTmp model = new DataInterfaceColumnsTmp(dataSrcAbbr, infaceNo,
 						Integer.parseInt(orderNumber), infaceName, fieldName, dataType, format,
-						 comma, fieldDesc, bucketField);
+						 comma, fieldDesc, bucketField, iskey, isvalid, incrementfield);
 				if(nullable!=null && !"".equals(nullable)){
 					model.setNullable(Integer.parseInt(nullable));
 				}else{
@@ -958,6 +958,635 @@ public class ExcelServiceImpl implements IExcelService{
 			}
 		}
 		return keyList;
+	}
+	
+	
+	@Override
+	@Transactional
+	public Map<String,String>  importInfo(MultipartFile file,String batchNo) {
+		//String batch_no = UUID.randomUUID().toString();
+		String ds = "";
+		int batchInsertRecord = 0;
+		int batchInsertInface = 0;
+		int batchInsertColumn = 0;
+		int batchInsertProc = 0;
+		Map<String, String> msgMap = new HashMap<String, String>();
+		Map<String, String> mapRecord = new HashMap<String, String>();
+		Map<String, String> mapInface = new HashMap<String, String>();
+		Map<String,String> mapColumn = new HashMap<String,String>();
+		Map<String,String> mapProc = new HashMap<String,String>();
+		List<DataRvsdRecordTmp> listRecord = new ArrayList<DataRvsdRecordTmp>();
+		List<DataInterfaceTmp> listInface = new ArrayList<DataInterfaceTmp>();
+		List<DataInterfaceColumnsTmp> listColumn = new ArrayList<DataInterfaceColumnsTmp>();
+		List<DataInterface2procTmp> listProc = new ArrayList<DataInterface2procTmp>();
+		ExcelUtil objInface = ExcelUtil.getInstance();
+		try {
+			Workbook wb = getWorkbook(file);
+			if (wb == null) {
+				msgMap.put("msgData", "读取文件失败");
+				msgMap.put("dataSrcAbbr", ds);
+				return msgMap;
+			}
+
+			//sheet2接口信息
+			Sheet sheet2 = wb.getSheetAt(1);
+			logger.info("sheet2.getLastRowNum():::"+sheet2.getLastRowNum());
+			if (sheet2 != null && sheet2.getLastRowNum() != 0) {
+	//			String ds = "";
+	//			Map<String, String> mapInface = new HashMap<String, String>();
+				Map<String, String> dupTabMap = new HashMap();
+				Map<String, String> dupCName = new HashMap();
+				List<entityC2e> eList = eMapper.queryAll(new entityC2e());
+				List<attrC2e> aList = aMapper.queryAll(new attrC2e());
+				objInface.initDTable(eList);
+				objInface.initDCol(aList);
+				//excel数据添加到list中
+//				List<DataInterfaceTmp> list = new ArrayList<DataInterfaceTmp>();
+				List listDupInTabName = new ArrayList<>();
+				List list2 = new ArrayList<>();
+				List listInfaceName = new ArrayList<>();
+				List listDupInfaceCName = new ArrayList();
+				StringBuffer bufferInface = new StringBuffer();
+				StringBuffer sbBukNum = new StringBuffer();
+				String string = null;
+				int i;
+				for (i = 0; i <= sheet2.getLastRowNum(); i++) {
+					if (i == 0)
+						continue;
+					Row row = sheet2.getRow(i);
+					String dataSrcAbbr = objInface.getCellValue(row.getCell(0));
+					String a = null;
+					if (!ds.equals("") && !ds.equals(dataSrcAbbr)){
+						a = "[数据源]不一致,请校验\n";
+					}
+					ds = dataSrcAbbr;
+					String dataInfaceNo = objInface.getCellValue(row.getCell(1));
+					String dataInfaceName = objInface.getCellValue(row.getCell(2));
+					String dataInfaceCName = objInface.getCellValue(row.getCell(3));
+					String dataLoadFreq = objInface.getCellValue(row.getCell(4));
+					String dataLoadMthd = objInface.getCellValue(row.getCell(5));
+					String filedDelim = objInface.getCellValue(row.getCell(6));
+					String lineDelim = objInface.getCellValue(row.getCell(7));
+					String extrnlDatabaseName = objInface.getCellValue(row.getCell(8));
+					String intrnlDatabaseName = objInface.getCellValue(row.getCell(9));
+					String extrnlTableName = objInface.getCellValue(row.getCell(10));
+					String tableType = objInface.getCellValue(row.getCell(12));
+					String bucketNumber = objInface.getCellValue(row.getCell(13));
+					String regex2 = "[0-9]+";
+					boolean is3 = bucketNumber.matches(regex2);
+					if (is3 == false || bucketNumber.equals("")) {
+						sbBukNum.append("第" + (i + 1) + "行[分桶数]"+bucketNumber+"应非空且为全数字" + "\n");
+						mapInface.put("msgData", "接口信息导入失败:\r\n" + sbBukNum);
+						mapInface.put("dataSrcAbbr", ds);
+						return mapInface;
+					}
+//					String startDate = objInface.getCellValue(row.getCell(14));
+//					String endDate = objInface.getCellValue(row.getCell(15));
+					String intrnlTableName = objInface.getCellValue(row.getCell(11));
+					if ("".equals(intrnlTableName)) {  //内表表名为空，去词根表找
+						intrnlTableName = TransUtil.transTable(dataInfaceCName, objInface.getTableMap());
+						if ("".equals(intrnlTableName)) {  //词根表查找为空，去词根字段查找
+//						intrnlTableName = obj.getCellValue(row.getCell(11),obj.getColMap(),dataInfaceCName);
+							intrnlTableName = TransUtil.translateField(objInface.getColMap(), dataInfaceCName);
+							if (intrnlTableName.equals("")) {
+								intrnlTableName = "";
+							} else if (!intrnlTableName.startsWith("_")) {
+								intrnlTableName = dataSrcAbbr + "_" + intrnlTableName.toUpperCase();
+							} else {
+								intrnlTableName = dataSrcAbbr + intrnlTableName.toUpperCase();
+							}
+						}
+					}
+					TransUtil.sb = new StringBuffer();
+					StringBuffer temp = new StringBuffer();
+//					System.out.println("a:::"+a);
+					if (a!=null) {
+						temp.append(a+verifyInfaceInfo(dataSrcAbbr, dataInfaceNo, dataInfaceName, dataInfaceCName,
+								dataLoadFreq, dataLoadMthd, filedDelim, lineDelim, extrnlDatabaseName, extrnlTableName,
+								intrnlDatabaseName, intrnlTableName, tableType, bucketNumber));
+					}else {
+						temp.append(verifyInfaceInfo(dataSrcAbbr, dataInfaceNo, dataInfaceName, dataInfaceCName,
+								dataLoadFreq, dataLoadMthd, filedDelim, lineDelim, extrnlDatabaseName, extrnlTableName,
+								intrnlDatabaseName, intrnlTableName, tableType, bucketNumber));
+					}
+					string = temp.toString().trim();
+					if (!string.equals("") && !string.isEmpty() && string != null) {
+						bufferInface.append("第" + (i + 1) + "行:" + "\n");
+						bufferInface.append(temp.toString());
+					}
+					DataInterfaceTmp model = new DataInterfaceTmp(batchNo, dataInfaceName, dataInfaceCName, dataLoadFreq, dataLoadMthd,
+							filedDelim, lineDelim, extrnlDatabaseName, intrnlDatabaseName, extrnlTableName, intrnlTableName,
+							tableType, Integer.parseInt(bucketNumber),
+							dataSrcAbbr, dataInfaceNo);
+					/*model.setsDate(new java.sql.Date(new Date().getTime()));*/
+					model.setsDate(TimeUtil.getTy());
+					model.seteDate(TimeUtil.getE());
+					//logger.info(model.toString());
+					dupTabMap.put(dataInfaceName, intrnlTableName);
+					dupCName.put(dataInfaceName, dataInfaceCName);
+					listInface.add(model);
+					listDupInTabName.add(model.getIntrnlTableName());
+					list2.add(dataSrcAbbr);
+					listInfaceName.add(model.getDataInterfaceName());
+					listDupInfaceCName.add(model.getDataInterfaceDesc());
+				}
+
+				//接口名重复性校验
+				List<String> infaceName = getDuplicateElements(listInfaceName);
+				for (int j = 0; j < infaceName.size(); j++) {
+					if (infaceName != null && !infaceName.isEmpty()) {
+						bufferInface.append("\n" + "[接口名]" + infaceName.get(j) + "有重复");
+					}
+				}
+				//内表表名校验
+				String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
+				Pattern p = Pattern.compile(REGEX_CHINESE);
+				for (int j = 0; j < listDupInTabName.size(); j++) {
+					Matcher m = p.matcher(listDupInTabName.get(j).toString());
+					if (m.find()) {
+						bufferInface.append("第" + (j + 2) + "行" + "[内表表名]" + "「" + listDupInTabName.get(j).toString() + "」" + "中文字符在词根找不到映射" + "\n");
+					}
+					if (!listDupInTabName.get(j).toString().startsWith(list2.get(j).toString()) && !listDupInTabName.get(j).toString().equals("")) {
+						bufferInface.append("第" + (j + 2) + "行" + "[内表表名]" + "「" + listDupInTabName.get(j).toString() + "」" + "需前缀数据源" + "\n");
+					} else if (!listDupInTabName.get(j).toString().equals("") && listDupInTabName.get(j).toString().endsWith("_TB")) {
+						bufferInface.append("第" + (j + 2) + "行" + "[内表表名]" + "「" + listDupInTabName.get(j).toString() + "」" + "需前删除后缀'_TB'" + "\n");
+					} else if ("".equals(listDupInTabName.get(j).toString())) {
+						bufferInface.append("第" + (j + 2) + "行" + "[内表表名]" + listDupInTabName.get(j).toString() + "不能为空" + "\n");
+					}
+				}
+				//内表表名重复性校验
+				StringBuffer sb = new StringBuffer();
+				List<String> dupInTabList = getDuplicateElements(listDupInTabName);
+				if (dupInTabList != null && !dupInTabList.isEmpty()) {
+					sb.append("以下[接口名]对应的[内表表名]重复:\n");
+					for (int k = 0; k < dupInTabList.size(); k++) {
+						List dupInfaceName = getKeyList(dupTabMap, dupInTabList.get(k));
+						sb.append("「" + dupInfaceName + "」-「" + dupInTabList.get(k) + "」" + "\n");
+					}
+				}
+				//接口中文名重复性校验
+				List<String> dupInfaceNameL = getDuplicateElements(listDupInfaceCName);
+				if (dupInfaceNameL != null && !dupInfaceNameL.isEmpty()) {
+					sb.append("以下[接口名]对应的[接口中文描述]重复:\n");
+					for (int k = 0; k < dupInfaceNameL.size(); k++) {
+						List dupInfaceName = getKeyList(dupCName, dupInfaceNameL.get(k));
+						sb.append("「" + dupInfaceName + "」-「" + dupInfaceNameL.get(k) + "」" + "\n");
+					}
+				}
+
+				if (sb.length() > 0) {
+					bufferInface.append(sb);
+				}
+
+				string = bufferInface.toString().trim();
+				if (!string.equals("") && !string.isEmpty() && string != null) {
+					mapInface.put("msgData", "接口信息导入失败\r\n" + bufferInface);
+					mapInface.put("dataSrcAbbr", ds);
+//					return mapInface;
+				}
+//				batchInsertInface = interMapper.batchInsert(list);
+//				ExcelUtil util = ExcelUtil.getInstance();
+//				util.clearInterface(ds);
+//				DataInterface data = new DataInterface();
+//				data.seteDate(TimeUtil.getTw());
+//				data.setDataSrcAbbr(ds);
+//				util.initInterface(interMapper.queryAll(data));
+//				mapInface.put("msgData", "接口信息校验成功!记录条数:" + batchInsert+"\n");
+//				mapInface.put("dataSrcAbbr", ds);
+			}else {
+				mapInface.put("msgData", "数据接口信息表不能为空\r\n");
+			}
+
+			//sheet1版本信息
+			Sheet sheet1 = wb.getSheetAt(0);
+			logger.info("sheet1.getLastRowNum():::"+sheet1.getLastRowNum());
+			if (sheet1 != null && sheet1.getLastRowNum() != 0) {
+				StringBuffer recordBuffer = new StringBuffer();
+				for(int i=0;i<=sheet1.getLastRowNum();i++) {
+					if (i == 0)
+						continue;
+					Row row = sheet1.getRow(i);
+					String needVrsnNbr = objInface.getCellValue(row.getCell(0));
+					String chgPsn = objInface.getCellValue(row.getCell(1));
+					String exctPsn = objInface.getCellValue(row.getCell(2));
+					String corrIntfStdVrsn = objInface.getCellValue(row.getCell(3));
+					String intfDscr = objInface.getCellValue(row.getCell(4));
+
+					if (needVrsnNbr.trim() == null || needVrsnNbr.trim().isEmpty() || needVrsnNbr.trim().equals("")) {
+						recordBuffer.append("需求版本号第"+(i+1)+"行不能为空");
+					}
+					if (chgPsn.trim() == null || chgPsn.trim().isEmpty() || chgPsn.trim().equals("")) {
+						recordBuffer.append("变更人第"+(i+1)+"行不能为空");
+					}
+					if (exctPsn.trim() == null || exctPsn.trim().isEmpty() || exctPsn.trim().equals("")) {
+						recordBuffer.append("执行人第"+(i+1)+"行不能为空");
+					}
+					if (corrIntfStdVrsn.trim() == null || corrIntfStdVrsn.trim().isEmpty() || corrIntfStdVrsn.trim().equals("")) {
+						recordBuffer.append("对应接口规范版本第"+(i+1)+"行不能为空");
+					}
+					if (intfDscr.trim() == null || intfDscr.trim().isEmpty() || intfDscr.trim().equals("")) {
+						recordBuffer.append("接口说明第"+(i+1)+"行不能为空");
+					}
+					if (recordBuffer.length() != 0) {
+						mapInface.put("msgData", "接口修订记录导入失败:\r\n" + recordBuffer);
+						mapInface.put("dataSrcAbbr", ds);
+						return mapInface;
+					}
+
+					DataRvsdRecordTmp model = new DataRvsdRecordTmp();
+					model.setNeedVrsnNbr(needVrsnNbr);
+					model.setDataDrcAbbr(ds);
+					model.setChgPsn(chgPsn);
+					model.setExctPsn(exctPsn);
+					model.setCorrIntfStdVrsn(corrIntfStdVrsn);
+					model.setIntfDscr(intfDscr);
+					model.setsDate(TimeUtil.getDate(TimeUtil.getToday()));
+					model.seteDate(TimeUtil.getDate(TimeUtil.getE()));
+					model.setBatchNo(batchNo);
+					listRecord.add(model);
+					logger.info("listRecord:::" + listRecord.toString());
+				}
+			}else {
+				mapRecord.put("msgData","修订记录表不能为空");
+			}
+
+			//sheet3接口字段信息
+			Sheet sheet3 = wb.getSheetAt(2);
+			logger.info("sheet3.getLastRowNum():::"+sheet3.getLastRowNum());
+			if(sheet3 != null && sheet3.getLastRowNum() !=0){
+	//			Map<String,String> mapColumn = new HashMap<String,String>();
+				List<attrC2e> aList1 = aMapper.queryAll(new attrC2e());
+				ExcelUtil objColumn = ExcelUtil.getInstance();
+				objColumn.initDCol(aList1);
+				//excel数据添加到list中
+//				List<DataInterfaceColumnsTmp> listColumn = new ArrayList<DataInterfaceColumnsTmp>();
+				String stringColumn = null;
+				List<String> listDupFieldName = new ArrayList<>();
+				List list1 = new ArrayList<>();
+				StringBuffer bufferColumn = new StringBuffer();
+				StringBuffer sbOrderNum = new StringBuffer();
+				for(int i=0;i<=sheet3.getLastRowNum();i++) {
+					if(i==0)
+						continue;
+					Row row = sheet3.getRow(i);
+					if(row.getCell(0)==null)
+						continue;
+					String dataSrcAbbr = objColumn.getCellValue(row.getCell(0));
+					String infaceNo = objColumn.getCellValue(row.getCell(1));
+					String infaceName = objColumn.getCellValue(row.getCell(2));
+					String orderNumber = objColumn.getCellValue(row.getCell(3));
+					String regex1 = "[0-9]+";
+					boolean is = orderNumber.matches(regex1);
+					if (!is || orderNumber.equals("")){
+						sbOrderNum.append("第"+(i+1)+"行:[序号]应非空且为数字"+"\n");
+						mapColumn.put("msgData", "接口字段信息导入失败\r\n" + sbOrderNum);
+						mapColumn.put("dataSrcAbbr", ds);
+						return mapColumn;
+					}
+					ds = dataSrcAbbr;
+					String dataType = objColumn.getCellValue(row.getCell(5));
+					String format = objColumn.getCellValue(row.getCell(6));
+					String nullable = objColumn.getCellValue(row.getCell(7));
+					String replacenull = objColumn.getCellValue(row.getCell(8));
+					String comma = objColumn.getCellValue(row.getCell(9));
+					String fieldDesc = objColumn.getCellValue(row.getCell(10));
+					String fieldName = objColumn.getCellValue(row.getCell(4));
+					if("".equals(fieldName)){  //字段名为空，去词根表找
+						fieldName = objColumn.getCellValue(row.getCell(4),objColumn.getColMap(),fieldDesc).toUpperCase();
+						if (fieldName.startsWith("_")){
+							fieldName = fieldName.substring(1).toUpperCase();
+						}
+					}
+					TransUtil.sb = new StringBuffer();
+					String bucketField = objColumn.getCellValue(row.getCell(11));
+					String iskey = objColumn.getCellValue(row.getCell(12));
+					String isvalid = objColumn.getCellValue(row.getCell(13));
+					String incrementfield = objColumn.getCellValue(row.getCell(14));
+//					String startDate = objColumn.getCellValue(row.getCell(15));
+//					String endDate = objColumn.getCellValue(row.getCell(16));
+					StringBuffer temp = new StringBuffer();
+					temp.append(verifyFieldInfo(dataSrcAbbr,infaceNo,infaceName,orderNumber,fieldName, dataType,
+							format,nullable,comma,fieldDesc,bucketField));
+					stringColumn = temp.toString().trim();
+					if (!stringColumn.equals("") && !stringColumn.isEmpty() && stringColumn!=null){
+						bufferColumn.append("第"+(i+1)+"行:"+"\n");
+						bufferColumn.append(temp.toString());
+					}
+					DataInterfaceColumnsTmp model = new DataInterfaceColumnsTmp(dataSrcAbbr, infaceNo,
+							Integer.parseInt(orderNumber), infaceName, fieldName, dataType, format,
+							comma, fieldDesc, bucketField, iskey, isvalid, incrementfield);
+					if(nullable!=null && !"".equals(nullable)){
+						model.setNullable(Integer.parseInt(nullable));
+					}else{
+						model.setNullable(0);
+					}
+					if( replacenull!=null && !"".equals(replacenull)){
+						model.setReplacenull(Integer.parseInt(replacenull));
+					}else{
+						model.setReplacenull(0);
+					}
+					/*model.setsDate(new java.sql.Date(new Date().getTime()));*/
+					model.setsDate(TimeUtil.getTy());
+					model.seteDate(TimeUtil.getE());
+					model.setBatchNo(batchNo);
+					listColumn.add(model);
+					list1.add(fieldName);
+					listDupFieldName.add(infaceName+"」-「"+fieldName);
+				}
+				//字段名校验
+				String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
+				Pattern p = Pattern.compile(REGEX_CHINESE);
+				for (int j=0;j<list1.size();j++) {
+					String str = list1.get(j).toString();
+					Matcher m = p.matcher(str);
+					if (m.find()){
+						bufferColumn.append("第"+(j+2)+"行"+"[字段名]"+"「"+list1.get(j).toString()+"」"+"中文字符在词根找不到映射"+"\n");
+					}else if("".equals(list1.get(j).toString())){
+						bufferColumn.append("第"+(j+2)+"行"+"[字段名]不能为空"+"\n");
+					}
+				}
+				//重复性校验
+				StringBuffer sb = new StringBuffer();
+				List<String> dupFieldNameList = getDuplicateElements(listDupFieldName);
+				if (dupFieldNameList != null && !dupFieldNameList.isEmpty()) {
+					sb.append("以下[接口名]对应的[字段名]重复:" + "\n");
+					for (int k=0;k<dupFieldNameList.size();k++) {
+						sb.append("「" + dupFieldNameList.get(k) + "」" + "\n");
+					}
+				}
+
+				if (sb.length()>0) {
+					bufferColumn.append(sb);
+				}
+				stringColumn = bufferColumn.toString().trim();
+				if (!stringColumn.equals("") && !stringColumn.isEmpty() && stringColumn!=null) {
+					mapColumn.put("msgData", "接口字段信息导入失败:\r\n" + bufferColumn+"\n");
+					mapColumn.put("dataSrcAbbr", ds);
+//					return mapColumn;
+				}
+					//批量入库
+//					batchInsertColumn = colMapper.batchInsert(listColumn);
+//					ExcelUtil util = ExcelUtil.getInstance();
+//					util.clearColumn(ds);
+//					DataInterfaceColumns data = new DataInterfaceColumns();
+//					data.seteDate(TimeUtil.getTw());
+//					data.setDataSrcAbbr(ds);
+//					util.initColumn(colMapper.queryAll(data));
+//					mapColumn.put("msgData", "接口字段信息校验成功!记录条数:" + batchInsertColumn + "\n");
+//					mapColumn.put("dataSrcAbbr", ds);
+//				return mapColumn;
+
+			}else {
+				mapColumn.put("msgData", "数据接口字段表不能为空\r\n");
+			}
+
+			//sheet4数据加载算法导入
+			Sheet sheet4 = wb.getSheetAt(3);
+//			Map<String,String> mapProc = new HashMap<String,String>();
+			logger.info("sheet4.getLastRowNum():::"+sheet4.getLastRowNum());
+			if(sheet4 != null && sheet4.getLastRowNum() != 0) {
+//				 ds = "";
+				ExcelUtil objProc = ExcelUtil.getInstance();
+				//excel数据添加到list中
+//				List<DataInterface2procTmp> list = new ArrayList<DataInterface2procTmp>();
+				StringBuffer bufferProc = new StringBuffer();
+				String string = null;
+				for(int i=0;i<=sheet4.getLastRowNum();i++) {
+					if(i==0)
+						continue;
+					Row row = sheet4.getRow(i);
+					String dataSrcAbbr = objProc.getCellValue(row.getCell(0));
+					String s = null;
+					String dataInterfaceNo = objProc.getCellValue(row.getCell(1));
+					ds = dataSrcAbbr;
+					String dbName = objProc.getCellValue(row.getCell(2));
+					String procName = objProc.getCellValue(row.getCell(3));
+					StringBuffer temp = new StringBuffer();
+					temp.append(verifyLoadProcInfo(dataSrcAbbr,dataInterfaceNo,dbName,procName));
+					string = temp.toString().trim();
+					if (!string.equals("") && !string.isEmpty() && string!=null){
+						bufferProc.append("数据加载算法第"+(i+1)+"行:"+"\n");
+						bufferProc.append(temp.toString());
+					}
+					DataInterface2procTmp model = new DataInterface2procTmp();
+					model.setDataSrcAbbr(dataSrcAbbr);
+					model.setDataInterfaceNo(dataInterfaceNo);
+					model.setProcDatabaseName(dbName);
+					model.setProcName(procName);
+					model.setsDate(new java.sql.Date(new Date().getTime()));
+					model.seteDate(ExcelUtil.getInstance().StringToDate(BoncConstant.CON_E_DATE));
+					model.setBatchNo(batchNo);
+					listProc.add(model);
+				}
+				string = bufferProc.toString().trim();
+				if (!string.equals("") && !string.isEmpty() && string!=null) {
+					mapProc.put("msgData", "数据加载算法校验失败:\n"+bufferProc);
+				}
+				//批量入库
+//				batchInsertProc = pMapper.batchInsert(list);
+//				objProc.clearProc(ds);
+//				DataInterface2proc data = new DataInterface2proc();
+//				data.seteDate(TimeUtil.getTw());
+//				data.setDataSrcAbbr(ds);
+//				objProc.initProc(pMapper.queryAll(data));
+//				mapProc.put("msgData","数据加载算法校验成功!记录条数:"+batchInsert);
+//				mapProc.put("dataSrcAbbr", ds);
+//				return mapProc;
+			}else {
+				mapColumn.put("msgData", "数据加载算法表不能为空\r\n");
+			}
+//			System.out.println("msg:::"+(mapInface.get("msgData")+mapColumn.get("msgData")+mapProc.get("msgData")));
+
+			if (mapInface.get("msgData") == null && mapColumn.get("msgData") == null && mapProc.get("msgData") == null ){
+				try {
+					//sheet1批量入库临时表
+//					batchInsertRecord = recordMapper.batchInsert(listRecord);
+//					mapRecord.put("msgData", "接口修订记录校验成功!记录条数:" + batchInsertRecord + "\n");
+//					mapRecord.put("dataSrcAbbr", ds);
+
+					//sheet2批量入库临时表
+					batchInsertInface = interMapper.batchInsert(listInface);
+					ExcelUtil util = ExcelUtil.getInstance();
+					util.clearInterface(ds);
+					DataInterface data = new DataInterface();
+					data.seteDate(TimeUtil.getTw());
+					data.setDataSrcAbbr(ds);
+					util.initInterface(interMapper.queryAll(data));
+					mapInface.put("msgData", "接口信息校验成功!记录条数:" + batchInsertInface + "\n");
+					mapInface.put("dataSrcAbbr", ds);
+
+					//sheet3批量入库
+					batchInsertColumn = colMapper.batchInsert(listColumn);
+					util.clearColumn(ds);
+					DataInterfaceColumns dataColumn = new DataInterfaceColumns();
+					dataColumn.seteDate(TimeUtil.getTw());
+					dataColumn.setDataSrcAbbr(ds);
+					util.initColumn(colMapper.queryAll(dataColumn));
+					mapColumn.put("msgData", "接口字段信息校验成功!记录条数:" + batchInsertColumn + "\n");
+					mapColumn.put("dataSrcAbbr", ds);
+
+					//sheet4批量入库
+					batchInsertProc = pMapper.batchInsert(listProc);
+					util.clearProc(ds);
+					DataInterface2proc dataProc = new DataInterface2proc();
+					dataProc.seteDate(TimeUtil.getTw());
+					dataProc.setDataSrcAbbr(ds);
+					util.initProc(pMapper.queryAll(dataProc));
+					mapProc.put("msgData", "数据加载算法校验成功!记录条数:" + batchInsertProc);
+					mapProc.put("dataSrcAbbr", ds);
+				}catch (Exception e){
+					e.printStackTrace();
+					msgMap.put("msgData", "校验完成，导入异常");
+					msgMap.put("dataSrcAbbr", ds);
+					return msgMap;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			msgMap.put("msgData", "导入异常");
+			msgMap.put("dataSrcAbbr", ds);
+			return msgMap;
+		}
+
+		msgMap.put("msgData",mapRecord.get("msgdata")+mapInface.get("msgData")+mapColumn.get("msgData")+mapProc.get("msgData"));
+		msgMap.put("dataSrcAbbr", ds);
+		return msgMap;
+	}
+	
+	/**
+	 *接口字段信息校验
+	 */
+	public  StringBuffer verifyFieldInfo(String dataSrcAbbr,String dataInterfaceNo,String dataInterfaceName,String orderNumber,String fieldName,
+										 String dataType,String dataFormat,
+										 String nullable,
+//										 String replacenull,
+										 String comma,String columnComment,String bucketField){
+		StringBuffer stringBuffer = new StringBuffer();
+		//数据源校验
+		String s = null;
+		List<String> list = queryDataSrc();
+		for (int i=0;i<list.size();i++) {
+//			System.out.println("在这呢："+list.get(i));
+			if (list.get(i)	.equals(dataSrcAbbr)){
+				s = dataSrcAbbr;
+			}
+		}
+		if (s==null){
+			stringBuffer.append("[数据源]"+dataSrcAbbr+"不存在，请登记该数据源"+"\n");
+		}else if("".equals(dataSrcAbbr))
+			stringBuffer.append("[数据源]不能为空"+"\n");
+
+		//接口编号校验
+		if("".equals(dataInterfaceNo))
+			stringBuffer.append("[接口编号]不能为空"+"\n");
+		if(dataInterfaceNo.length()!=5){
+			stringBuffer.append("[接口编号]长度应为5"+"\n");
+		}
+
+		//接口名校验
+//		boolean iss = dataInterfaceName.matches(dataSrcAbbr+"_"+dataInterfaceNo+"[_(A-Z)|.\\\\n]*");
+		boolean iss = dataInterfaceName.startsWith(dataSrcAbbr);
+		if(!iss){
+			stringBuffer.append("[接口名]应前缀数据源"+"\n");
+		}else if("".equals(dataInterfaceName))
+			stringBuffer.append("[接口名]不能为空"+"\n");
+
+		//序号
+//		String regex1 = "[0-9]+";
+//		boolean is = orderNumber.matches(regex1);
+//		if (!is || orderNumber.equals("")){
+//			stringBuffer.append("[序号]应非空且为数字"+"\n");
+//		}
+
+		//字段名校验
+		/*String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
+		Pattern p = Pattern.compile(REGEX_CHINESE);
+		Matcher m = p.matcher(fieldName);
+		if (m.find()){
+			stringBuffer.append("[字段名]不能含有中文"+"\n");
+		}else if("".equals(fieldName)){
+			stringBuffer.append("[字段名]不能为空"+"\n");
+		}*/
+
+
+		/*
+		数据类型校验
+		 */
+		//数据类型
+		if("".equals(dataType)) {
+			stringBuffer.append("[数据类型]不能为空" + "\n");
+		}
+
+		if(!dataType.toUpperCase().startsWith("CHAR")  && !dataType.toUpperCase().startsWith("INT") && !dataType.toUpperCase().startsWith("VARCHAR")
+				&& !dataType.toUpperCase().startsWith("BIGINT") && !dataType.toUpperCase().startsWith("STRING") && !dataType.toUpperCase().startsWith("NUMBER")
+				&& !dataType.toUpperCase().startsWith("DECIMAL") && !dataType.toUpperCase().startsWith("DATE") && !dataType.toUpperCase().startsWith("TIMESTAMP")){
+			stringBuffer.append("[数据类型]'"+dataType + "'不存在\n");
+		}
+
+		//是否非空校验
+		if(!nullable.isEmpty() && nullable!=null && !nullable.equals("0") && !nullable.equals("1") ){
+			stringBuffer.append("[是否非空]应为0/1,不填默认为0");
+		}
+
+		//逗号分隔符
+		if (comma!=null && !comma.isEmpty() && !comma.equals("") && !comma.equals(",")){
+			stringBuffer.append("[逗号分隔符]应为英文逗号\n");
+		}
+
+		//字段说明校验
+		if("".equals(columnComment)) {
+			stringBuffer.append("[字段说明]不能为空" + "\n");
+		}
+		//日期格式校验
+		/*String regex3 = "^([1-9]\\d{3}-)(([0]{0,1}[1-9]-)|([1][0-2]-))(([0-3]{0,1}[0-9]))$";
+		boolean sdate = Pattern.matches(regex3,startDate);
+		boolean edate = Pattern.matches(regex3,endDate);
+		if (sdate == false || edate == false){
+			stringBuffer.append("[日期格式]应为yyyy-MM-dd"+"\n");
+		}else if ("".equals(sdate)){
+			stringBuffer.append("[生效日期]不能为空"+"\n");
+		}else if ("".equals(edate)){
+			stringBuffer.append("[失效日期]不能为空"+"\n");
+		}*/
+
+		return stringBuffer;
+	}
+	
+	/**
+	 * 数据加载算法导入校验
+	 * @param dataSrcAbbr
+	 * @param dataInterfaceNo
+	 * @param dbName
+	 * @param procName
+	 * @return
+	 */
+	public  StringBuffer verifyLoadProcInfo(String dataSrcAbbr,String dataInterfaceNo,String dbName,String procName){
+		StringBuffer stringBuffer = new StringBuffer();
+		List<String> dataSrcList = queryDataSrc();
+		List dataLoadProcList = interMapper.queryDbName();
+		if (!dataSrcList.contains(dataSrcAbbr.trim())){
+			stringBuffer.append("[数据源]"+dataSrcAbbr+"不存在，请登记该数据源"+"\n");
+		}else if("".equals(dataSrcAbbr)) {
+			stringBuffer.append("[数据源]不能为空" + "\n");
+		}
+
+		if("".equals(dataInterfaceNo.trim())){
+			stringBuffer.append("[接口编号]不能为空\n");
+		}else if (dataInterfaceNo.length()!=5){
+			stringBuffer.append("[接口编号]长度应为5\n");
+		}
+
+		if (dbName == null || "".equals(dbName.trim()) || dbName.isEmpty()){
+			stringBuffer.append("[存储过程数据库名]不能为空\n");
+		}else if (!dataLoadProcList.contains(dbName)){
+			stringBuffer.append("[存储过程数据库名]不存在\n");
+		}
+
+		if(procName==null || "".equals(procName.trim()) || procName.isEmpty() ){
+			stringBuffer.append("[存储过程名]不能为空\n");
+		}
+
+		return stringBuffer;
 	}
 
 }

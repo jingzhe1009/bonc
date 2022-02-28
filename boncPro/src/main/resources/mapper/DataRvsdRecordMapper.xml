@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataRvsdRecordMapper">
+  <!-- 正式表 -->
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataRvsdRecord">
+    <id column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <id column="expt_seq_nbr" jdbcType="VARCHAR" property="exptSeqNbr" />
+    <result column="data_src_abbr" jdbcType="VARCHAR" property="dataDrcAbbr" />
+    <result column="chg_psn" jdbcType="VARCHAR" property="chgPsn" />
+    <result column="exct_psn" jdbcType="VARCHAR" property="exctPsn" />
+    <result column="corr_intf_std_vrsn" jdbcType="VARCHAR" property="corrIntfStdVrsn" />
+    <result column="intf_dscr" jdbcType="VARCHAR" property="intfDscr" />
+    <result column="s_date" jdbcType="VARCHAR" property="eDate" />
+    <result column="e_date" jdbcType="VARCHAR" property="eDate" />
+  </resultMap>
+  <!-- 临时表 -->
+  <resultMap id="BaseResultMapTmp" type="com.ljz.model.DataRvsdRecordTmp">
+  	<result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+  	<result column="importType" jdbcType="VARCHAR" property="importType" />
+    <result column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <result column="data_src_abbr" jdbcType="VARCHAR" property="dataDrcAbbr" />
+    <result column="chg_psn" jdbcType="VARCHAR" property="chgPsn" />
+    <result column="exct_psn" jdbcType="VARCHAR" property="exctPsn" />
+    <result column="corr_intf_std_vrsn" jdbcType="VARCHAR" property="corrIntfStdVrsn" />
+    <result column="intf_dscr" jdbcType="VARCHAR" property="intfDscr" />
+    <result column="s_date" jdbcType="VARCHAR" property="eDate" />
+    <result column="e_date" jdbcType="VARCHAR" property="eDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    needVrsnNbr,dataDrcAbbr,chgPsn,exctPsn,corrIntfStdVrsn,intfDscr,sDate,eDate
+
+  </sql>
+  <insert id="batchInsert" parameterType="com.ljz.model.DataRvsdRecordTmp">
+      insert into data_rvsd_record_tmp (needVrsnNbr,dataSrcAbbr,chgPsn,exctPsn,corrIntfStdVrsn,intfDscr,sDate,eDate,batch_no)
+      values
+          (#{needVrsnNbr},#{dataSrcAbbr},#{chgPsn},#{exctPsn},#{corrIntfStdVrsn},#{intfDscr},#{sDate},#{eDate},#{batch_no})
+  </insert>
+  <select id="queryExptSeqNbr" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select expt_seq_nbr from data_rvsd_record where data_src_abbr=#{data_src_abbr}
+  </select>
+
+</mapper>
