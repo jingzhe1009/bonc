@@ -220,9 +220,9 @@ function initDataModelTable(obj) {
         	/*{"title": "全选<input type=\"checkbox\" id=\"checkedAll\" onclick=\"checkedAll()\">", "data": null, "width": "5%","render": function (data, type, row) {
                return '<input type="checkbox" id="'+row.dataInterfaceNo+'" name="items">';
             }},*/
-        	{"title": "<input type=\"checkbox\" id=\"checkedAll\" onclick=\"checkedAll()\">全选", "data": null, "width": "5%","render": function (data, type, row) {
+        	/*{"title": "<input type=\"checkbox\" id=\"checkedAll\" onclick=\"checkedAll()\">全选", "data": null, "width": "5%","render": function (data, type, row) {
                 return '<input type="checkbox" id="'+row.dataInterfaceName+'-'+row.condition+'-'+row.num+'" name="items">';
-             }},
+             }},*/
              {"title":"操作" ,"data": null,"width":"15%","render": function(data, type, row) {
              	var html = '<div>';
              		html += '<span onclick="dataModelModel.detail(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceNo+'\');" class="btn-sm cm-tblA">字段</span>';

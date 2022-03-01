@@ -171,7 +171,7 @@
 	              	</div>
 	              	
 	              	<!-- 接口信息导入（首页） -->
-					<div class="tab-content tab-import" id="interfaceContent">
+					<div class="tab-content tab-import" id="historyContent">
 						<div id="syContent">
 							<div class="indexImport">
 								<h1>当前数据源：上交所（SSE）</h1>
@@ -207,7 +207,7 @@
 									</div>
 								</form>
 								<div style="clear: both"></div>
-								<table id="procTable" style="white-space:nowrap;"></table>
+								<table id="historyTable" style="white-space:nowrap;"></table>
 							</div>
 							<div style="display: inline-block; height: 100%">
 								<div style="height: 80%">
@@ -216,7 +216,7 @@
 								</div>
 							</div>
 						</div>
-						
+						<!-- 跑火车 -->
 						<div id="importContent">
 				            <div class="modal-body">
 								<div class="model-content">
@@ -294,7 +294,95 @@
 									                        </div>
 									                    </div>
 													</div>
-													<div class="contentList" id="contD">这是第四步的信息内容</div>
+													<div class="contentList" id="contD">
+														<div id="syContent">
+															<div class="indexImport">
+																<h1>当前数据源：上交所（SSE）</h1>
+																<h2 class="importH1">当前数据结构：结构化</h2>
+																<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
+																<div class="container">
+																	<div class="row clearfix">
+																		<div class="col-md-3 column">
+																			<div class="alert alert-dismissable alert-success">
+																				<h4>
+																					接口变更信息
+																				</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
+																			</div>
+																		</div>
+																		<div class="col-md-3 column">
+																			<div class="alert alert-dismissable alert-danger">
+																				<h4>
+																					接口字段变更信息
+																				</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
+																			</div>
+																		</div>
+																	</div>
+																	<div id="compareContent">
+														        		<!-- <div class="tableIcon">接口列表</i></div> -->
+														        		<form class="navbar-form navbar-left" role="search" id="form" >
+															        		<div class="selfAdaptionLeft">
+															        			<div>
+																					<div class="input-group">
+																						<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="compare_dataSrcAbbr"  placeholder="数据源">
+																						<input data-col="dataInterfaceNo" type="text" class="form-control" id="compare_dataInterfaceNo"  placeholder="接口编号">
+														                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+																					</div>
+																				</div>
+															        		</div>
+															        		<div class="selfAdaptionRight">
+																				<button type="button" class="btn btn-primary" onclick="compareModel.search()">查询</button>
+																				<button type="reset" class="btn btn-primary" ><!-- onclick='interfaceModel.init(localStorage.getItem("idx"))' -->重置</button>
+																				<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.add(1,this)">新增</button>
+																				<a class="btn btn-primary" target="_blank" onclick="interfaceModel.importTable()">导入接口</a> -->
+														                    </div>
+													                    </form>
+													                    <div style="clear: both"></div>
+													                    <div>
+													                        <table id="compareTable" style="white-space:nowrap;"></table>
+													                    </div>
+											                    	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="contentList" id="contE">
+														<!-- 数据模型内容 -->
+									                    <div id="dataModelContent">
+											        		<!-- <div class="tableIcon">数据模型列表</i></div> -->
+											        		<form class="navbar-form navbar-left" role="search" id="form" >
+												        		<div class="selfAdaptionLeft">
+												        			<div>
+																		<div class="input-group">
+																			<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="model_dataSrcAbbr"  placeholder="数据源">
+																			<input data-col="dataInterfaceNo" type="text" class="form-control" id="model_dataInterfaceNo"  placeholder="接口编号">
+											                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+																		</div>
+																	</div>
+												        		</div>
+												        		<div class="selfAdaptionRight">
+												        			<button type="button" class="btn btn-primary" onclick="dataModelModel.search()">查询</button>
+																	<button type="reset" class="btn btn-primary" >重置</button>
+																	<button type="button" class="btn btn-primary" onclick="dataModelModel.createFile()">生成建表语句文件</button>
+													            	<button type="button" class="btn btn-primary" onclick="dataModelModel.insertDb()">物化(创建)</button>
+											                    </div>
+										                    </form>
+										                    <div style="clear: both"></div>
+										                    <div>
+										                        <table id="dataModelTable" style="white-space:nowrap;"></table>
+										                    </div>
+									                    </div>
+													</div>
+													<div class="contentList" id="contF">
+														<div class="indexImport">
+																<h1 class="importH1">当前数据源：上交所（SSE）</h1><br/>
+																<h2 class="importH1">当前数据结构：结构化</h2><br/>
+																<h2 class="importH1">当前数据库：星环HIVE</h2><br/>
+																<h3 class="importH1">需求版本号:v1.1</h3><br/>
+																<h3 class="importH1">导入流水号:v1.1.0</h3><br/>
+																<h3 class="importH1">接口总数:v1.1.0</h3><br/>
+																<h3>压缩文件包含所有导入接口的建表语句和回退语句:</h3><br/>
+														</div>
+													</div>
 												</ol> 
 											</div>
 										</div>
@@ -510,22 +598,27 @@
 <script src="/js/manageDictionary.js"></script>
 <!-- <script src="/js/interface_version.js"></script> -->
 <!-- <script src="/js/column_version.js"></script> -->
-<script src="/js/proc_version.js"></script>
-<!-- <script src="/js/column.js"></script> -->
+<!-- <script src="/js/proc_version.js"></script> -->
+<!-- <script src="/js/column.js"></script> 
+<script src="/js/interface.js"></script>
+<script src="/js/proc.js"></script>-->
 <script src="/js/common.js"></script>
 <script src="/js/dataSrc.js"></script>
 <script src="/js/createSql.js"></script>
-<!-- <script src="/js/interface.js"></script> -->
 <script src="/js/index.js"></script>
-<script src="/js/proc.js"></script>
+
 <script src="/js/func.js"></script>
 <script src="/js/log.js"></script>
 <script src="/js/model.js"></script>
-<!-- <script src="/js/detail.js"></script> -->
+<script src="/js/detail.js"></script>
+<script src="/js/compare.js"></script>
+<script src="/js/history.js"></script>
+
 <script src="/js/toTmpToSave.js"></script>
 <script src="/js/infoImportTmp.js"></script>
-<script src="/js/interface_tmp.js"></script>
+<!-- <script src="/js/interface_tmp.js"></script>
 <script src="/js/column_tmp.js"></script>
-<script src="/js/proc_tmp.js"></script>
+<script src="/js/proc_tmp.js"></script> -->
 <script src="/js/indexTmp.js"></script>
+
 </html>

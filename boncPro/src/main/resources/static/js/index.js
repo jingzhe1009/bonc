@@ -271,29 +271,12 @@ function changeTab(tabId){
 		$('.base_title').html('当前数据源:'+desc+"("+idx+")");
     	$("#pageHeader").html('<p>当前位置：配置说明</p>');
 	} else if(tabId == '14'){
-		$("#interfaceContent").show();
+		$("#historyContent").show();
 		$("#syContent").show();
 		$("#importContent").hide();
     	$("#pageHeader").html('<p>当前位置：接口信息导入</p>');
+    	historyModel.init(idx);
 	}
-}
-
-function yjdr(){
-	$("#syContent").hide();
-	$("#importContent").show();
-	var obj ={};
-	obj['batchNo'] = localStorage.getItem("batchNo");
-	obj['dataSrcAbbr'] =  localStorage.getItem("dataSrcTmp");
-	for (var i=1;i<=3;i++) {
-		// debugger
-		changeTab2(i, obj);
-	}
-	changeTab2(1,obj);	 //默认显示第一个tab页
-	// 监听切换数据源工作流程tab选项卡
-    $('#authorityTab2 li').click(function () {
-        var tabId = $(this).attr('tab-id');
-		changeTab2(tabId,obj);
-    });
 }
 
 //定义success主题提示消息
@@ -376,4 +359,26 @@ function getInput(key,value){
 	
 	var text ='<div class="form-group"><label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>'+key+'</label><div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input name="'+value+'param" type="text" class="form-control" ></div></div>';
 	return text;
+}
+
+function yjdr(){
+	$("#syContent").hide();
+	$("#importContent").show();
+	var obj ={};
+	obj['batchNo'] = localStorage.getItem("batchNo");
+	obj['dataSrcAbbr'] =  localStorage.getItem("dataSrcTmp");
+	for (var i=1;i<=3;i++) {
+		// debugger
+		changeTab2(i, obj);
+	}
+	changeTab2(1,obj);	 //默认显示第一个tab页
+	// 监听切换数据源工作流程tab选项卡
+    $('#authorityTab2 li').click(function () {
+        var tabId = $(this).attr('tab-id');
+		changeTab2(tabId,obj);
+    });
+    //加载信息确认table
+    var idx = localStorage.getItem("idx");
+    compareModel.init(idx);
+    dataModelModel.init(idx);
 }

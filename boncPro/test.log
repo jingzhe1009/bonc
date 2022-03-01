@@ -4,3 +4,9 @@
 11232022-02-28 10:51:57 INFO  DruidDataSource:785 - {dataSource-1} inited
 2022-02-28 11:34:37 INFO  DruidDataSource:1514 - {dataSource-1} closed
 2022-02-28 14:59:55 INFO  DruidDataSource:785 - {dataSource-1} inited
+2022-02-28 17:44:42 INFO  DruidDataSource:1514 - {dataSource-1} closed
+2022-03-01 08:54:26 INFO  DruidDataSource:785 - {dataSource-1} inited
+2022-03-01 08:57:33 INFO  DruidDataSource:1514 - {dataSource-1} closed
+2022-03-01 08:57:51 INFO  DruidDataSource:785 - {dataSource-2} inited
+2022-03-01 08:57:54 INFO  DruidDataSource:1514 - {dataSource-2} closed
+2022-03-01 08:57:55 INFO  DruidDataSource:785 - {dataSource-3} inited

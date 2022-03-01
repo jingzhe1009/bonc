@@ -479,7 +479,7 @@ input[type=checkbox]:checked:before,
 } */
 .selfAdaptionLeft{
     float: left;
-    width: 100%;
+    width: 30%;
 }
 /*閸掓銆冮幖婊呭偍閺嶏拷 娑撱倖鐖敮鍐ㄧ湰*/
 .modelBaseContainer .selfAdaptionLeft .input-group{
