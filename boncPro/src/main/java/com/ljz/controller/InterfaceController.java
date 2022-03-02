@@ -76,6 +76,25 @@ public class InterfaceController extends MainController{
     }
 	
 	@ResponseBody
+	@RequestMapping(value="/queryInterfaceCompare",method = RequestMethod.GET)
+    public Map<String, Object> queryInterfaceCompare(String dataSrcAbbr,String dataInterfaceNo) {
+
+		DataInterface record = new DataInterface();
+		record.setDataSrcAbbr(dataSrcAbbr);
+		record.setDataInterfaceNo(dataInterfaceNo);
+		record.seteDate(TimeUtil.getTw());
+		logger.info(record.toString());
+		List<DataInterface> list = intService.queryAll(record);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("recordsTotal", list.size());
+        resultMap.put("recordsFiltered", list.size());
+        resultMap.put("total", list.size());
+        resultMap.put("data", list);
+        logger.info("query interface compare success,num:"+list.size());
+        return resultMap;
+    }
+	
+	@ResponseBody
 	@RequestMapping(value="/createInterface",method = RequestMethod.POST)
 	@Transactional
     public Map<String,String> createInterface(DataInterface record) {

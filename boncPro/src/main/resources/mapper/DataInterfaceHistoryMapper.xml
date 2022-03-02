@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterfaceHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterfaceHistory">
+    <id column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <id column="expt_seq_nbr" jdbcType="VARCHAR" property="exptSeqNbr" />
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <id column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <id column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="data_interface_desc" jdbcType="VARCHAR" property="dataInterfaceDesc" />
+    <result column="data_load_freq" jdbcType="VARCHAR" property="dataLoadFreq" />
+    <result column="data_load_mthd" jdbcType="VARCHAR" property="dataLoadMthd" />
+    <result column="filed_delim" jdbcType="VARCHAR" property="filedDelim" />
+    <result column="line_delim" jdbcType="VARCHAR" property="lineDelim" />
+    <result column="extrnl_database_name" jdbcType="VARCHAR" property="extrnlDatabaseName" />
+    <result column="intrnl_database_name" jdbcType="VARCHAR" property="intrnlDatabaseName" />
+    <result column="extrnl_table_name" jdbcType="VARCHAR" property="extrnlTableName" />
+    <result column="intrnl_table_name" jdbcType="VARCHAR" property="intrnlTableName" />
+    <result column="table_type" jdbcType="VARCHAR" property="tableType" />
+    <result column="bucket_number" jdbcType="INTEGER" property="bucketNumber" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    need_vrsn_nbr, expt_seq_nbr, data_src_abbr, data_interface_no, data_interface_name, 
+    data_interface_desc, data_load_freq, data_load_mthd, filed_delim, line_delim, extrnl_database_name, 
+    intrnl_database_name, extrnl_table_name, intrnl_table_name, table_type, bucket_number, 
+    s_date, e_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceHistoryKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_history
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataInterfaceHistoryKey">
+    delete from data_interface_history
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataInterfaceHistory">
+    insert into data_interface_history (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, 
+      data_interface_no, data_interface_name, data_interface_desc, 
+      data_load_freq, data_load_mthd, filed_delim, 
+      line_delim, extrnl_database_name, intrnl_database_name, 
+      extrnl_table_name, intrnl_table_name, table_type, 
+      bucket_number, s_date, e_date
+      )
+    values (#{needVrsnNbr,jdbcType=VARCHAR}, #{exptSeqNbr,jdbcType=VARCHAR}, #{dataSrcAbbr,jdbcType=VARCHAR}, 
+      #{dataInterfaceNo,jdbcType=VARCHAR}, #{dataInterfaceName,jdbcType=VARCHAR}, #{dataInterfaceDesc,jdbcType=VARCHAR}, 
+      #{dataLoadFreq,jdbcType=VARCHAR}, #{dataLoadMthd,jdbcType=VARCHAR}, #{filedDelim,jdbcType=VARCHAR}, 
+      #{lineDelim,jdbcType=VARCHAR}, #{extrnlDatabaseName,jdbcType=VARCHAR}, #{intrnlDatabaseName,jdbcType=VARCHAR}, 
+      #{extrnlTableName,jdbcType=VARCHAR}, #{intrnlTableName,jdbcType=VARCHAR}, #{tableType,jdbcType=VARCHAR}, 
+      #{bucketNumber,jdbcType=INTEGER}, #{sDate,jdbcType=DATE}, #{eDate,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterfaceHistory">
+    insert into data_interface_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        need_vrsn_nbr,
+      </if>
+      <if test="exptSeqNbr != null">
+        expt_seq_nbr,
+      </if>
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="dataInterfaceName != null">
+        data_interface_name,
+      </if>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc,
+      </if>
+      <if test="dataLoadFreq != null">
+        data_load_freq,
+      </if>
+      <if test="dataLoadMthd != null">
+        data_load_mthd,
+      </if>
+      <if test="filedDelim != null">
+        filed_delim,
+      </if>
+      <if test="lineDelim != null">
+        line_delim,
+      </if>
+      <if test="extrnlDatabaseName != null">
+        extrnl_database_name,
+      </if>
+      <if test="intrnlDatabaseName != null">
+        intrnl_database_name,
+      </if>
+      <if test="extrnlTableName != null">
+        extrnl_table_name,
+      </if>
+      <if test="intrnlTableName != null">
+        intrnl_table_name,
+      </if>
+      <if test="tableType != null">
+        table_type,
+      </if>
+      <if test="bucketNumber != null">
+        bucket_number,
+      </if>
+      <if test="sDate != null">
+        s_date,
+      </if>
+      <if test="eDate != null">
+        e_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        #{needVrsnNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="exptSeqNbr != null">
+        #{exptSeqNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceName != null">
+        #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceDesc != null">
+        #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadFreq != null">
+        #{dataLoadFreq,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadMthd != null">
+        #{dataLoadMthd,jdbcType=VARCHAR},
+      </if>
+      <if test="filedDelim != null">
+        #{filedDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="lineDelim != null">
+        #{lineDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlDatabaseName != null">
+        #{extrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlDatabaseName != null">
+        #{intrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlTableName != null">
+        #{extrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlTableName != null">
+        #{intrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableType != null">
+        #{tableType,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketNumber != null">
+        #{bucketNumber,jdbcType=INTEGER},
+      </if>
+      <if test="sDate != null">
+        #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        #{eDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataInterfaceHistory">
+    update data_interface_history
+    <set>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc = #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadFreq != null">
+        data_load_freq = #{dataLoadFreq,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLoadMthd != null">
+        data_load_mthd = #{dataLoadMthd,jdbcType=VARCHAR},
+      </if>
+      <if test="filedDelim != null">
+        filed_delim = #{filedDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="lineDelim != null">
+        line_delim = #{lineDelim,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlDatabaseName != null">
+        extrnl_database_name = #{extrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlDatabaseName != null">
+        intrnl_database_name = #{intrnlDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="extrnlTableName != null">
+        extrnl_table_name = #{extrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="intrnlTableName != null">
+        intrnl_table_name = #{intrnlTableName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableType != null">
+        table_type = #{tableType,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketNumber != null">
+        bucket_number = #{bucketNumber,jdbcType=INTEGER},
+      </if>
+      <if test="sDate != null">
+        s_date = #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        e_date = #{eDate,jdbcType=DATE},
+      </if>
+    </set>
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataInterfaceHistory">
+    update data_interface_history
+    set data_interface_desc = #{dataInterfaceDesc,jdbcType=VARCHAR},
+      data_load_freq = #{dataLoadFreq,jdbcType=VARCHAR},
+      data_load_mthd = #{dataLoadMthd,jdbcType=VARCHAR},
+      filed_delim = #{filedDelim,jdbcType=VARCHAR},
+      line_delim = #{lineDelim,jdbcType=VARCHAR},
+      extrnl_database_name = #{extrnlDatabaseName,jdbcType=VARCHAR},
+      intrnl_database_name = #{intrnlDatabaseName,jdbcType=VARCHAR},
+      extrnl_table_name = #{extrnlTableName,jdbcType=VARCHAR},
+      intrnl_table_name = #{intrnlTableName,jdbcType=VARCHAR},
+      table_type = #{tableType,jdbcType=VARCHAR},
+      bucket_number = #{bucketNumber,jdbcType=INTEGER},
+      s_date = #{sDate,jdbcType=DATE},
+      e_date = #{eDate,jdbcType=DATE}
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 历史表查询 -->
+  <select id="queryAll"  parameterType="com.ljz.model.DataInterfaceHistory" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_history
+    where 1=1 
+    <if test="needVrsnNbr != null">
+       and need_vrsn_nbr=#{needVrsnNbr}
+    </if>
+    <if test="exptSeqNbr != null">
+       and expt_seq_nbr=#{exptSeqNbr}
+    </if>
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+    </if>
+    <if test="dataInterfaceNo != null">
+       and data_interface_no=#{dataInterfaceNo}
+    </if>
+    <if test="dataInterfaceName != null">
+       and data_interface_name=#{dataInterfaceName}
+    </if>
+    and e_date = #{eDate}
+    order by need_vrsn_nbr,expt_seq_nbr,data_src_abbr,data_interface_no,data_interface_name;
+  </select>
+</mapper>

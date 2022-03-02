@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterfaceRecordsMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterfaceRecords">
+    <id column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <id column="expt_seq_nbr" jdbcType="VARCHAR" property="exptSeqNbr" />
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <id column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <id column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="expt_file_name" jdbcType="VARCHAR" property="exptFileName" />
+    <result column="data_interface_desc" jdbcType="VARCHAR" property="dataInterfaceDesc" />
+    <result column="intf_tot" jdbcType="VARCHAR" property="intfTot" />
+    <result column="exct_psn" jdbcType="VARCHAR" property="exctPsn" />
+    <result column="expt_date" jdbcType="VARCHAR" property="exptDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    need_vrsn_nbr, expt_seq_nbr, data_src_abbr, data_interface_no, data_interface_name, 
+    expt_file_name, data_interface_desc, intf_tot, exct_psn, expt_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceRecordsKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_records
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataInterfaceRecordsKey">
+    delete from data_interface_records
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataInterfaceRecords">
+    insert into data_interface_records (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, 
+      data_interface_no, data_interface_name, expt_file_name, 
+      data_interface_desc, intf_tot, exct_psn, 
+      expt_date)
+    values (#{needVrsnNbr,jdbcType=VARCHAR}, #{exptSeqNbr,jdbcType=VARCHAR}, #{dataSrcAbbr,jdbcType=VARCHAR}, 
+      #{dataInterfaceNo,jdbcType=VARCHAR}, #{dataInterfaceName,jdbcType=VARCHAR}, #{exptFileName,jdbcType=VARCHAR}, 
+      #{dataInterfaceDesc,jdbcType=VARCHAR}, #{intfTot,jdbcType=VARCHAR}, #{exctPsn,jdbcType=VARCHAR}, 
+      #{exptDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterfaceRecords">
+    insert into data_interface_records
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        need_vrsn_nbr,
+      </if>
+      <if test="exptSeqNbr != null">
+        expt_seq_nbr,
+      </if>
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="dataInterfaceName != null">
+        data_interface_name,
+      </if>
+      <if test="exptFileName != null">
+        expt_file_name,
+      </if>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc,
+      </if>
+      <if test="intfTot != null">
+        intf_tot,
+      </if>
+      <if test="exctPsn != null">
+        exct_psn,
+      </if>
+      <if test="exptDate != null">
+        expt_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        #{needVrsnNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="exptSeqNbr != null">
+        #{exptSeqNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceName != null">
+        #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="exptFileName != null">
+        #{exptFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceDesc != null">
+        #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="intfTot != null">
+        #{intfTot,jdbcType=VARCHAR},
+      </if>
+      <if test="exctPsn != null">
+        #{exctPsn,jdbcType=VARCHAR},
+      </if>
+      <if test="exptDate != null">
+        #{exptDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataInterfaceRecords">
+    update data_interface_records
+    <set>
+      <if test="exptFileName != null">
+        expt_file_name = #{exptFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc = #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="intfTot != null">
+        intf_tot = #{intfTot,jdbcType=VARCHAR},
+      </if>
+      <if test="exctPsn != null">
+        exct_psn = #{exctPsn,jdbcType=VARCHAR},
+      </if>
+      <if test="exptDate != null">
+        expt_date = #{exptDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataInterfaceRecords">
+    update data_interface_records
+    set expt_file_name = #{exptFileName,jdbcType=VARCHAR},
+      data_interface_desc = #{dataInterfaceDesc,jdbcType=VARCHAR},
+      intf_tot = #{intfTot,jdbcType=VARCHAR},
+      exct_psn = #{exctPsn,jdbcType=VARCHAR},
+      expt_date = #{exptDate,jdbcType=VARCHAR}
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -3,7 +3,7 @@ $(function () {
 	initMenu();
 	$(".tab-content").hide();
 });
-
+var index ='14';
 /**
  * 加载数据源菜单
  * @returns
@@ -27,7 +27,7 @@ function initMenu(){
 		    	if(i==0){
 		    		localStorage.setItem("idx",idx);
 		    		localStorage.setItem("desc",desc);
-		    		changeTab(13);//0:目录扫描函数配置
+		    		changeTab(index);//0:目录扫描函数配置
 		    		active = "active";
 		    	}
 		    	htmlstr=htmlstr+'<li idx="'+idx+'" desc="'+desc+'" link="'+basePath+'/newIndex?idx='+idx+'" class="'+active+'"><a href=#>'+desc+'('+idx+')'+'</a></li>';
@@ -45,7 +45,7 @@ function initMenu(){
 		$(this).addClass('active');
 		localStorage.setItem("idx",idx);
 		localStorage.setItem("desc",desc);
-		changeTab(13);//0:数据源
+		changeTab(index);//0:数据源
 	});
 	
 	//监听目录扫描函数配置

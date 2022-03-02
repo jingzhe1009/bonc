@@ -179,19 +179,19 @@
 								<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
 								<div class="importA">
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">最新需求规范版本<br/>最新需求规范版本</div>
+										<div class="importC"><img src="imgs/index/home.png">最新需求规范版本<br/>v1.1</div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">接口总数<br/>接口总数</div>
+										<div class="importC"><img src="imgs/index/home.png">接口总数<br/>5个</div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">新增接口个数<br/>新增接口个数</div>
+										<div class="importC"><img src="imgs/index/home.png">新增接口个数<br/>2个</div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">修改接口个数<br/>修改接口个数</div>
+										<div class="importC"><img src="imgs/index/home.png">修改接口个数<br/>2个</div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">最后修改时间<br/>最后修改时间</div>
+										<div class="importC"><img src="imgs/index/home.png">最后修改时间<br/>2022/01/11 17:25</div>
 									</div>
 								</div>
 	
@@ -202,18 +202,12 @@
 											<h2>版本信息</h2>
 										</div>
 										<div class="importF">
-											<a class="btn btn-primary" target="_blank" onclick="yjdr()" style="line-height: normal">一键导入</a>
+											<a class="btn btn-primary" target="_blank" onclick="yjdr()" >一键导入</a>
 										</div>
 									</div>
 								</form>
 								<div style="clear: both"></div>
 								<table id="historyTable" style="white-space:nowrap;"></table>
-							</div>
-							<div style="display: inline-block; height: 100%">
-								<div style="height: 80%">
-									<div><img src="imgs/index/history.png">历史信息</div>
-									<div><img src="imgs/index/down.png">生成上线脚本</div>
-								</div>
 							</div>
 						</div>
 						<!-- 跑火车 -->
@@ -230,9 +224,6 @@
 											<div class="col-md-12" id="flowDiv">
 												<ol id="iList">
 													<div id="contA">
-														
-													</div>
-													<div id="contB">
 														<div >
 													        <div class="alert alert-inverse" style="width:200px;display:none" id="loadShow">正在导入，请稍等。。。</div>
 													        <div class="row clearfix">
@@ -254,7 +245,7 @@
 													        </div>
 													    </div>
 													</div>
-													<div class="contentList" id="contC">
+													<div id="contB">
 														<!--Tab-->
 									                    <div class="tableIcon" id="tabContainer2">
 									                        <ul class="nav nav-tabs" id="authorityTab2">
@@ -294,58 +285,58 @@
 									                        </div>
 									                    </div>
 													</div>
-													<div class="contentList" id="contD">
-														<div id="syContent">
-															<div class="indexImport">
-																<h1>当前数据源：上交所（SSE）</h1>
-																<h2 class="importH1">当前数据结构：结构化</h2>
-																<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
-																<div class="container">
-																	<div class="row clearfix">
-																		<div class="col-md-3 column">
-																			<div class="alert alert-dismissable alert-success">
-																				<h4>
-																					接口变更信息
-																				</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
-																			</div>
-																		</div>
-																		<div class="col-md-3 column">
-																			<div class="alert alert-dismissable alert-danger">
-																				<h4>
-																					接口字段变更信息
-																				</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
-																			</div>
-																		</div>
+													<div class="contentList" id="contC">
+														<div class="container" align="center">
+															<div id="syContent">
+																<div class="indexImport">
+																	<h1>当前数据源：上交所（SSE）</h1>
+																	<h2 class="importH1">当前数据结构：结构化</h2>
+																	<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
+																</div>
+															</div>
+															<div class="row clearfix">
+																<div class="col-md-3 column">
+																	<div class="alert alert-dismissable alert-success">
+																		<h4>
+																			接口变更信息
+																		</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
 																	</div>
-																	<div id="compareContent">
-														        		<!-- <div class="tableIcon">接口列表</i></div> -->
-														        		<form class="navbar-form navbar-left" role="search" id="form" >
-															        		<div class="selfAdaptionLeft">
-															        			<div>
-																					<div class="input-group">
-																						<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="compare_dataSrcAbbr"  placeholder="数据源">
-																						<input data-col="dataInterfaceNo" type="text" class="form-control" id="compare_dataInterfaceNo"  placeholder="接口编号">
-														                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
-																					</div>
-																				</div>
-															        		</div>
-															        		<div class="selfAdaptionRight">
-																				<button type="button" class="btn btn-primary" onclick="compareModel.search()">查询</button>
-																				<button type="reset" class="btn btn-primary" ><!-- onclick='interfaceModel.init(localStorage.getItem("idx"))' -->重置</button>
-																				<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.add(1,this)">新增</button>
-																				<a class="btn btn-primary" target="_blank" onclick="interfaceModel.importTable()">导入接口</a> -->
-														                    </div>
-													                    </form>
-													                    <div style="clear: both"></div>
-													                    <div>
-													                        <table id="compareTable" style="white-space:nowrap;"></table>
-													                    </div>
-											                    	</div>
+																</div>
+																<div class="col-md-3 column">
+																	<div class="alert alert-dismissable alert-danger">
+																		<h4>
+																			接口字段变更信息
+																		</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
+																	</div>
 																</div>
 															</div>
 														</div>
+														<div id="compareContent" style="width:100%">
+											        		<!-- <div class="tableIcon">接口列表</i></div> -->
+											        		<form class="navbar-form navbar-left" role="search" id="form" >
+												        		<div class="selfAdaptionLeft">
+												        			<div>
+																		<div class="input-group">
+																			<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="compare_dataSrcAbbr"  placeholder="数据源">
+																			<input data-col="dataInterfaceNo" type="text" class="form-control" id="compare_dataInterfaceNo"  placeholder="接口编号">
+											                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
+																		</div>
+																	</div>
+												        		</div>
+												        		<div class="selfAdaptionRight">
+																	<button type="button" class="btn btn-primary" onclick="compareModel.search()">查询</button>
+																	<button type="reset" class="btn btn-primary" ><!-- onclick='interfaceModel.init(localStorage.getItem("idx"))' -->重置</button>
+																	<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.add(1,this)">新增</button>
+																	<a class="btn btn-primary" target="_blank" onclick="interfaceModel.importTable()">导入接口</a> -->
+											                    </div>
+										                    </form>
+										                    <div style="clear: both"></div>
+										                    <div>
+										                        <table id="compareTable" style="white-space:nowrap;"></table>
+										                    </div>
+								                    	</div>
 													</div>
-													<div class="contentList" id="contE">
+													<div class="contentList" id="contD">
 														<!-- 数据模型内容 -->
 									                    <div id="dataModelContent">
 											        		<!-- <div class="tableIcon">数据模型列表</i></div> -->
@@ -372,7 +363,7 @@
 										                    </div>
 									                    </div>
 													</div>
-													<div class="contentList" id="contF">
+													<div class="contentList" id="contE">
 														<div class="indexImport">
 																<h1 class="importH1">当前数据源：上交所（SSE）</h1><br/>
 																<h2 class="importH1">当前数据结构：结构化</h2><br/>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterfaceVersionMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterfaceVersion">
+    <id column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <id column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <id column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="data_interface_desc" jdbcType="VARCHAR" property="dataInterfaceDesc" />
+    <result column="intf_tot" jdbcType="VARCHAR" property="intfTot" />
+    <result column="intf_dscr" jdbcType="VARCHAR" property="intfDscr" />
+    <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    need_vrsn_nbr, data_src_abbr, data_interface_no, data_interface_name, data_interface_desc, 
+    intf_tot, intf_dscr, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceVersionKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_version
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataInterfaceVersionKey">
+    delete from data_interface_version
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataInterfaceVersion">
+    insert into data_interface_version (need_vrsn_nbr, data_src_abbr, data_interface_no, 
+      data_interface_name, data_interface_desc, intf_tot, 
+      intf_dscr, create_date)
+    values (#{needVrsnNbr,jdbcType=VARCHAR}, #{dataSrcAbbr,jdbcType=VARCHAR}, #{dataInterfaceNo,jdbcType=VARCHAR}, 
+      #{dataInterfaceName,jdbcType=VARCHAR}, #{dataInterfaceDesc,jdbcType=VARCHAR}, #{intfTot,jdbcType=VARCHAR}, 
+      #{intfDscr,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterfaceVersion">
+    insert into data_interface_version
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        need_vrsn_nbr,
+      </if>
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="dataInterfaceName != null">
+        data_interface_name,
+      </if>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc,
+      </if>
+      <if test="intfTot != null">
+        intf_tot,
+      </if>
+      <if test="intfDscr != null">
+        intf_dscr,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        #{needVrsnNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceName != null">
+        #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceDesc != null">
+        #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="intfTot != null">
+        #{intfTot,jdbcType=VARCHAR},
+      </if>
+      <if test="intfDscr != null">
+        #{intfDscr,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataInterfaceVersion">
+    update data_interface_version
+    <set>
+      <if test="dataInterfaceDesc != null">
+        data_interface_desc = #{dataInterfaceDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="intfTot != null">
+        intf_tot = #{intfTot,jdbcType=VARCHAR},
+      </if>
+      <if test="intfDscr != null">
+        intf_dscr = #{intfDscr,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataInterfaceVersion">
+    update data_interface_version
+    set data_interface_desc = #{dataInterfaceDesc,jdbcType=VARCHAR},
+      intf_tot = #{intfTot,jdbcType=VARCHAR},
+      intf_dscr = #{intfDscr,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=VARCHAR}
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+  </update>
+</mapper>

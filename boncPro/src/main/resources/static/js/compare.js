@@ -53,7 +53,7 @@ function initCompareTable(obj) {
         // 自动列宽
         "autoWidth": false,
         //滚动条
-        "scrollX":true,
+        "scrollX":false,
         //控制每页显示条数
         "lengthChange": false,
         "pagingType": "full_numbers",

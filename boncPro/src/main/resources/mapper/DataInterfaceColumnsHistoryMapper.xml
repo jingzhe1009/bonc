@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterfaceColumnsHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterfaceColumnsHistory">
+    <id column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <id column="expt_seq_nbr" jdbcType="VARCHAR" property="exptSeqNbr" />
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <id column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <id column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <id column="column_no" jdbcType="INTEGER" property="columnNo" />
+    <result column="column_name" jdbcType="VARCHAR" property="columnName" />
+    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
+    <result column="data_format" jdbcType="VARCHAR" property="dataFormat" />
+    <result column="nullable" jdbcType="INTEGER" property="nullable" />
+    <result column="replacenull" jdbcType="INTEGER" property="replacenull" />
+    <result column="comma" jdbcType="VARCHAR" property="comma" />
+    <result column="column_comment" jdbcType="VARCHAR" property="columnComment" />
+    <result column="isbucket" jdbcType="VARCHAR" property="isbucket" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    need_vrsn_nbr, expt_seq_nbr, data_src_abbr, data_interface_no, data_interface_name, 
+    column_no, column_name, data_type, data_format, nullable, replacenull, comma, column_comment, 
+    isbucket, s_date, e_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceColumnsHistoryKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_columns_history
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+      and column_no = #{columnNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.ljz.model.DataInterfaceColumnsHistoryKey">
+    delete from data_interface_columns_history
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+      and column_no = #{columnNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ljz.model.DataInterfaceColumnsHistory">
+    insert into data_interface_columns_history (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, 
+      data_interface_no, data_interface_name, column_no, 
+      column_name, data_type, data_format, 
+      nullable, replacenull, comma, 
+      column_comment, isbucket, s_date, 
+      e_date)
+    values (#{needVrsnNbr,jdbcType=VARCHAR}, #{exptSeqNbr,jdbcType=VARCHAR}, #{dataSrcAbbr,jdbcType=VARCHAR}, 
+      #{dataInterfaceNo,jdbcType=VARCHAR}, #{dataInterfaceName,jdbcType=VARCHAR}, #{columnNo,jdbcType=INTEGER}, 
+      #{columnName,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, #{dataFormat,jdbcType=VARCHAR}, 
+      #{nullable,jdbcType=INTEGER}, #{replacenull,jdbcType=INTEGER}, #{comma,jdbcType=VARCHAR}, 
+      #{columnComment,jdbcType=VARCHAR}, #{isbucket,jdbcType=VARCHAR}, #{sDate,jdbcType=DATE}, 
+      #{eDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterfaceColumnsHistory">
+    insert into data_interface_columns_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        need_vrsn_nbr,
+      </if>
+      <if test="exptSeqNbr != null">
+        expt_seq_nbr,
+      </if>
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="dataInterfaceName != null">
+        data_interface_name,
+      </if>
+      <if test="columnNo != null">
+        column_no,
+      </if>
+      <if test="columnName != null">
+        column_name,
+      </if>
+      <if test="dataType != null">
+        data_type,
+      </if>
+      <if test="dataFormat != null">
+        data_format,
+      </if>
+      <if test="nullable != null">
+        nullable,
+      </if>
+      <if test="replacenull != null">
+        replacenull,
+      </if>
+      <if test="comma != null">
+        comma,
+      </if>
+      <if test="columnComment != null">
+        column_comment,
+      </if>
+      <if test="isbucket != null">
+        isbucket,
+      </if>
+      <if test="sDate != null">
+        s_date,
+      </if>
+      <if test="eDate != null">
+        e_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        #{needVrsnNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="exptSeqNbr != null">
+        #{exptSeqNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceName != null">
+        #{dataInterfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnNo != null">
+        #{columnNo,jdbcType=INTEGER},
+      </if>
+      <if test="columnName != null">
+        #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null">
+        #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataFormat != null">
+        #{dataFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="nullable != null">
+        #{nullable,jdbcType=INTEGER},
+      </if>
+      <if test="replacenull != null">
+        #{replacenull,jdbcType=INTEGER},
+      </if>
+      <if test="comma != null">
+        #{comma,jdbcType=VARCHAR},
+      </if>
+      <if test="columnComment != null">
+        #{columnComment,jdbcType=VARCHAR},
+      </if>
+      <if test="isbucket != null">
+        #{isbucket,jdbcType=VARCHAR},
+      </if>
+      <if test="sDate != null">
+        #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        #{eDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ljz.model.DataInterfaceColumnsHistory">
+    update data_interface_columns_history
+    <set>
+      <if test="columnName != null">
+        column_name = #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null">
+        data_type = #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataFormat != null">
+        data_format = #{dataFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="nullable != null">
+        nullable = #{nullable,jdbcType=INTEGER},
+      </if>
+      <if test="replacenull != null">
+        replacenull = #{replacenull,jdbcType=INTEGER},
+      </if>
+      <if test="comma != null">
+        comma = #{comma,jdbcType=VARCHAR},
+      </if>
+      <if test="columnComment != null">
+        column_comment = #{columnComment,jdbcType=VARCHAR},
+      </if>
+      <if test="isbucket != null">
+        isbucket = #{isbucket,jdbcType=VARCHAR},
+      </if>
+      <if test="sDate != null">
+        s_date = #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        e_date = #{eDate,jdbcType=DATE},
+      </if>
+    </set>
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+      and column_no = #{columnNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ljz.model.DataInterfaceColumnsHistory">
+    update data_interface_columns_history
+    set column_name = #{columnName,jdbcType=VARCHAR},
+      data_type = #{dataType,jdbcType=VARCHAR},
+      data_format = #{dataFormat,jdbcType=VARCHAR},
+      nullable = #{nullable,jdbcType=INTEGER},
+      replacenull = #{replacenull,jdbcType=INTEGER},
+      comma = #{comma,jdbcType=VARCHAR},
+      column_comment = #{columnComment,jdbcType=VARCHAR},
+      isbucket = #{isbucket,jdbcType=VARCHAR},
+      s_date = #{sDate,jdbcType=DATE},
+      e_date = #{eDate,jdbcType=DATE}
+    where need_vrsn_nbr = #{needVrsnNbr,jdbcType=VARCHAR}
+      and expt_seq_nbr = #{exptSeqNbr,jdbcType=VARCHAR}
+      and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+      and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+      and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+      and column_no = #{columnNo,jdbcType=INTEGER}
+  </update>
+</mapper>

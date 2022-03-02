@@ -2,7 +2,7 @@ var colorList;
 var count;
 
 $(function(){
-  count= 6; 
+  count= 5; 
   loadFlow(count);
   checkColor(colorList);
     
@@ -61,23 +61,20 @@ function loadFlow(count){
   var flowVar="";
   for(var i=1;i<=count;i++){
     flowFor="for"+String.fromCharCode(i+64);
+    console.log('count='+count);
     if(i==1){
       flowVar += "<div class='flowList for-cur "+flowFor +"' style='position:relative'>\n";
-      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>首页</strong>\n";
+      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>接口导入</strong>\n";
       flowVar += "</div>\n";
     }else if(i==2){
       flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
-      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>接口导入</strong>\n";
+      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息核对</strong>\n";
       flowVar += "</div>\n";
     }else if(i==3){
       flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
-      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息核对</strong>\n";
-      flowVar += "</div>\n";
-    }else if(i==4){
-      flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
       flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息确认</strong>\n";
       flowVar += "</div>\n";
-    }else if(i==5){
+    }else if(i==4){
       flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
       flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>物化建模</strong>\n";
       flowVar += "</div>\n";
@@ -95,6 +92,7 @@ function loadFlow(count){
 }
 //加载内容详情
 function loadFlowDiv(index){ 
+	console.log(index);
  /* var strVar = "";
  if(index==1){strVar="aaaaa<br>aaaaaaaaa<br>aaaaaaaaa<br>aaaaaaaaa<br>aaaaaaaaa<br>aaaaaaaaa<br>aaaaaaaaa<br>aaaaaaaaa<br>aaaaaaaaa"}
  if(index==2){strVar="bb<br>bbbbbb<br>22222222<br>22222222222<br>222222222<br>222222<br>2222222<br>222222<br>222222"}
@@ -106,7 +104,6 @@ function loadFlowDiv(index){
  if(index==3){$("#contC").removeClass("contentList");$("#contC").siblings().addClass("contentList")}
  if(index==4){$("#contD").removeClass("contentList");$("#contD").siblings().addClass("contentList")}
  if(index==5){$("#contE").removeClass("contentList");$("#contE").siblings().addClass("contentList")}
- if(index==6){$("#contF").removeClass("contentList");$("#contF").siblings().addClass("contentList")}
 
 
 }

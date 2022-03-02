@@ -7,6 +7,7 @@ import com.ljz.entity.ParamEntity;
 import com.ljz.model.DataInterface;
 import com.ljz.model.DataInterface2proc;
 import com.ljz.model.DataInterface2procTmp;
+import com.ljz.model.DataInterfaceHistory;
 import com.ljz.model.DataInterfaceTmp;
 
 public interface IDataInterfaceService {
@@ -44,6 +45,10 @@ public interface IDataInterfaceService {
     void batchImport(ParamEntity param)  throws Exception;
     
     String batchImportFinal(ParamEntity param)  throws Exception;
+    
+    //接口历史
+    
+    List<DataInterfaceHistory> queryInterfaceCompare(DataInterfaceHistory record);
 	
 	//数据算法加载
 	

@@ -19,10 +19,12 @@ import com.ljz.config.InfoConfig;
 import com.ljz.constant.BoncConstant;
 import com.ljz.entity.ParamEntity;
 import com.ljz.mapper.DataInterface2procMapper;
+import com.ljz.mapper.DataInterfaceHistoryMapper;
 import com.ljz.mapper.DataInterfaceMapper;
 import com.ljz.model.DataInterface;
 import com.ljz.model.DataInterface2proc;
 import com.ljz.model.DataInterface2procTmp;
+import com.ljz.model.DataInterfaceHistory;
 import com.ljz.model.DataInterfaceTmp;
 import com.ljz.model.Order;
 import com.ljz.service.IDataInterfaceService;
@@ -40,6 +42,9 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 	
 	@Autowired
 	DataInterface2procMapper procMapper;
+	
+	@Autowired
+	DataInterfaceHistoryMapper hisMapper;
 	
 	@Autowired
 	JdbcTemplate jdbc;
@@ -60,6 +65,15 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 	public List<DataInterface> queryAll(DataInterface record) {
 		// TODO Auto-generated method stub
 		return mapper.queryAll(record);
+	}
+	
+	@Override
+	public List<DataInterfaceHistory> queryInterfaceCompare(DataInterfaceHistory record) {
+		List<DataInterfaceHistory> historyList = hisMapper.queryAll(record);
+		if(historyList.size()<1) {
+			hisMapper.initHistory();
+		}
+		return hisMapper.queryAll(record);
 	}
 
 	@Override
@@ -680,5 +694,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			}
 		}
 	}
+
+	
 
 }
