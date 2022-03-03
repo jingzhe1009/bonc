@@ -1,5 +1,7 @@
 package com.ljz.service.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,12 +13,12 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ljz.config.InfoConfig;
-import com.ljz.constant.BoncConstant;
 import com.ljz.entity.ParamEntity;
 import com.ljz.mapper.DataInterface2procMapper;
 import com.ljz.mapper.DataInterfaceHistoryMapper;
@@ -70,9 +72,63 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 	@Override
 	public List<DataInterfaceHistory> queryInterfaceCompare(DataInterfaceHistory record) {
 		List<DataInterfaceHistory> historyList = hisMapper.queryAll(record);
-		if(historyList.size()<1) {
-			hisMapper.initHistory();
+		try {
+			if(historyList.size()<1) {
+				String sql = "insert into data_interface_history  (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, \r\n"
+						+ "      data_interface_no, data_interface_name, data_interface_desc, \r\n"
+						+ "      data_load_freq, data_load_mthd, filed_delim, \r\n"
+						+ "      line_delim, extrnl_database_name, intrnl_database_name, \r\n"
+						+ "      extrnl_table_name, intrnl_table_name, table_type, \r\n"
+						+ "      bucket_number, s_date, e_date\r\n"
+						+ "      ) select '1.0','1.0.0', b.data_src_abbr, b.data_interface_no, b.data_interface_name, \r\n"
+						+ "    b.data_interface_desc, b.data_load_freq, b.data_load_mthd, b.filed_delim, b.line_delim, b.extrnl_database_name, \r\n"
+						+ "    b.intrnl_database_name, b.extrnl_table_name, b.intrnl_table_name, b.table_type, b.bucket_number, \r\n"
+						+ "    b.s_date, b.e_date from data_interface b where b.e_date='3000-12-31'";
+				jdbc.batchUpdate(sql);
+			}
+			DataInterfaceHistory tmp = new DataInterfaceHistory();
+			for(DataInterfaceHistory data:historyList) {
+				if("-".equals(data.getFlag())) {
+					tmp = data;
+				}else if("修改".equals(data.getFlag())) {
+					if(tmp==null)
+						continue;
+					//对比
+					Class cls = data.getClass();  
+			        Field[] fields = cls.getDeclaredFields();  
+			        for(int i=0; i<fields.length; i++){  
+			            Field f = fields[i];  
+			            f.setAccessible(true);  
+			            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
+			            Class cls2 = tmp.getClass();  
+			            Field[] fields2 = cls.getDeclaredFields();  
+			            for(int j=0; j<fields2.length; j++){  
+			                Field f2 = fields2[j];  
+			                f2.setAccessible(true);  
+			                System.out.println("属性名:" + f2.getName() + " 属性值:" + f2.get(tmp));  
+			                if(f.getName().equals(f2.getName())) {
+			                	if(f.get(data).equals(f2.get(tmp))) {
+			                		//无变化
+			                	}else {
+			                		//data.setRed(data.getRed()+);
+			                	}
+			                }
+			            }
+			        }
+				}
+				
+			}
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
+		//record.setExptSeqNbr("1.0.0");
+		//List<DataInterfaceHistory> historyList = hisMapper.queryAll(record);
 		return hisMapper.queryAll(record);
 	}
 

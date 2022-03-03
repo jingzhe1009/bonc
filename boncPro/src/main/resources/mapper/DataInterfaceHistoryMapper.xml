@@ -248,7 +248,7 @@
   </update>
   
   <!-- 历史表查询 -->
-  <select id="queryAll"  parameterType="com.ljz.model.DataInterfaceHistory" resultMap="BaseResultMap">
+  <select id="queryAllbak"  parameterType="com.ljz.model.DataInterfaceHistory" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from data_interface_history
@@ -268,7 +268,28 @@
     <if test="dataInterfaceName != null">
        and data_interface_name=#{dataInterfaceName}
     </if>
-    and e_date = #{eDate}
-    order by need_vrsn_nbr,expt_seq_nbr,data_src_abbr,data_interface_no,data_interface_name;
+    and e_date = '3000-12-31'
+    order by data_src_abbr,data_interface_no,data_interface_name,need_vrsn_nbr,expt_seq_nbr;
+  </select>
+  
+  <select id="queryAll"  parameterType="com.ljz.model.DataInterfaceHistory" resultMap="BaseResultMap">
+    select flag,need_vrsn_nbr,expt_seq_nbr,data_src_abbr,data_interface_no,data_interface_name,data_interface_desc,data_load_freq,data_load_mthd,filed_delim,line_delim,extrnl_database_name,intrnl_database_name,extrnl_table_name,intrnl_table_name,table_type,bucket_number
+ 	from (
+	select 
+	(case when 
+	a.data_src_abbr+a.data_interface_no+a.data_interface_name+a.data_interface_desc+a.data_load_freq+a.data_load_mthd+a.filed_delim+a.line_delim+a.extrnl_database_name+a.intrnl_database_name+a.extrnl_table_name+a.intrnl_table_name+a.table_type+a.bucket_number
+	=b.data_src_abbr+b.data_interface_no+b.data_interface_name+b.data_interface_desc+b.data_load_freq+b.data_load_mthd+b.filed_delim+b.line_delim+b.extrnl_database_name+b.intrnl_database_name+b.extrnl_table_name+b.intrnl_table_name+b.table_type+b.bucket_number
+	then '无变化' 
+	when 
+	a.data_src_abbr+a.data_interface_no+a.data_interface_name+a.data_interface_desc+a.data_load_freq+a.data_load_mthd+a.filed_delim+a.line_delim+a.extrnl_database_name+a.intrnl_database_name+a.extrnl_table_name+a.intrnl_table_name+a.table_type+a.bucket_number
+	!=b.data_src_abbr+b.data_interface_no+b.data_interface_name+b.data_interface_desc+b.data_load_freq+b.data_load_mthd+b.filed_delim+b.line_delim+b.extrnl_database_name+b.intrnl_database_name+b.extrnl_table_name+b.intrnl_table_name+b.table_type+b.bucket_number
+	then '修改' 
+	else '新增' end) as flag
+	,a.need_vrsn_nbr,a.expt_seq_nbr,a.data_src_abbr,a.data_interface_no,a.data_interface_name,a.data_interface_desc,a.data_load_freq,a.data_load_mthd,a.filed_delim,a.line_delim,a.extrnl_database_name,a.intrnl_database_name,a.extrnl_table_name,a.intrnl_table_name,a.table_type,a.bucket_number
+	from data_interface_history a left join data_interface b on a.data_interface_name = b.data_interface_name where a.expt_seq_nbr='1.0.1' and a.e_date='3000-12-31'
+	union all select '-','-','1.0.0'
+	,c.data_src_abbr,c.data_interface_no,c.data_interface_name,c.data_interface_desc,c.data_load_freq,c.data_load_mthd,c.filed_delim,c.line_delim,c.extrnl_database_name,c.intrnl_database_name,c.extrnl_table_name,c.intrnl_table_name,c.table_type,c.bucket_number
+	 from data_interface c
+	) d order by d.data_interface_name,expt_seq_nbr
   </select>
 </mapper>

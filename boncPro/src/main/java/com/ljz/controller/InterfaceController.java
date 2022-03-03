@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ljz.entity.ParamEntity;
 import com.ljz.model.DataInterface;
+import com.ljz.model.DataInterfaceHistory;
 import com.ljz.model.DataInterfaceTmp;
 import com.ljz.service.IDataInterfaceService;
 import com.ljz.util.TimeUtil;
@@ -77,14 +78,13 @@ public class InterfaceController extends MainController{
 	
 	@ResponseBody
 	@RequestMapping(value="/queryInterfaceCompare",method = RequestMethod.GET)
-    public Map<String, Object> queryInterfaceCompare(String dataSrcAbbr,String dataInterfaceNo) {
+    public Map<String, Object> queryInterfaceCompare(String dataSrcAbbr) {
 
-		DataInterface record = new DataInterface();
+		DataInterfaceHistory record = new DataInterfaceHistory();
 		record.setDataSrcAbbr(dataSrcAbbr);
-		record.setDataInterfaceNo(dataInterfaceNo);
-		record.seteDate(TimeUtil.getTw());
+		record.setExptSeqNbr("1.0.1");//当前导入版本
 		logger.info(record.toString());
-		List<DataInterface> list = intService.queryAll(record);
+		List<DataInterfaceHistory> list = intService.queryInterfaceCompare(record);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("recordsTotal", list.size());
         resultMap.put("recordsFiltered", list.size());

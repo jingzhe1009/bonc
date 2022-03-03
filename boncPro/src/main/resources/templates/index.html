@@ -10,7 +10,7 @@
    	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
    	<link href="/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="/plugin/zui1.8.1/css/zui.min.css?v=1.10.0" rel="stylesheet">
-	
+	<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
 	
 	<link href="/common/main.css" rel="stylesheet" /><!-- 左侧菜单 -->
 	<link href="/common/common.css" rel="stylesheet" /><!-- 表格 -->
@@ -26,14 +26,20 @@
     <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-tab/css/z-UI.tab.css"/>
     <link rel="stylesheet" type="text/css" href="/z-UI2/z-UI-select/css/z-UI.select.css"/>
     
+    
+    
+    
 	<script src="/plugin/jquery.js"></script>
 	<script src="/plugin/flow.js"></script>
 	<script src="/plugin/validator/dist/jquery.validator.js"></script>
 	<script src="/plugin/validator/dist/local/zh-CN.js"></script>
-	<script src="/plugin/DataTables/datatables.js"></script>
-	
+	<!-- <script src="/plugin/DataTables/datatables.js"></script> -->
 	<script src="/plugin/zui1.8.1/js/zui.js?v=1.10.0"></script>
 	<script src="/plugin/zui1.8.1/lib/prettify/prettify.js?v=1.10.0"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="DataTables/datatables.min.js"></script>
+	
+	
 	
 	<script type="text/javascript" src="/z-UI2/z-UI.js"></script>
     <script type="text/javascript" src="/z-UI2/z-UI-alert/js/z-UI.alert.js"></script>
@@ -314,7 +320,7 @@
 														<div id="compareContent" style="width:100%">
 											        		<!-- <div class="tableIcon">接口列表</i></div> -->
 											        		<form class="navbar-form navbar-left" role="search" id="form" >
-												        		<div class="selfAdaptionLeft">
+												        		<!-- <div class="selfAdaptionLeft">
 												        			<div>
 																		<div class="input-group">
 																			<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="compare_dataSrcAbbr"  placeholder="数据源">
@@ -322,10 +328,11 @@
 											                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
 																		</div>
 																	</div>
-												        		</div>
+												        		</div> -->
 												        		<div class="selfAdaptionRight">
-																	<button type="button" class="btn btn-primary" onclick="compareModel.search()">查询</button>
-																	<button type="reset" class="btn btn-primary" ><!-- onclick='interfaceModel.init(localStorage.getItem("idx"))' -->重置</button>
+																	<!-- <button type="button" class="btn btn-primary" onclick="compareModel.search()">查询</button>
+																	<button type="reset" class="btn btn-primary" >
+																	onclick='interfaceModel.init(localStorage.getItem("idx"))' 重置</button> -->
 																	<!-- <button type="button" class="btn btn-primary btn-large" onclick="interfaceModel.add(1,this)">新增</button>
 																	<a class="btn btn-primary" target="_blank" onclick="interfaceModel.importTable()">导入接口</a> -->
 											                    </div>

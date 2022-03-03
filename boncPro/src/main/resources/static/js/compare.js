@@ -1,5 +1,5 @@
 /**
- * 接口列表操作
+ * 接口历史列表操作
  */
 var compareModel = {
 	//初始页面内容显示
@@ -10,18 +10,6 @@ var compareModel = {
 		initCompareTable(obj);
 		//按条件查询用
 	},
-    //按条件查询
-    search: function(){
-    	var inputs = $('#interfaceContent .input-group .form-control');
-        var obj = {};
-        for (var i = 0; i < inputs.length; i++) {
-            if ($.trim($(inputs[i]).val()) == '') {
-                continue;
-            }
-            obj[$(inputs[i]).attr('data-col')] = $.trim($(inputs[i]).val());
-        }
-        initCompareTable(obj);
-    },
     //查看版本
     version: function(dataSrcAbbr,dataInterfaceNo,dataInterfaceName){
     	$('#versionAlert').modal({'show': 'center', "backdrop": "static"});
@@ -40,13 +28,13 @@ var compareModel = {
 
 
 /**
- * 初始化 接口列表
+ * 初始化 接口历史列表
  */
 function initCompareTable(obj) {
 	
     $('#compareTable').width('100%').dataTable({
     	//默认搜索组件
-        "searching": false,
+        "searching": true,
         //排序功能
         "ordering": false,
         "destroy": true,
@@ -65,12 +53,21 @@ function initCompareTable(obj) {
         "serverSide": false,
         "pageLength": 10,
         "columns": [
-        	{"title":"操作" ,"data": null,"render": function(data, type, row) {
+        	/*{"title":"操作" ,"data": null,"render": function(data, type, row) {
             	var html = '<div>';
             		html += '<span onclick="compareModel.detail(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceNo+'\',\''+row.dataInterfaceName+'\');" class="btn-sm cm-tblA">字段</span>';
             		html += '</div>';
 				return html;
-			}},
+			}},*/
+			{"title": "状态", "data": "flag","render":function(data,type,row){
+				if(data=='修改'){
+					return '<font color="red">修改</font>';
+				}else if(data=='新增'){
+					return '<font color="blue">新增</font>';
+				}
+            	return data;
+            }},
+			{"title": "导入流水号", "data": "exptSeqNbr"},
             {"title": "数据源缩写", "data": "dataSrcAbbr"},
             {"title": "数据接口编号", "data": "dataInterfaceNo"},
             {"title": "数据接口名", "data": "dataInterfaceName"},
@@ -96,7 +93,7 @@ function initCompareTable(obj) {
             }}
             ],
         ajax: {
-            url: '/interface/queryInterface',
+            url: '/interface/queryInterfaceCompare',
             "type": 'GET',
             "data": function (d) { // 查询参数
             	debugger;

@@ -1,7 +1,7 @@
 package com.ljz.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.Date;
 
 public class DataInterfaceHistory extends DataInterfaceHistoryKey implements Serializable {
     private String dataInterfaceDesc;
@@ -26,9 +26,13 @@ public class DataInterfaceHistory extends DataInterfaceHistoryKey implements Ser
 
     private Integer bucketNumber;
 
-    private LocalDate sDate;
+    private Date sDate;
 
-    private LocalDate eDate;
+    private Date eDate;
+    
+    private String flag;
+    
+    private String red;
 
     private static final long serialVersionUID = 1L;
 
@@ -120,19 +124,39 @@ public class DataInterfaceHistory extends DataInterfaceHistoryKey implements Ser
         this.bucketNumber = bucketNumber;
     }
 
-    public LocalDate getsDate() {
+    public Date getsDate() {
         return sDate;
     }
 
-    public void setsDate(LocalDate sDate) {
+    public void setsDate(Date sDate) {
         this.sDate = sDate;
     }
 
-    public LocalDate geteDate() {
+    public Date geteDate() {
         return eDate;
     }
 
-    public void seteDate(LocalDate eDate) {
+    public void seteDate(Date eDate) {
         this.eDate = eDate;
     }
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+	public String getRed() {
+		return red;
+	}
+
+	public void setRed(String red) {
+		this.red = red;
+	}
+	
+	
+    
+    
 }
