@@ -10,6 +10,8 @@ public class ParamEntity {
 	String [] param;
 	String [] desc;
 	String [] funcType;
+	String needVrsnNbr;
+	String batchNo;
 	public String getDbType() {
 		return dbType;
 	}
@@ -46,6 +48,19 @@ public class ParamEntity {
 	}
 	public void setFuncType(String[] funcType) {
 		this.funcType = funcType;
+	}
+	
+	public String getNeedVrsnNbr() {
+		return needVrsnNbr;
+	}
+	public void setNeedVrsnNbr(String needVrsnNbr) {
+		this.needVrsnNbr = needVrsnNbr;
+	}
+	public String getBatchNo() {
+		return batchNo;
+	}
+	public void setBatchNo(String batchNo) {
+		this.batchNo = batchNo;
 	}
 	@Override
 	public String toString() {
