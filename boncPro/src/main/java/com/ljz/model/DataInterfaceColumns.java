@@ -208,8 +208,7 @@ public class DataInterfaceColumns implements Serializable {
 	}
 
     public String toStr(){
-//        return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable + replacenull + comma + columnComment + isbucket;
-        return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable +
+        return 	 columnName + dataType + dataFormat + nullable +
                 replacenull + comma + columnComment + isbucket + iskey + isvalid + incrementfield;
     }
 

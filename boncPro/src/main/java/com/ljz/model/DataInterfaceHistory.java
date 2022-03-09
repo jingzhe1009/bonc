@@ -176,7 +176,10 @@ public class DataInterfaceHistory extends DataInterfaceHistoryKey implements Ser
 		this.procName = procName;
 	}
 	
-	
+	public String toStr() {
+		return dataInterfaceDesc + dataLoadFreq + dataLoadMthd + filedDelim+
+				lineDelim + extrnlDatabaseName + intrnlDatabaseName + extrnlTableName + intrnlTableName+ tableType + bucketNumber;
+	}
 	
 	
     

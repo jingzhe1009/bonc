@@ -55,44 +55,65 @@ public class DataColumnServiceImpl implements IDataColumnService{
 
 	@Override
 	public List<DataInterfaceColumnsHistory> queryColumnCompare(DataInterfaceColumnsHistory record) {
+		List<Map<String, Object>> colHistoryList = jdbc.queryForList("select * from  data_interface_columns where e_date = '3000-12-31' and data_interface_name='"+record.getDataInterfaceName()+"'");
+		if(colHistoryList.size()<1) {//第一次导入历史表
+			return hisMapper.queryFirst(record);
+		}
 		List<DataInterfaceColumnsHistory> historyList = hisMapper.queryAll(record);
 		List<DataInterfaceColumnsHistory> resultList = new ArrayList<DataInterfaceColumnsHistory>();
-		
+		ExcelUtil obj = ExcelUtil.getInstance();
 		try {
-			DataInterfaceColumnsHistory tmp = new DataInterfaceColumnsHistory();
+			DataInterfaceColumnsHistory tmp = null;
 			for(DataInterfaceColumnsHistory data:historyList) {
 				String red = "";
 				if("0".equals(data.getFlag())) {
 					tmp = data;
 				}else if("1".equals(data.getFlag())) {
-					if(tmp==null) {
-						data.setFlag("3");
+					
+					Map<String,String> columnMap =obj.getColumnMap(data.getDataSrcAbbr());
+					String colKey = data.getDataInterfaceName()+data.getColumnNo();
+					if(columnMap!=null&&columnMap.containsKey(colKey)){
+						if(data.toStr().equalsIgnoreCase(columnMap.get(colKey))){//无变化
+							//对比
+							//临时表的所有字段
+					        Field[] fields = data.getClass().getDeclaredFields();  
+					        for(int i=0; i<fields.length; i++){ 
+					            Field f = fields[i];  
+					            f.setAccessible(true);  
+					            String tmpKey=f.getName();
+					            String tmpValue=f.get(data)+"";
+					            System.out.println("属性名:" + tmpKey + " 属性值:" + tmpValue);  
+					            if("red".equals(tmpKey)||"flag".equals(tmpKey)||"serialVersionUID".equals(tmpValue))
+				                	continue;
+					            if(tmpKey==null||tmpValue==null)
+					            	continue;
+					            //正式表的所有字段
+					            Field[] fields2 = tmp.getClass().getDeclaredFields();  
+					            for(int j=0; j<fields2.length; j++){  
+					                Field f2 = fields2[j];  
+					                f2.setAccessible(true); 
+					                String proKey = f2.getName();
+					                String proValue = f2.get(tmp)+"";
+					                System.out.println("tmp属性名:" + proKey + " tmp属性值:" + proValue); 
+					                if(proKey==null||proValue==null)
+					                	continue;
+					                if(tmpKey.equals(proKey)) {
+					                	if(!tmpValue.equals(proValue)) {
+					                		red +=tmpValue+",";
+					                		data.setFlag("2");
+					                	}
+					                }
+					            }
+					        }
+						}else{//修改
+	                		data.setFlag("2");//修改
+						}
+				        tmp = null;
+					}else{//新增
+                		data.setFlag("3");//新增
+                		resultList.add(new DataInterfaceColumnsHistory());
 					}
-					//对比
-					Class cls = data.getClass();  
-			        Field[] fields = cls.getDeclaredFields();  
-			        for(int i=0; i<fields.length; i++){  
-			            Field f = fields[i];  
-			            f.setAccessible(true);  
-			            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
-			            Class cls2 = tmp.getClass();  
-			            Field[] fields2 = cls2.getDeclaredFields();  
-			            if("flag".equals(f.getName())||"serialVersionUID".equals(f.getName()))
-		                	continue;
-			            for(int j=0; j<fields2.length; j++){  
-			                Field f2 = fields2[j];  
-			                f2.setAccessible(true);  
-			                System.out.println("tmp属性名:" + f2.getName() + " tmp属性值:" + f2.get(tmp)); 
-			                if(f.getName()==null||f2.getName()==null||f.get(data)==null||f2.get(tmp)==null)
-			                	continue;
-			                if(f.getName().equals(f2.getName())) {
-			                	if(f.get(data)!=f2.get(tmp)&&!f.get(data).equals(f2.get(tmp))) {
-			                		red +=f.get(data)+",";
-			                		data.setFlag("2");
-			                	}
-			                }
-			            }
-			        }
+					
 				}
 				data.setRed(red);
 				resultList.add(data);

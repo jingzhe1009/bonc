@@ -52,7 +52,7 @@ function initCompareTable(obj) {
         "info": true,
         //列表的过滤,搜索和排序信息会传递到Server端进行处理
         "serverSide": false,
-        "pageLength": 10,
+        "pageLength": 100,
         "columns": [
         	/*{"title":"操作" ,"data": null,"render": function(data, type, row) {
             	var html = '<div>';

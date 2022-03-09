@@ -157,5 +157,10 @@ public class DataInterfaceColumnsHistory extends DataInterfaceColumnsHistoryKey 
         this.incrementfield = incrementfield;
     }
     
+    public String toStr(){
+        return 	 columnName + dataType + dataFormat + nullable +
+                replacenull + comma + columnComment + isbucket + iskey + isvalid + incrementfield;
+    }
+    
     
 }

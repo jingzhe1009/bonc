@@ -294,6 +294,15 @@
   
   <select id="queryAllTmp"  parameterType="com.ljz.model.DataInterfaceTmp" resultMap="BaseResultMap2">
     select * from data_interface_tmp  where batch_no=#{batchNo}
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+    </if>
+    <if test="dataInterfaceNo != null">
+       and data_interface_no=#{dataInterfaceNo}
+    </if>
+    <if test="dataInterfaceName != null">
+       and data_interface_name=#{dataInterfaceName}
+    </if>
     order by data_src_abbr,data_interface_no
   </select>
   
@@ -356,7 +365,7 @@
 	</insert>
 	
 	<insert id="batchInsertHis" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterfaceHistory">
-	  insert into data_interface (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, data_interface_name, 
+	  insert into data_interface_history (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, data_interface_name, 
       data_interface_desc, data_load_freq, data_load_mthd, 
       filed_delim, line_delim, extrnl_database_name, 
       intrnl_database_name, extrnl_table_name, intrnl_table_name, 

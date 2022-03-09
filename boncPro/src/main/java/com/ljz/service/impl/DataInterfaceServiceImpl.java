@@ -29,6 +29,7 @@ import com.ljz.mapper.DataInterfaceMapper;
 import com.ljz.mapper.DataInterfaceRecordsMapper;
 import com.ljz.model.DataInterface;
 import com.ljz.model.DataInterface2proc;
+import com.ljz.model.DataInterface2procHistory;
 import com.ljz.model.DataInterface2procTmp;
 import com.ljz.model.DataInterfaceColumns;
 import com.ljz.model.DataInterfaceColumnsHistory;
@@ -823,12 +824,13 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 	
 	@Override
 	public List<DataInterfaceHistory> queryInterfaceCompare(DataInterfaceHistory record) {
-		List<Map<String, Object>> intHistoryList = jdbc.queryForList("select * from  data_interface_history where e_date = '3000-12-31' ");
+		List<Map<String, Object>> intHistoryList = jdbc.queryForList("select * from  data_interface where e_date = '3000-12-31' and data_src_abbr='"+record.getDataSrcAbbr()+"' ");
 		if(intHistoryList.size()<1) {//第一次导入历史表
 			return hisMapper.queryFirst(record);
 		}
 		List<DataInterfaceHistory> historyList = hisMapper.queryAll(record);
 		List<DataInterfaceHistory> resultList = new ArrayList<DataInterfaceHistory>();
+		ExcelUtil obj = ExcelUtil.getInstance();
 		try {
 			DataInterfaceHistory tmp = null;
 			for(DataInterfaceHistory data:historyList) {
@@ -836,55 +838,133 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 				if("0".equals(data.getFlag())) {//正式表
 					tmp = data;
 				}else if("1".equals(data.getFlag())) {//临时表
-					if(tmp==null) {
-						data.setFlag("3");//新增
-					}else {
-						//对比接口
-						Class cls = data.getClass();  
-				        Field[] fields = cls.getDeclaredFields();  
-				        for(int i=0; i<fields.length; i++){  
-				            Field f = fields[i];  
-				            f.setAccessible(true);  
-				            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
-				            Class cls2 = tmp.getClass();  
-				            Field[] fields2 = cls2.getDeclaredFields(); 
-				            if("flag".equals(f.getName())||"serialVersionUID".equals(f.getName()))
-			                	continue;
-				            for(int j=0; j<fields2.length; j++){  
-				                Field f2 = fields2[j];  
-				                f2.setAccessible(true);  
-				                System.out.println("tmp属性名:" + f2.getName() + " tmp属性值:" + f2.get(tmp)); 
-				                if(f.getName()==null||f2.getName()==null||f.get(data)==null||f2.get(tmp)==null)
-				                	continue;
-				                if(f.getName().equals(f2.getName())) {
-				                	if(f.get(data)!=f2.get(tmp)&&!f.get(data).equals(f2.get(tmp))) {
-				                		red +=f.get(data)+",";
+					
+					DataInterfaceTmp intRecord = new DataInterfaceTmp();
+					intRecord.setBatchNo(record.getExptSeqNbr());
+					intRecord.setDataInterfaceName(data.getDataInterfaceName());
+					Map<String,String> interfaceMap =obj.getInterfaceMap(record.getDataSrcAbbr());
+					String key = data.getDataInterfaceName();
+					if(interfaceMap!=null&&interfaceMap.containsKey(key)){
+						if(data.toStr().equalsIgnoreCase(interfaceMap.get(key))){//无变化
+							//对比字段
+					        if("1".equals(data.getFlag())) {
+					        	DataInterfaceColumnsTmp columnRecord = new DataInterfaceColumnsTmp();
+					        	columnRecord.setDataSrcAbbr(data.getDataSrcAbbr());
+					        	columnRecord.setDataInterfaceNo(data.getDataInterfaceNo());
+					        	columnRecord.setBatchNo(record.getExptSeqNbr());
+								List<DataInterfaceColumnsTmp> queryAllTmpCol = colMapper.queryAllTmp(columnRecord);
+								Map<String,String> columnMap =obj.getColumnMap(record.getDataSrcAbbr());
+								for(DataInterfaceColumnsTmp colTmp:queryAllTmpCol){
+									String colKey = colTmp.getDataInterfaceName()+colTmp.getColumnNo();
+									if(columnMap!=null&&columnMap.containsKey(colKey)){
+										if(colTmp.toStr().equalsIgnoreCase(columnMap.get(colKey))){//无变化
+										}else{//修改
+					                		data.setFlag("2");//修改
+					                		break;
+										}
+									}else{//新增
 				                		data.setFlag("2");//修改
-				                	}
-				                }
-				            }
-				        }
-				        //对比字段
-				        if("1".equals(data.getFlag())) {
-				        	ExcelUtil obj = ExcelUtil.getInstance();
-				        	DataInterfaceColumnsTmp columnRecord = new DataInterfaceColumnsTmp();
-				        	columnRecord.setDataSrcAbbr(data.getDataSrcAbbr());
-				        	columnRecord.setDataInterfaceNo(data.getDataInterfaceNo());
-				        	columnRecord.setBatchNo(record.getExptSeqNbr());
-							List<DataInterfaceColumnsTmp> queryAllTmp = colMapper.queryAllTmp(columnRecord);
-							Map<String,String> columnMap =obj.getColumnMap(record.getDataSrcAbbr());
-							for(DataInterfaceColumnsTmp colTmp:queryAllTmp){
-								String key = colTmp.getDataInterfaceName()+colTmp.getColumnNo();
-								if(columnMap!=null&&columnMap.containsKey(key)){
-									if(colTmp.toStr().equalsIgnoreCase(columnMap.get(key))){//无变化
-									}else{//修改
-				                		data.setFlag("2");//修改
+				                		break;
 									}
-								}else{//新增
-			                		data.setFlag("2");//修改
 								}
-								resultList.add(tmp);
-							}
+					        }
+						}else{//修改
+							Class cls = data.getClass();  
+					        Field[] fields = cls.getDeclaredFields(); 
+							for(int i=0; i<fields.length; i++){  
+					            Field f = fields[i];  
+					            f.setAccessible(true);  
+					            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
+					            Class cls2 = tmp.getClass();  
+					            Field[] fields2 = cls2.getDeclaredFields(); 
+					            if("red".equals(f.getName())||"flag".equals(f.getName())||"serialVersionUID".equals(f.getName()))
+				                	continue;
+					            for(int j=0; j<fields2.length; j++){  
+					                Field f2 = fields2[j];  
+					                f2.setAccessible(true);  
+					                System.out.println("tmp属性名:" + f2.getName() + " tmp属性值:" + f2.get(tmp)); 
+					                if(f.getName()==null||f2.getName()==null||f.get(data)==null||f2.get(tmp)==null)
+					                	continue;
+					                if(f.getName().equals(f2.getName())) {
+					                	if(f.get(data)!=f2.get(tmp)&&!f.get(data).equals(f2.get(tmp))) {
+					                		red +=f.get(data)+",";
+					                	}
+					                }
+					            }
+					        }
+							data.setFlag("2");
+						}
+						tmp = null;
+					}else{//新增
+						resultList.add(new DataInterfaceHistory());
+						data.setFlag("3");
+					}
+				}
+				data.setRed(red);
+				resultList.add(data);
+			}
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		//record.setExptSeqNbr("1.0.0");
+		//List<DataInterfaceHistory> historyList = hisMapper.queryAll(record);
+		return resultList;
+	}
+//					if(tmp==null) {
+//						data.setFlag("3");//新增
+//					}else {
+						//对比接口
+//						Class cls = data.getClass();  
+//				        Field[] fields = cls.getDeclaredFields();  
+//				        for(int i=0; i<fields.length; i++){  
+//				            Field f = fields[i];  
+//				            f.setAccessible(true);  
+//				            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
+//				            Class cls2 = tmp.getClass();  
+//				            Field[] fields2 = cls2.getDeclaredFields(); 
+//				            if("flag".equals(f.getName())||"serialVersionUID".equals(f.getName()))
+//			                	continue;
+//				            for(int j=0; j<fields2.length; j++){  
+//				                Field f2 = fields2[j];  
+//				                f2.setAccessible(true);  
+//				                System.out.println("tmp属性名:" + f2.getName() + " tmp属性值:" + f2.get(tmp)); 
+//				                if(f.getName()==null||f2.getName()==null||f.get(data)==null||f2.get(tmp)==null)
+//				                	continue;
+//				                if(f.getName().equals(f2.getName())) {
+//				                	if(f.get(data)!=f2.get(tmp)&&!f.get(data).equals(f2.get(tmp))) {
+//				                		red +=f.get(data)+",";
+//				                		data.setFlag("2");//修改
+//				                	}
+//				                }
+//				            }
+//				        }
+				        //对比字段
+//				        if("1".equals(data.getFlag())) {
+//				        	DataInterfaceColumnsTmp columnRecord = new DataInterfaceColumnsTmp();
+//				        	columnRecord.setDataSrcAbbr(data.getDataSrcAbbr());
+//				        	columnRecord.setDataInterfaceNo(data.getDataInterfaceNo());
+//				        	columnRecord.setBatchNo(record.getExptSeqNbr());
+//							List<DataInterfaceColumnsTmp> queryAllTmpCol = colMapper.queryAllTmp(columnRecord);
+//							Map<String,String> columnMap =obj.getColumnMap(record.getDataSrcAbbr());
+//							for(DataInterfaceColumnsTmp colTmp:queryAllTmpCol){
+//								String colKey = colTmp.getDataInterfaceName()+colTmp.getColumnNo();
+//								if(columnMap!=null&&columnMap.containsKey(colKey)){
+//									if(colTmp.toStr().equalsIgnoreCase(columnMap.get(colKey))){//无变化
+//									}else{//修改
+//				                		data.setFlag("2");//修改
+//				                		break;
+//									}
+//								}else{//新增
+//			                		data.setFlag("2");//修改
+//			                		break;
+//								}
+//							}
 //				        	String sql = "SELECT a.nullable as A1,b.nullable B1,a.replacenull A2,b.replacenull B2 FROM data_interface_columns_tmp a \r\n"
 //					        		+ "inner join data_interface_columns b "
 //					        		+ "on a.data_interface_name=b.data_interface_name\r\n "
@@ -921,27 +1001,12 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 							 * if(count!=0) { data.setFlag("2");//修改 } }
 							 */
 					        	
-				        }
+//				        }
 
-				        tmp = null;
-					}
-				}
-				data.setRed(red);
-				resultList.add(data);
-			}
-		} catch (DataAccessException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		//record.setExptSeqNbr("1.0.0");
-		//List<DataInterfaceHistory> historyList = hisMapper.queryAll(record);
-		return resultList;
-	}
+//				        tmp = null;
+//					}
+				
+		
 	
 	/**
 	 * 全部导入
@@ -1023,7 +1088,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		List<Object[]> insertList=new ArrayList<Object[]>();
 		List<DataInterface> newAddList = new ArrayList<DataInterface>();
 		//历史表
-		List<Object> updateListHis=new ArrayList<Object>();
+		List<String> updateListHis=new ArrayList<String>();
 		List<DataInterfaceHistory> newAddListHis = new ArrayList<DataInterfaceHistory>();
 		
 		//全部导入
@@ -1150,7 +1215,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		List<Object []> colInsertList=new ArrayList<Object []>();
 		List<DataInterfaceColumns> colNewAddList = new ArrayList<DataInterfaceColumns>();
 		//历史
-		List<Object> colUpdateListHis=new ArrayList<Object>();
+		List<String> colUpdateListHis=new ArrayList<String>();
 		List<DataInterfaceColumnsHistory> colNewAddListHis = new ArrayList<DataInterfaceColumnsHistory>();
 		
 		//遍历当前批次临时表
@@ -1277,8 +1342,8 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		List<Object []> procUpdateList=new ArrayList<Object []>();
 		List<Object []> procInsertList=new ArrayList<Object []>();
 		List<DataInterface2proc> procNewAddList = new ArrayList<DataInterface2proc>();
-		List<Object> procUpdateListHis=new ArrayList<Object>();
-		List<DataInterface2proc> procNewAddListHis = new ArrayList<DataInterface2proc>();
+		List<String> procUpdateListHis=new ArrayList<String>();
+		List<DataInterface2procHistory> procNewAddListHis = new ArrayList<DataInterface2procHistory>();
 		
 		DataInterface2procTmp procCondition = new DataInterface2procTmp();
 		procCondition.setBatchNo(batchNo);
@@ -1355,7 +1420,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		cache.put("proc","updateHis",updateListHis);
 		cache.put("proc","insertHis",newAddListHis);
 		
-		List<Object> delList=new ArrayList<Object>();
+		List<String> delList=new ArrayList<String>();
 		delList.add("delete from data_interface_tmp where batch_no = '"+batchNo+"'; ");
 		delList.add("delete from data_interface_columns_tmp where batch_no = '"+batchNo+"'; ");
 		delList.add("delete from data_interface2proc_tmp where batch_no = '"+batchNo+"'; ");
@@ -1483,7 +1548,6 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			records.setExctPsn("");
 			records.setExptDate(TimeUtil.getDate(new Date()));
 			recordsMapper.insertSelective(records);
-			return "success";
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -1492,13 +1556,27 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		 * 历史表
 		 */
 		try {
-			jdbc.batchUpdate((String[]) updateListHis.toArray());
-			jdbc.batchUpdate((String[]) newAddListHis.toArray());
-			jdbc.batchUpdate((String[]) colUpdateListHis.toArray());
-			jdbc.batchUpdate((String[]) colNewAddListHis.toArray());
-			jdbc.batchUpdate((String[]) procUpdateListHis.toArray());
-			jdbc.batchUpdate((String[]) procNewAddListHis.toArray());
-			jdbc.batchUpdate((String[]) delList.toArray());
+			if(updateListHis.size()>0){
+				jdbc.batchUpdate((String[]) updateListHis.toArray());
+			}
+			if(newAddListHis.size()>0){
+				mapper.batchInsertHis(newAddListHis);
+			}
+			if(colUpdateListHis.size()>0){
+				jdbc.batchUpdate((String[]) colUpdateListHis.toArray());
+			}
+			if(colNewAddListHis.size()>0){
+				colMapper.batchInsertHis(colNewAddListHis);
+			}
+			if(procUpdateListHis.size()>0){
+				jdbc.batchUpdate((String[]) procUpdateListHis.toArray());
+			}
+			if(procNewAddListHis.size()>0){
+				procMapper.batchInsertHis(procNewAddListHis);
+			}
+			if(delList.size()>0){
+				//jdbc.batchUpdate((String[]) delList.toArray());
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1511,7 +1589,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		};
 		hisEs.submit(hisTask);
 		
-		return null;
+		return "success";
 	}
 	
 	@Override

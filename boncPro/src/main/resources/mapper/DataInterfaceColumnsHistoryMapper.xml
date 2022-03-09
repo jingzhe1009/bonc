@@ -252,19 +252,26 @@
     order by data_src_abbr,data_interface_no,data_interface_name,column_no,need_vrsn_nbr,expt_seq_nbr;
   </select>
   <select id="queryAll"  parameterType="com.ljz.model.DataInterfaceColumnsHistory" resultMap="BaseResultMap">
-    select flag,data_src_abbr, data_interface_no, column_no, data_interface_name, column_name, data_type, 
-    data_format, nullable, replacenull, comma, column_comment, iskey, isvalid, increment_field
+    select flag,'-' as red,data_src_abbr, data_interface_no, column_no, data_interface_name, column_name, data_type, 
+    data_format, nullable, replacenull, comma, column_comment, iskey, isvalid, increment_field,isbucket
  	from (
 	select '1' as flag,
 	a.data_src_abbr,a.data_interface_no,a.column_no,a.data_interface_name,a.column_name,a.data_type,a.data_format,a.nullable,a.replacenull,a.comma,a.column_comment,a.isbucket
 	, a.iskey, a.isvalid, a.increment_field
 	from data_interface_columns_tmp a 
-	where a.batch_no=#{exptSeqNbr} and a.e_date='3000-12-31' and data_interface_name=#{dataInterfaceName}
+	where a.batch_no=#{exptSeqNbr} and a.e_date='3000-12-31' and a.data_interface_name=#{dataInterfaceName}
 	union all select '0' as flag,
 	c.data_src_abbr,c.data_interface_no,c.column_no,c.data_interface_name,c.column_name,c.data_type,c.data_format,c.nullable,c.replacenull,c.comma,c.column_comment,c.isbucket
 	, c.iskey, c.isvalid, c.increment_field
 	 from data_interface_columns c
-	 where c.e_date='3000-12-31' and data_interface_name=#{dataInterfaceName}
+	 where c.e_date='3000-12-31' and c.data_interface_name=#{dataInterfaceName}
 	) d order by d.data_interface_name,d.column_no,d.flag
+  </select>
+  <select id="queryFirst"  parameterType="com.ljz.model.DataInterfaceHistory" resultMap="BaseResultMap">
+	select '3' as flag,'-' as red,
+	a.data_src_abbr,a.data_interface_no,a.column_no,a.data_interface_name,a.column_name,a.data_type,a.data_format,a.nullable,a.replacenull,a.comma,a.column_comment,a.isbucket
+	, a.iskey, a.isvalid, a.increment_field
+	from data_interface_columns_tmp a 
+	where a.data_interface_name=#{dataInterfaceName} and a.batch_no=#{exptSeqNbr} and a.e_date='3000-12-31'
   </select>
 </mapper>

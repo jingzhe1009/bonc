@@ -421,7 +421,7 @@
 	    </foreach>
    </insert>
    <insert id="batchInsertHis" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterfaceColumnsHistory">
-	  insert into data_interface_columns (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, column_no, 
+	  insert into data_interface_columns_history (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, column_no, 
       data_interface_name, column_name, data_type, 
       data_format, nullable, replacenull, 
       comma, column_comment, isbucket, 

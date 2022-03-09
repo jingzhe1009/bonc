@@ -3,6 +3,7 @@ package com.ljz.mapper;
 import java.util.List;
 
 import com.ljz.model.DataInterface2proc;
+import com.ljz.model.DataInterface2procHistory;
 import com.ljz.model.DataInterface2procKey;
 import com.ljz.model.DataInterface2procTmp;
 
@@ -22,6 +23,8 @@ public interface DataInterface2procMapper {
     List<DataInterface2proc> queryAll(DataInterface2proc record);
     
     int batchInsert(List<DataInterface2procTmp> list);
+    
+    int batchInsertHis(List<DataInterface2procHistory> list);
     
     int tmpToSave(DataInterface2procTmp record);
     

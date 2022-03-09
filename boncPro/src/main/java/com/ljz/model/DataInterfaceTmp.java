@@ -238,7 +238,7 @@ public class DataInterfaceTmp implements Serializable {
 	}
 
 	public String toStr() {
-		return dataSrcAbbr +  dataInterfaceNo +dataInterfaceName + dataInterfaceDesc + dataLoadFreq + dataLoadMthd + filedDelim+
+		return dataInterfaceDesc + dataLoadFreq + dataLoadMthd + filedDelim+
 				lineDelim + extrnlDatabaseName + intrnlDatabaseName + extrnlTableName + intrnlTableName+ tableType + bucketNumber;
 	}
 	

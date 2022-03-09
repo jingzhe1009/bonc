@@ -19,4 +19,6 @@ public interface DataInterfaceColumnsHistoryMapper {
     int updateByPrimaryKey(DataInterfaceColumnsHistory record);
     
     List<DataInterfaceColumnsHistory> queryAll(DataInterfaceColumnsHistory record);
+    
+    List<DataInterfaceColumnsHistory> queryFirst(DataInterfaceColumnsHistory record);
 }

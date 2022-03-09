@@ -209,4 +209,14 @@
       		#{model.procName,jdbcType=VARCHAR}, #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE})
 	    </foreach>
 	</insert>
+	
+	<insert id="batchInsertHis" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterface2procHistory">
+	  insert into data_interface2proc_history (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, proc_database_name, 
+      proc_name, s_date, e_date)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      ((#{model.needVrsnNbr,jdbcType=VARCHAR},#{model.exptSeqNbr,jdbcType=VARCHAR},#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.procDatabaseName,jdbcType=VARCHAR}, 
+      		#{model.procName,jdbcType=VARCHAR}, #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE})
+	    </foreach>
+	</insert>
 </mapper>

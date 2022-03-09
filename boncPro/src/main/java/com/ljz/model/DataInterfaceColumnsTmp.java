@@ -221,10 +221,9 @@ public class DataInterfaceColumnsTmp implements Serializable {
 	}
 	
 	public String toStr(){
-//      return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable + replacenull + comma + columnComment + isbucket;
-      return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable +
-              replacenull + comma + columnComment + isbucket + iskey + isvalid + incrementfield;
-	}
+        return 	 columnName + dataType + dataFormat + nullable +
+                replacenull + comma + columnComment + isbucket + iskey + isvalid + incrementfield;
+    }
 	public DataInterfaceColumnsTmp(String dataSrcAbbr, String dataInterfaceNo, Integer columnNo,
 			String dataInterfaceName, String columnName, String dataType, String dataFormat, String comma, String columnComment, String isbucket,
                                    String iskey,String isvalid,String incrementfield) {
