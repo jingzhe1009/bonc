@@ -14,6 +14,9 @@
     <result column="comma" jdbcType="VARCHAR" property="comma" />
     <result column="column_comment" jdbcType="VARCHAR" property="columnComment" />
     <result column="isbucket" jdbcType="VARCHAR" property="isbucket" />
+    <result column="iskey" jdbcType="VARCHAR" property="iskey" />
+    <result column="isvalid" jdbcType="VARCHAR" property="isvalid" />
+    <result column="increment_field" jdbcType="VARCHAR" property="incrementfield" />
     <result column="s_date" jdbcType="DATE" property="sDate" />
     <result column="e_date" jdbcType="DATE" property="eDate" />
   </resultMap>
@@ -33,13 +36,16 @@
     <result column="comma" jdbcType="VARCHAR" property="comma" />
     <result column="column_comment" jdbcType="VARCHAR" property="columnComment" />
     <result column="isbucket" jdbcType="VARCHAR" property="isbucket" />
+    <result column="iskey" jdbcType="VARCHAR" property="iskey" />
+    <result column="isvalid" jdbcType="VARCHAR" property="isvalid" />
+    <result column="increment_field" jdbcType="VARCHAR" property="incrementfield" />
     <result column="s_date" jdbcType="DATE" property="sDate" />
     <result column="e_date" jdbcType="DATE" property="eDate" />
   </resultMap>
   
   <sql id="Base_Column_List">
     data_src_abbr, data_interface_no, column_no, data_interface_name, column_name, data_type, 
-    data_format, nullable, replacenull, comma, column_comment, isbucket, s_date, e_date
+    data_format, nullable, replacenull, comma, column_comment, isbucket, iskey, isvalid, increment_field, s_date, e_date
   </sql>
   
   <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceColumns" resultMap="BaseResultMap">
@@ -78,13 +84,13 @@
     insert into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
       data_interface_name, column_name, data_type, 
       data_format, nullable, replacenull, 
-      comma, column_comment, isbucket, 
+      comma, column_comment, isbucket, iskey, isvalid, increment_field,
       s_date, e_date)
     values (#{dataSrcAbbr,jdbcType=VARCHAR}, #{dataInterfaceNo,jdbcType=VARCHAR}, #{columnNo,jdbcType=INTEGER}, 
       #{dataInterfaceName,jdbcType=VARCHAR}, #{columnName,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, 
       #{dataFormat,jdbcType=VARCHAR}, #{nullable,jdbcType=INTEGER}, #{replacenull,jdbcType=INTEGER}, 
-      #{comma,jdbcType=VARCHAR}, #{columnComment,jdbcType=VARCHAR}, #{isbucket,jdbcType=VARCHAR}, 
-      #{sDate,jdbcType=DATE}, #{eDate,jdbcType=DATE})
+      #{comma,jdbcType=VARCHAR}, #{columnComment,jdbcType=VARCHAR}, #{isbucket,jdbcType=VARCHAR},  #{iskey,jdbcType=VARCHAR},  #{isvalid,jdbcType=VARCHAR},
+      #{incrementfield,jdbcType=VARCHAR}, #{sDate,jdbcType=DATE}, #{eDate,jdbcType=DATE})
   </insert>
   
   <insert id="insertSelective" parameterType="com.ljz.model.DataInterfaceColumns">
@@ -126,7 +132,16 @@
       <if test="isbucket != null">
         isbucket,
       </if>
-      <if test="sDate != null">
+        <if test="iskey != null">
+            iskey,
+        </if>
+        <if test="isvalid != null">
+            isvalid,
+        </if>
+        <if test="incrementfield != null">
+            increment_field,
+        </if>
+        <if test="sDate != null">
         s_date,
       </if>
       <if test="eDate != null">
@@ -170,6 +185,15 @@
       <if test="isbucket != null">
         #{isbucket,jdbcType=VARCHAR},
       </if>
+        <if test="iskey != null">
+            #{iskey,jdbcType=VARCHAR},
+        </if>
+        <if test="isvalid != null">
+            #{isvalid,jdbcType=VARCHAR},
+        </if>
+        <if test="incrementfield != null">
+            #{incrementfield,jdbcType=VARCHAR},
+        </if>
       <if test="sDate != null">
         #{sDate,jdbcType=DATE},
       </if>
@@ -209,6 +233,15 @@
       <if test="isbucket != null">
         isbucket = #{isbucket,jdbcType=VARCHAR},
       </if>
+        <if test="iskey != null">
+            iskey = #{iskey,jdbcType=VARCHAR},
+        </if>
+        <if test="isvalid != null">
+            isvalid =  #{isvalid,jdbcType=VARCHAR},
+        </if>
+        <if test="incrementfield != null">
+            increment_field = #{incrementfield,jdbcType=VARCHAR},
+        </if>
       <!-- <if test="sDate != null">
         s_date = #{sDate,jdbcType=DATE},
       </if> -->
@@ -241,9 +274,7 @@
   </update>
   
   <select id="queryAll" parameterType="com.ljz.model.DataInterfaceColumns" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from data_interface_columns
+    select  * from data_interface_columns
     where 1=1 
     <if test="dataSrcAbbr != null">
        and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
@@ -280,7 +311,19 @@
   
   <select id="queryAllTmp" parameterType="com.ljz.model.DataInterfaceColumnsTmp" resultMap="BaseResultMap2">
     select * from data_interface_columns_tmp  where batch_no=#{batchNo}
-    order by data_src_abbr,data_interface_no,column_no
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceNo != null">
+       and data_interface_no = #{dataInterfaceNo,jdbcType=VARCHAR}
+     </if>
+     <if test="dataInterfaceName != null">
+       and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
+     </if>
+     <if test="columnNo != null">
+       and column_no = #{columnNo,jdbcType=VARCHAR}
+     </if>
+     order by data_src_abbr,data_interface_no,column_no
   </select>
   
   <select id="queryAllTmpBak" parameterType="com.ljz.model.DataInterfaceColumnsTmp" resultMap="BaseResultMap2">
@@ -296,11 +339,12 @@
   	INSERT into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
       data_interface_name, column_name, data_type, 
       data_format, nullable, replacenull, 
-      comma, column_comment, isbucket,s_date, e_date)
+      comma, column_comment, isbucket, iskey, isvalid, increment_field, s_date, e_date)
     SELECT data_interface_columns_tmp.data_src_abbr, data_interface_columns_tmp.data_interface_no, data_interface_columns_tmp.column_no, 
       data_interface_columns_tmp.data_interface_name, data_interface_columns_tmp.column_name, data_interface_columns_tmp.data_type, 
       data_interface_columns_tmp.data_format, data_interface_columns_tmp.nullable, data_interface_columns_tmp.replacenull, 
       data_interface_columns_tmp.comma, data_interface_columns_tmp.column_comment, data_interface_columns_tmp.isbucket,
+      data_interface_columns_tmp.iskey, data_interface_columns_tmp.isvalid, data_interface_columns_tmp.increment_field,
       data_interface_columns_tmp.s_date, data_interface_columns_tmp.e_date
     FROM data_interface_columns_tmp
     WHERE 1=1 
@@ -325,12 +369,13 @@
   	INSERT into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
       data_interface_name, column_name, data_type, 
       data_format, nullable, replacenull, 
-      comma, column_comment, isbucket,s_date, e_date)
+      comma, column_comment, isbucket, iskey, isvalid, increment_field, s_date, e_date)
        <foreach collection="list" item="model">
 		    SELECT data_interface_columns_tmp.data_src_abbr, data_interface_columns_tmp.data_interface_no, data_interface_columns_tmp.column_no, 
 		      data_interface_columns_tmp.data_interface_name, data_interface_columns_tmp.column_name, data_interface_columns_tmp.data_type, 
 		      data_interface_columns_tmp.data_format, data_interface_columns_tmp.nullable, data_interface_columns_tmp.replacenull, 
 		      data_interface_columns_tmp.comma, data_interface_columns_tmp.column_comment, data_interface_columns_tmp.isbucket,
+              data_interface_columns_tmp.iskey, data_interface_columns_tmp.isvalid, data_interface_columns_tmp.increment_field,
 		      data_interface_columns_tmp.s_date, data_interface_columns_tmp.e_date
 		    FROM data_interface_columns_tmp
 		    WHERE 1=1 
@@ -345,14 +390,16 @@
 	  insert into data_interface_columns_tmp (data_src_abbr, data_interface_no, column_no, 
       data_interface_name, column_name, data_type, 
       data_format, nullable, replacenull, 
-      comma, column_comment, isbucket, 
+      comma, column_comment, isbucket,
+      iskey, isvalid, increment_field,
       s_date, e_date,batch_no)
 	  	values
 	    <foreach collection="list" item="model" separator=",">
 	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.columnNo,jdbcType=INTEGER}, 
 	      #{model.dataInterfaceName,jdbcType=VARCHAR}, #{model.columnName,jdbcType=VARCHAR}, #{model.dataType,jdbcType=VARCHAR}, 
 	      #{model.dataFormat,jdbcType=VARCHAR}, #{model.nullable,jdbcType=INTEGER}, #{model.replacenull,jdbcType=INTEGER}, 
-	      #{model.comma,jdbcType=VARCHAR}, #{model.columnComment,jdbcType=VARCHAR}, #{model.isbucket,jdbcType=VARCHAR}, 
+	      #{model.comma,jdbcType=VARCHAR}, #{model.columnComment,jdbcType=VARCHAR}, #{model.isbucket,jdbcType=VARCHAR},
+          #{model.iskey,jdbcType=VARCHAR}, #{model.isvalid,jdbcType=VARCHAR}, #{model.incrementfield,jdbcType=VARCHAR},
 	      #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE},#{model.batchNo,jdbcType=VARCHAR})
 	    </foreach>
    </insert>
@@ -360,11 +407,28 @@
 	  insert into data_interface_columns (data_src_abbr, data_interface_no, column_no, 
       data_interface_name, column_name, data_type, 
       data_format, nullable, replacenull, 
+      comma, column_comment, isbucket,
+       iskey, isvalid, increment_field,
+       s_date, e_date)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.columnNo,jdbcType=INTEGER}, 
+	      #{model.dataInterfaceName,jdbcType=VARCHAR}, #{model.columnName,jdbcType=VARCHAR}, #{model.dataType,jdbcType=VARCHAR}, 
+	      #{model.dataFormat,jdbcType=VARCHAR}, #{model.nullable,jdbcType=INTEGER}, #{model.replacenull,jdbcType=INTEGER}, 
+	      #{model.comma,jdbcType=VARCHAR}, #{model.columnComment,jdbcType=VARCHAR}, #{model.isbucket,jdbcType=VARCHAR},
+          #{model.iskey,jdbcType=VARCHAR}, #{model.isvalid,jdbcType=VARCHAR}, #{model.incrementfield,jdbcType=VARCHAR},
+	      #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE})
+	    </foreach>
+   </insert>
+   <insert id="batchInsertHis" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterfaceColumnsHistory">
+	  insert into data_interface_columns (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, column_no, 
+      data_interface_name, column_name, data_type, 
+      data_format, nullable, replacenull, 
       comma, column_comment, isbucket, 
       s_date, e_date)
 	  	values
 	    <foreach collection="list" item="model" separator=",">
-	      (#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.columnNo,jdbcType=INTEGER}, 
+	      (#{model.needVrsnNbr,jdbcType=VARCHAR},#{model.exptSeqNbr,jdbcType=VARCHAR},#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.columnNo,jdbcType=INTEGER}, 
 	      #{model.dataInterfaceName,jdbcType=VARCHAR}, #{model.columnName,jdbcType=VARCHAR}, #{model.dataType,jdbcType=VARCHAR}, 
 	      #{model.dataFormat,jdbcType=VARCHAR}, #{model.nullable,jdbcType=INTEGER}, #{model.replacenull,jdbcType=INTEGER}, 
 	      #{model.comma,jdbcType=VARCHAR}, #{model.columnComment,jdbcType=VARCHAR}, #{model.isbucket,jdbcType=VARCHAR}, 
@@ -390,4 +454,7 @@
 		       and batch_no = #{model.batchNo,jdbcType=VARCHAR};
 	   </foreach>
   </delete>
+  <select id="queryDup" parameterType="java.lang.String"  resultMap="BaseResultMap">
+  	select column_name,column_comment from data_interface_columns where data_interface_name=#{data_interface_name};
+  </select>
 </mapper>

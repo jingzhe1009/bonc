@@ -7,11 +7,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ljz.mapper.attrC2eMapper;
+import com.ljz.mapper.entityC2eMapper;
+import com.ljz.model.*;
 import com.ljz.service.impl.ExcelServiceImpl;
+import com.ljz.util.ExcelUtil;
+import com.ljz.util.TransUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -30,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ljz.entity.ParamEntity;
 import com.ljz.model.DataInterfaceColumns;
+import com.ljz.model.DataInterfaceColumnsHistory;
 import com.ljz.model.DataInterfaceColumnsTmp;
 import com.ljz.service.IDataColumnService;
 import com.ljz.util.TimeUtil;
@@ -42,12 +52,12 @@ import com.ljz.util.TimeUtil;
 @Controller
 @RequestMapping("/col")
 public class ColumnController extends MainController{
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ColumnController.class);
-	
+
 	@Autowired
 	IDataColumnService colService;
-	
+
 	@Autowired
 	ExcelServiceImpl excelService;
 
@@ -69,13 +79,30 @@ public class ColumnController extends MainController{
         PageInfo<DataInterfaceColumns> pageInfo = new PageInfo<DataInterfaceColumns>(list);
         //使用DataTables的属性接收分页数据
         PageUtil<DataInterfaceColumns> dataTable = new PageUtil<DataInterfaceColumns>(start,length);*/
-		
+
 		Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("recordsTotal", list.size());
         resultMap.put("recordsFiltered", list.size());
         resultMap.put("total", list.size());
         resultMap.put("data", list);
         logger.info("query column success,num:"+list.size());
+        return resultMap;
+    }
+
+	@ResponseBody
+	@RequestMapping(value="/queryColumnCompare",method = RequestMethod.GET)
+    public Map<String, Object> queryColumnCompare(String dataInterfaceName,String batchNo) {
+		DataInterfaceColumnsHistory record = new DataInterfaceColumnsHistory();
+		record.setDataInterfaceName(dataInterfaceName);
+		record.setExptSeqNbr(batchNo);//当前导入临时表的批次号
+		List<DataInterfaceColumnsHistory> list = colService.queryColumnCompare(record);
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("recordsTotal", list.size());
+        resultMap.put("recordsFiltered", list.size());
+        resultMap.put("total", list.size());
+        resultMap.put("data", list);
+        logger.info("query column compare success,num:"+list.size());
         return resultMap;
     }
 	
@@ -85,16 +112,67 @@ public class ColumnController extends MainController{
     public Map<String, Object> createColumn(DataInterfaceColumns record) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		StringBuffer stringBuffer = new StringBuffer();
+
+//		List<entityC2e> eList = eMapper.queryAll(new entityC2e());
+//		List<attrC2e> aList = aMapper.queryAll(new attrC2e());
+//		ExcelUtil obj = ExcelUtil.getInstance();
+//		obj.initDTable(eList);
+//		obj.initDCol(aList);
+//		TransUtil.sb=new StringBuffer();
+//		if ("".equals(record.getColumnName())) {  //词根表查找为空，去词根字段查找
+//			record.setColumnName(TransUtil.translateField(obj.getColMap(), record.getColumnComment()));
+//			if (record.getColumnName().startsWith("_")){
+//				record.setColumnName(record.getColumnName().substring(1).toUpperCase());
+//			}
+//		}
+////内表表名校验
+//		String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
+//		Pattern p = Pattern.compile(REGEX_CHINESE);
+//		Matcher m = p.matcher(record.getColumnName());
+//		if (m.find()){
+//			stringBuffer.append("[字段名]"+"「"+record.getColumnName()+"」"+"中文字符在词根找不到映射"+"\n");
+//		}else if ("".equals(record.getColumnName())){
+//			stringBuffer.append("[字段名]"+"「"+record.getColumnName()+"」不能为空"+"\n");
+//		}
+//
+//		excelService.
+//		List<DataInterface> list = intService.queryDsAndInfaceName(record.getDataSrcAbbr());
+//		if (list.stream().anyMatch(e -> e.getDataInterfaceName().equals(record.getDataInterfaceName()))){
+//			stringBuffer.append("[接口名]「"+record.getDataInterfaceName()+"」已存在\n");
+//		}else if (list.stream().anyMatch(e -> e.getDataInterfaceDesc().equals(record.getDataInterfaceDesc()))) {
+//			stringBuffer.append("[接口中文名]「"+record.getColumnComment()+"」已存在\n");
+//		}else if (list.stream().anyMatch(e -> e.getIntrnlTableName().equals(record.getColumnName()))) {
+//			stringBuffer.append("[内表表名]「"+record.getColumnName()+"」已存在\n");
+//		}
+
 		try{
-			if (record.getNullable()!=0 && record.getNullable()!=1){
-				stringBuffer.append("[是否可空]应为0/1");
+			if (record.getNullable()==null){
+				record.setNullable(0);
 			}
 		}catch (NullPointerException e){
+		}
+		try{
+			if (record.getReplacenull()==null){
+				record.setReplacenull(0);
+			}
+		}catch (NullPointerException e){
+		}
+		List<DataInterfaceColumns> nameDesclist = colService.queryDup(record.getDataInterfaceName());
+		if (nameDesclist.stream().anyMatch(e -> e.getColumnName().equals(record.getColumnName()))){
+			stringBuffer.append("[字段名]「"+record.getColumnName()+"」已存在\n");
+		}else if (nameDesclist.stream().anyMatch(e -> e.getColumnComment().equals(record.getColumnComment()))) {
+			stringBuffer.append("[字段描述]「"+record.getColumnComment()+"」已存在\n");
 		}
 		stringBuffer.append(excelService.verifyFieldInfo(record.getDataSrcAbbr(),
 				record.getDataInterfaceNo(),record.getDataInterfaceName(),
 				record.getColumnNo().toString(), record.getColumnName(), record.getDataType(),
-				record.getDataFormat(),record.getComma(),record.getColumnName(),record.getIsbucket()));
+				record.getDataFormat(),record.getNullable().toString(),record.getComma(),record.getColumnName(), record.getIsbucket()));
+
+		String regex1 = "[0-9]+";
+		boolean is = record.getColumnNo().toString().matches(regex1);
+		if (!is || record.getColumnNo().toString().equals("")){
+			stringBuffer.append("[序号]应非空且为数字"+"\n");
+		}
 		String string = stringBuffer.toString().trim();
         if(!string.equals("") && !string.isEmpty() && string!=null){
             map.put("message", "保存失败：\n"+record.getDataInterfaceName()+":\n"+stringBuffer);
@@ -113,7 +191,7 @@ public class ColumnController extends MainController{
 		map.put("message", "保存成功");
 		return map;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/editColumn",method = RequestMethod.POST)
 	@Transactional
@@ -121,15 +199,32 @@ public class ColumnController extends MainController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		StringBuffer stringBuffer = new StringBuffer();
 		try{
-			if (record.getNullable()!=0 && record.getNullable()!=1){
-				stringBuffer.append("[是否可空]应为0/1/空");
+			if (record.getNullable()==null){
+				record.setNullable(0);
 			}
 		}catch (NullPointerException e){
 		}
+		try{
+			if (record.getReplacenull()==null){
+				record.setReplacenull(0);
+			}
+		}catch (NullPointerException e){
+		}
+
+		List<DataInterfaceColumns> nameDesclist = colService.queryDup(record.getDataInterfaceName());
+		List<DataInterfaceColumns> nameDesclist1 = nameDesclist.stream().filter(e -> !e.getColumnName().equals(record.getColumnName())).collect(Collectors.toList());
+		List<DataInterfaceColumns> nameDesclist2 = nameDesclist.stream().filter(e -> !e.getColumnComment().equals(record.getColumnComment())).collect(Collectors.toList());
+		if (nameDesclist1.stream().anyMatch(e -> e.getColumnName().equals(record.getColumnName()))){
+			stringBuffer.append("[字段名]「"+record.getColumnName()+"」已存在\n");
+		}else if (nameDesclist2.stream().anyMatch(e -> e.getColumnComment().equals(record.getColumnComment()))) {
+			stringBuffer.append("[字段描述]「"+record.getColumnComment()+"」已存在\n");
+		}
+
+
 		stringBuffer.append(excelService.verifyFieldInfo(record.getDataSrcAbbr(),
 				record.getDataInterfaceNo(),record.getDataInterfaceName(),
 				record.getColumnNo().toString(), record.getColumnName(), record.getDataType(),
-				record.getDataFormat(),record.getComma(),record.getColumnName(),record.getIsbucket()));
+				record.getDataFormat(),record.getNullable().toString(),record.getComma(),record.getColumnName(),record.getIsbucket()));
 		String string = stringBuffer.toString().trim();
 		if (string!=null && !string.isEmpty() && !string.isEmpty()){
 			map.put("message","保存失败，填入信息有误：\n"+record.getDataInterfaceName()+":\n"+stringBuffer);
@@ -164,7 +259,7 @@ public class ColumnController extends MainController{
 //        return resultMap;
 		return map;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/deleteColumn",method = RequestMethod.POST)
     public Map<String, Object> deleteColumn(DataInterfaceColumns record) {
@@ -180,7 +275,38 @@ public class ColumnController extends MainController{
 		resultMap.put("colName", record.getColumnName());
         return resultMap;
     }
-	
+
+	@RequestMapping("/batchDeleteColumns")
+	@ResponseBody
+	public Map<String,String> batchDeleteColumns(@RequestBody(required=false) ParamEntity param) throws Exception{
+		long start = new Date().getTime();
+		Map<String,String> map = new HashMap<String,String>();
+//		String tmpTable[] = param.getTables();
+//		List<String> list = new ArrayList<String>();
+//		String tb ="";
+//		for(int i=0;i<tmpTable.length;i++){
+//			logger.info("执行接口:"+tmpTable[i]);
+//			if(tmpTable[i].equals("checkedAll"))
+//				continue;
+//			tb = tmpTable[i];
+//			list.add(tb);
+//		}
+//		logger.info("要删除的接口:"+list);
+		String dataSrcAbbr = null;
+		try {
+			dataSrcAbbr = colService.batchDeleteColumns(param);
+		}catch (Exception e){
+			e.printStackTrace();
+			map.put("msgData", "删除失败");
+			return map;
+		}
+		long end = new Date().getTime();
+		logger.info("删除接口用时:"+(end-start)+"毫秒");
+		map.put("msgData", "删除成功");
+		map.put("idx",dataSrcAbbr);
+		return map;
+	}
+
 	@ResponseBody
 	@RequestMapping(value="/queryColumnVersion",method = RequestMethod.GET)
     public Map<String, Object> queryColumnVersion(String dataSrcAbbr,String dataInterfaceNo,String columnNo,String dataInterfaceName) {
@@ -199,7 +325,7 @@ public class ColumnController extends MainController{
         logger.info("query column version success,num:"+list.size());
         return resultMap;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/queryColumnTmp",method = RequestMethod.GET)
     public Map<String, Object> queryColumnTmp(String batchNo,String dataSrcAbbr) {
@@ -216,7 +342,7 @@ public class ColumnController extends MainController{
         logger.info("query column tmp success,num:"+list.size());
         return resultMap;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/tmpToSave",method = RequestMethod.POST)
 	@Transactional
@@ -284,7 +410,7 @@ public class ColumnController extends MainController{
 		}*/
 		return "导入成功";
     }
-	
+
 
 	@ResponseBody
 	@RequestMapping(value="/tmpToSaveFinal",method = RequestMethod.POST)
@@ -293,7 +419,7 @@ public class ColumnController extends MainController{
 		String dataSrcAbbr ="";
 		long start = new Date().getTime();
 		try {
-			logger.info(param.toString());
+			logger.info("ColumnParam:::"+param.toString());
 			dataSrcAbbr=colService.batchImportFinal(param);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -308,11 +434,11 @@ public class ColumnController extends MainController{
 		map.put("dataSrcAbbr", dataSrcAbbr);
 		return map;
 	}
-	
+
 	/*@ResponseBody
 	@RequestMapping(value="/tmpToSaveNew",method = RequestMethod.POST)
     public String tmpToSaveNew(@RequestBody(required=false) ParamEntity param) throws Exception{
-		
+
 		long start = new Date().getTime();
 		try {
 			logger.info(param.toString());
@@ -326,11 +452,11 @@ public class ColumnController extends MainController{
 		logger.info("导入用时:"+(end-start)+"毫秒");
 		return "导入成功";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value="/tmpToSaveAll",method = RequestMethod.POST)
     public String tmpToSaveAll(@RequestBody(required=false) ParamEntity param) throws Exception{
-		
+
 		long start = new Date().getTime();
 		try {
 			logger.info(param.toString());
@@ -344,6 +470,7 @@ public class ColumnController extends MainController{
 		logger.info("导入用时:"+(end-start)+"毫秒");
 		return "导入成功";
 	}*/
+
 	/**
 	 * 导入字段页面
 	 * @param model
@@ -353,10 +480,10 @@ public class ColumnController extends MainController{
 	public String importCol(Model model) {
 		return "importCol";
 	}
-	
+
 	/**
 	 * 导入字段
-	 * @param file
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/importColExcel")
@@ -378,8 +505,8 @@ public class ColumnController extends MainController{
 		logger.info("start import column excel...");
 		return excelService.importColumn(file,batchNo);
 	}
-	
-	
+
+
 	@RequestMapping(value="/exportCol")
 	public String exportCol(HttpServletResponse response,HttpServletRequest request) {
 		String filePath = "/static/excel/columnExcel.xlsx";

@@ -1,5 +1,6 @@
 package com.ljz.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ljz.service.impl.DataInterfaceServiceImpl;
+import com.ljz.service.impl.InfoImportService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -47,22 +50,35 @@ import com.ljz.util.TimeUtil;
 @Controller
 @RequestMapping("/model")
 public class ModelController extends MainController{
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ModelController.class);
-	
+
 	@Autowired
 	IDataInterfaceService intService;
-	
+
 	@Autowired
 	TestProduceReturn testProduce;
-	
+
 	@Autowired
 	InsertDbProduceReturn dbProduce;
-	
+
 	@Autowired
 	JdbcTemplate jdbc;
-	
-	
+
+	@Autowired
+	InfoImportService infoImportService;
+
+	@Autowired
+	DataInterfaceServiceImpl dataInterfaceService;
+
+//	String date = TimeUtil.getDateToString(TimeUtil.getTy());
+//
+//	public String DDLFilePath = config.getFilePath()+"_DDL_"+date+".sql";
+//
+//	String DMLFilePath = config.getFilePath()+"_DML_"+date+".sql";
+//
+//	String RollBackFilePath = config.getFilePath()+"_ROLLBACK_"+date+".sql";
+
 	@ResponseBody
 	@RequestMapping(value="/queryProc",method = RequestMethod.GET)
     public Map<String, Object> queryProc(DataInterface2proc record) {
@@ -77,7 +93,7 @@ public class ModelController extends MainController{
         logger.info("query proc success,num:"+list.size());
         return resultMap;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/createProc",method = RequestMethod.POST)
 	@Transactional
@@ -89,7 +105,7 @@ public class ModelController extends MainController{
 		logger.info("proc proc success"+record.toString());
         return record.getDataSrcAbbr();
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/editProc",method = RequestMethod.POST)
 	@Transactional
@@ -114,7 +130,7 @@ public class ModelController extends MainController{
 		}
         return record.getDataSrcAbbr();
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/deleteProc",method = RequestMethod.POST)
     public String deleteProc(DataInterface2proc record) {
@@ -126,18 +142,17 @@ public class ModelController extends MainController{
 		logger.info("update proc success num:"+update);
         return record.getDataSrcAbbr();
     }
-	
+
 	/**
 	 * 导入存储过程页面
 	 * @param model
-	 * @param tableName
 	 * @return
 	 */
 	@RequestMapping("/importProc")
 	public String importProc(Model model) {
 		return "importProc";
 	}
-	
+
 	/**
 	 * 接口版本查询
 	 * @param dataSrcAbbr
@@ -193,7 +208,7 @@ public class ModelController extends MainController{
 		String dataSrcAbbr ="";
 		long start = new Date().getTime();
 		try {
-			logger.info(param.toString());
+			logger.info("ProcParam:::"+param.toString());
 			dataSrcAbbr = intService.batchImportProcFinal(param);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -208,21 +223,25 @@ public class ModelController extends MainController{
 		map.put("dataSrcAbbr", dataSrcAbbr);
 		return map;
 	}
-	
-	
+
+
 	@ResponseBody
 	@RequestMapping(value="/procInfoList",method = RequestMethod.GET)
     public Map<String, Object> procInfoList() {
 		List<Map<String, Object>> dbList = jdbc.queryForList("SELECT DISTINCT func_name,func_desc FROM data_func_register WHERE use_type='3'");
 		List<Map<String, Object>> procList = jdbc.queryForList("SELECT DISTINCT func_param,func_param_desc FROM data_func_register  WHERE use_type='3'");
+		System.out.println("dbList:::"+dbList+"\n"+"procList:::"+procList);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("dbList", dbList);
 		resultMap.put("procList", procList);
         return resultMap;
     }
-	
+
 	/**
 	 * 导入存储过程
+
+	/**
+	 * 导入数据加载算法
 	 * @param file
 	 * @return
 	 */
@@ -243,10 +262,10 @@ public class ModelController extends MainController{
             return map;
 		}
 		logger.info("start import proc excel...");
-		
+
 		return excelService.importProc(file,batchNo);
 	}
-	
+
 	@RequestMapping(value="/exportProc")
 	public String exportProc(HttpServletResponse response,HttpServletRequest request) {
 		String filePath = "/static/excel/procExcel.xlsx";
@@ -273,7 +292,7 @@ public class ModelController extends MainController{
 	 * @param ids
 	 * @return
 	 */
-	
+
 	@RequestMapping("/createSqlPage")
 	public String createSqlPage(Model model,String ds,String ids) {
 		List<String> list = JSON.parseArray(ids,String.class);
@@ -352,7 +371,9 @@ public class ModelController extends MainController{
 			return map;
 		}
 	}
-	
+
+	String DDLFilePath = null;
+	String dataSrc = null;
 	@RequestMapping("/createFile")
 	@ResponseBody
 	public Map<String,String> createFile(@RequestBody(required=false) ParamEntity param) throws Exception{
@@ -382,17 +403,64 @@ public class ModelController extends MainController{
 			return map;
 		}
 		map = intService.createFile(list, param);
+		DDLFilePath = map.get("filePath");
+		dataSrc = map.get("idx");
 		long end = new Date().getTime();
 		logger.info("生成建表语句文件用时:"+(end-start)+"毫秒");
 		return map;
 	}
-	
+
+	@RequestMapping(value="/exportFile")
+	public String exportFile(HttpServletResponse response) {
+		StringBuffer stringBuffer = null;
+		String rollBackFilePath = dataInterfaceService.createRollBackFile(dataSrc);//生成回滚sql文件
+		try {
+			if(DDLFilePath == null || !new File(DDLFilePath).exists()){
+				logger.info("DDL文件不存在");
+				stringBuffer.append("DDL文件不存在");
+//				return "DDL文件不存在";
+			}
+			if (infoImportService.DMLFilePath == null || !new File(infoImportService.DMLFilePath).exists()){
+				logger.info("DML文件不存在");
+				stringBuffer.append("DML文件不存在");
+			}
+			if (rollBackFilePath == null || !new File(rollBackFilePath).exists()){
+				logger.info("ROLLBACK文件不存在");
+				stringBuffer.append("ROLLBACK文件不存在");
+			}
+
+			if (stringBuffer!=null){
+				return stringBuffer.toString();
+			}
+			String fileNameDDL = "";
+			String fileNameDML = "";
+			String fileNameRollBack = "";
+			fileNameDDL = DDLFilePath.substring(config.getFilePath().length());
+			fileNameDML = infoImportService.DMLFilePath.substring(config.getFilePath().length());
+			fileNameRollBack = rollBackFilePath.substring(config.getFilePath().length());
+
+			logger.info("DDLFileName:::"+fileNameDDL+"\nfileNameDML:::"+fileNameDML+"\nfileNameRollBack:::"+fileNameRollBack);
+//			filePath = "/Users/lgd/Documents/en/" + fileName;
+			downLoadSql(DDLFilePath, fileNameDDL,response);
+			downLoadSql(infoImportService.DMLFilePath,fileNameDML,response);
+			downLoadSql(rollBackFilePath,fileNameRollBack,response);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "index";
+	}
+
+
 	@RequestMapping("/insertDb")
 	@ResponseBody
 	public Map<String,String> insertDb(@RequestBody(required=false) ParamEntity param) throws Exception{
 		long start = new Date().getTime();
 		Map<String,String> map = new HashMap<String,String>();
-		String tmpTable[] = param.getTables();
+        String tmpTable[] = param.getTables();
+//        for (int i=0;i<tmpTable.length;i++) {
+//			System.out.println("tmpTable[]:::" + tmpTable[i]);
+//		}
 		List<String> list = new ArrayList<String>();
 		List<String> hasList = new ArrayList<String>();
 		String tb ="";
@@ -431,560 +499,558 @@ public class ModelController extends MainController{
 		logger.info("建模入库用时:"+(end-start)+"毫秒");
 		return map;
 	}
-	
-	/*@RequestMapping("/createFile")
-	@ResponseBody
-	public Map<String,String> createFile(@RequestBody(required=false) ParamEntity param) throws Exception{
-		long start = new Date().getTime();
-		Map<String,String> map = new HashMap<String,String>();
-		String tmpTable[] = param.getTables();
-		List<String> list = new ArrayList<String>();
-		List<String> hasList = new ArrayList<String>();
-		String num ="";
-		String tb ="";
-		for(int i=0;i<tmpTable.length;i++){
-			if(tmpTable[i].equals("checkedAll"))
-				continue;
-			if(!tmpTable[i].contains("-"))
-				continue;
-			logger.info("执行接口:"+tmpTable[i]);
-			String[] split = tmpTable[i].split("-");
-			tb = split[0];
-			String state = split[1];
-			num = split[2];
-			if(num==null||num.equals("null")||"".equals(num))
-				break;
-			if(!state.contains("未")){
-				hasList.add(tb);
-			}else{
-				list.add(tb);
-			}
-			list.add(tb);
-		}
-		if(num==null||num.equals("null")||"".equals(num)){
-			map.put("msgCode", "1111");
-			map.put("msgData", "接口"+tb+"没有配置字段");
-			return map;
-		}
-		System.out.println("list:::"+list);
-//		String [] tables = param.getTables();
-		
-//		if(tables==null||tables.length<1) {
-//			map.put("msgCode", "1111");
-//			map.put("msgData", "表结构为空");
+//
+//	/*@RequestMapping("/createFile")
+//	@ResponseBody
+//	public Map<String,String> createFile(@RequestBody(required=false) ParamEntity param) throws Exception{
+//		long start = new Date().getTime();
+//		Map<String,String> map = new HashMap<String,String>();
+//		String tmpTable[] = param.getTables();
+//		List<String> list = new ArrayList<String>();
+//		List<String> hasList = new ArrayList<String>();
+//		String num ="";
+//		String tb ="";
+//		for(int i=0;i<tmpTable.length;i++){
+//			if(tmpTable[i].equals("checkedAll"))
+//				continue;
+//			if(!tmpTable[i].contains("-"))
+//				continue;
+//			logger.info("执行接口:"+tmpTable[i]);
+//			String[] split = tmpTable[i].split("-");
+//			tb = split[0];
+//			String state = split[1];
+//			num = split[2];
+//			if(num==null||num.equals("null")||"".equals(num))
+//				break;
+//			if(!state.contains("未")){
+//				hasList.add(tb);
+//			}else{
+//				list.add(tb);
+//			}
+//			list.add(tb);
 //		}
-		String sql1 = "";
-		String sql2 = "";
-		if(list.size()<1){
-			map.put("msgCode", "1111");
-			map.put("msgData", "选中的接口都已建表,已存在表："+hasList.toString());
-			return map;
-		}
-		
-		String dateStr = FileUtil.formatDate(new Date());
-		String filePath="";
-		try {
-			filePath = config.getFilePath()+param.getDataSrcAbbr()+dateStr+".sql";
-			logger.info("建表文件路径:"+filePath);
-			filePath2 = config.getFilePath()+param.getDataSrcAbbr()+dateStr+"_inner.sql";
-			logger.info("外表路径:"+filePath);
-			logger.info("内表路径:"+filePath2);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "文件路径:"+filePath+",文件编码"+config.getFileEncode()+",找不到文件路径");
-			return map;
-		}
-		List<String> sqlList = new ArrayList<String>();
-		List<String> failList = new ArrayList<String>();
-		//创建使用单个线程的线程池
-		ExecutorService es = Executors.newFixedThreadPool(5);
-		//创建外表
-		try {
-			for(String table:list) {
-				//使用lambda实现runnable接口
-				Runnable task = ()->{
-					long start2 = new Date().getTime();
-					logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建表");
-					try {
-						Order order = testProduce.getSql(table,param.getDataSrcAbbr());
-						sqlList.add(order.getSql1()+"\n"+order.getSql2()+"\n");
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						failList.add(table);
-						e.printStackTrace();
-					}
-					long end2 = new Date().getTime();
-					logger.info("存储过程用时:"+(end2-start2)+"毫秒");
-					String sql1 =  order.getSql1() +"\n"+sql1;
-					String sql2 =  order.getSql2() +"\n"+sql2;
-				};
-				es.submit(task);
-				logger.info("创建表线程开始");
-			}
-			
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "生成建表语句文件失败。\n1.请查看该表是否有对应字段\n2.是否有分桶字段\n3.建表语句是否有中文符号\n4.建表语句关键字是否有不支持的关键字");
-			return map;
-		}
-		System.out.println("sqlList.size="+sqlList.size());
-		System.out.println("failList.size="+failList.size());
-		System.out.println("list.size="+list.size());
-		try {
-			if(list.size()==sqlList.size()){
-				String totalSql="";
-				for(String sql :sqlList){
-					totalSql = totalSql+sql;
-				}
-				FileUtil.write(filePath, totalSql,config.getFileEncode());
-				logger.info("write extra table file ");
-			}
-			int i =0;
-			reWriteFile(list, sqlList,failList,filePath, i);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "文件写入失败,文件路径:"+filePath+",文件编码"+config.getFileEncode());
-			return map;
-		}
-		long end = new Date().getTime();
-		logger.info("一共用时:"+(end-start)+"毫秒");
-		try {
-			if(sql2==null||"".equals(sql2))
-				throw new Exception();
-			FileUtil.write(filePath2, sql2,config.getFileEncode());
-			logger.info("write inner table file ");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "文件路径:"+filePath+",sql语句"+sql1+",文件编码"+config.getFileEncode()+",外表文件写入失败");
-			return map;
-		}
-		map.put("msgCode", "0000");
-		//String str = "建表语句文件生成成功,\n外表文件路径:"+filePath+",\n内表文件路径:"+filePath2;
-		String str = "建表语句文件生成成功,\n路径:"+filePath+"\n";
-		if(hasList.size()>0){
-			str = str+","+hasList.toString()+"已存在,不进行生成文件，如有变更，请先删除表\n";
-		}
-		if(failList.size()>0){
-			str =str +",其中接口"+failList.toString()+"生成建表语句失败";
-		}
-		map.put("idx", param.getDataSrcAbbr());
-		map.put("msgData", str);
-		map.put("filePath", filePath);
-		return map;
-		String filePath = config.getFilePath()+FileUtil.formatDate(new Date())+param.getDataSrcAbbr()+".txt";
-		System.out.println("filepath:"+filePath);
-		FileUtil.write(filePath, sql);
-		//return factory.selectDb(dbType).createSqlAndFile(tables,dbType);
-	}*/
-	/*public void reWriteFile(List<String> list,List<String> sqlList,List<String> failList,String filePath,int i) throws Exception{
-		i++;
-		Thread.sleep(300);
-		if(list.size()==sqlList.size()+failList.size()){
-			String totalSql="";
-			for(String sql :sqlList){
-				totalSql = totalSql+sql;
-			}
-			if(!"".equals(totalSql)){
-				FileUtil.write(filePath, totalSql,config.getFileEncode());
-				logger.info("write table file ");
-			}
-		}else{
-			System.out.println("i="+i);
-			if(i>200){
-				
-			}else{
-				reWriteFile(list, sqlList,failList,filePath, i);
-			}
-		}
-	}*/
-	
-	/*@RequestMapping("/insertDb")
-	@ResponseBody
-	public Map<String,String> insertDb(@RequestBody(required=false) ParamEntity param) throws Exception{
-		long start = new Date().getTime();
-		Map<String,String> map = new HashMap<String,String>();
-		String tmpTable[] = param.getTables();
-		List<String> list = new ArrayList<String>();
-		List<String> hasList = new ArrayList<String>();
-		String tb ="";
-		String num = "";
-		for(int i=0;i<tmpTable.length;i++){
-			if(tmpTable[i].equals("checkedAll"))
-				continue;
-			if(!tmpTable[i].contains("-"))
-				continue;
-			logger.info("执行接口:"+tmpTable[i]);
-			String[] split = tmpTable[i].split("-");
-			tb = split[0];
-			String state = split[1];
-			num = split[2];
-			if(num==null||"null".equals(num)||"".equals(num))
-				break;
-			if(!state.contains("未")){
-				hasList.add(tb);
-			}else{
-				list.add(tb);
-			}
-		}
-		if(num==null||"null".equals(num)||"".equals(num)){
-			map.put("msgCode", "1111");
-			map.put("msgData", "接口"+tb+"没有配置字段");
-			return map;
-		}
-		if(list.size()<1){
-			map.put("msgCode", "1111");
-			map.put("msgData", "选中的接口都已建表,已存在表为："+hasList.toString());
-			return map;
-		}
-		logger.info("需要物化的表:"+list);
-		
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		String date = sdf.format(new Date());
-		List<String> sucTable = new ArrayList<String>();
-		List<String> failTable = new ArrayList<String>();
-		//创建使用单个线程的线程池
-		ExecutorService es = Executors.newFixedThreadPool(5);
-		//创建外表
-		try {
-			for(String table:list) {
-				//使用lambda实现runnable接口
-				Runnable task = ()->{
-					logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建表");
-					List<Map<String, Object>> queryForList = jdbc.queryForList("select * from data_log where action_id='"+param.getDataSrcAbbr()+"'"
-							+ " and action_user='"+table+"' order by action_time desc limit 1");
-					try {
-						long start2 = new Date().getTime();
-						Order order = dbProduce.getSql(table,param.getDataSrcAbbr());
-						if(order.getSql1()==null||"".equals(order.getSql1())) {
-							System.out.println(order.getSql1());
-						}
-						if(order.getSql2()==null||"".equals(order.getSql2())) {
-							System.out.println(order.getSql2());
-						}
-						long end2 = new Date().getTime();
-						logger.info("存储过程用时:"+(end2-start2)+"毫秒");
-						cacheMap.put(param.getDataSrcAbbr()+table, "1");
-						if(queryForList.size()>0){
-							jdbc.update(" update data_log set action_desc='1',action_time='"+date+"'"
-									+" where action_id='"+param.getDataSrcAbbr()+"'"
-											+ " and action_user='"+table+"' order by action_time desc limit 1");
-						}else{
-							jdbc.update("insert into data_log(action_id,action_user,action_desc,action_time) "
-									+ "values ('"+param.getDataSrcAbbr()+"','"+table+"','1','"+date+"')");
-						}
-						logger.info(table+"建表成功");
-						sucTable.add(table);
-						
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						if(queryForList.size()>0){
-							jdbc.update(" update data_log set action_desc='2',action_time='"+date+"'"
-									+" where action_id='"+param.getDataSrcAbbr()+"'"
-											+ " and action_user='"+table+"' order by action_time desc limit 1");
-						}else{
-							jdbc.update("insert into data_log(action_id,action_user,action_desc,action_time) "
-									+ "values ('"+param.getDataSrcAbbr()+"','"+table+"','2','"+date+"')");
-						}
-						//cacheMap.put(param.getDataSrcAbbr()+table, "2");
-						logger.info(table+"建表失败");
-						failTable.add(table);
-					}
-					//调用submit传递线程任务，开启线程
-				};
-				es.submit(task);
-				logger.info("创建表线程开始");
-			}
-			//System.out.println("cacheMap="+cacheMap.keySet());
-			int i =0;
-			complete(list,sucTable,failTable,i);
-			long end = new Date().getTime();
-			logger.info("一共用时:"+(end-start)+"毫秒");
-			map.put("msgCode", "0000");
-			map.put("idx", param.getDataSrcAbbr());
-			String str = "建表入库执行完成,请关注建表创建状态!本次建表接口名:"+list.toString()+",共计:"+list.size()+"个接口";
-					+ ",其中成功接口："+sucTable+",失败接口:"+failTable;
-			if(hasList.size()>0){
-				str = str +",接口"+hasList.toString()+"已存在,没有执行建表，如有变更，请先删除表";
-			}
-			map.put("msgData", str);
-			
-			+ " and action_user='"+table+"'");
-			return map;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			es.shutdown();
-			map.put("msgCode", "1111");
-			map.put("msgData", "建表失败,1.请查看该表是否有对应字段\n2.是否有分桶字段\n3.建表语句是否有中文符号\n4.建表语句关键字是否有不支持的关键字");
-			return map;
-		}
-	}*/
-	
-	
-	
-	
-	/*@RequestMapping("/insertDbBak")
-	@ResponseBody
-	public Map<String,String> insertDbBak(@RequestBody(required=false) ParamEntity param) throws Exception{
-		return null;*/
-		/*Map<String,String> map = new HashMap<String,String>();
-		String tmpTable[] = param.getTables();
-		List<String> list = new ArrayList<String>();
-		for(int i=0;i<tmpTable.length;i++){
-			if(tmpTable[i].equals("checkedAll"))
-				continue;
-			list.add(tmpTable[i]);
-		}
-		logger.info("需要物化的表:"+list);
-		map.put("msgCode", "0000");
-		map.put("msgData", "建表入库成功!接口名:"+list.toString()+",共计:"+list.size()+"个接口");
-		String sql1 = "";
-		String sql2 = "";
-		try {
-			for(String table:list) {
-				Order order = dbProduce.getSql(table,param.getDataSrcAbbr());
-				if(order.getSql1()==null||"".equals(order.getSql1())) {
-					map.put("msgCode", "1111");
-					map.put("msgData", "接口"+table+"外表建表语句为空");
-					break;
-				}
-				if(order.getSql2()==null||"".equals(order.getSql2())) {
-					map.put("msgCode", "1111");
-					map.put("msgData", "接口"+table+"内表建表语句为空");
-					break;
-				}
-				sql1 =  order.getSql1() +"\n"+sql1;
-				sql2 =  order.getSql2() +"\n"+sql2;
-				
-			}
-			return map;
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "建表失败,1.请查看该表是否有对应字段2.是否有分桶字段3.建表语句是否有中文符号4.建表语句关键字是否有不支持的关键字");
-			return map;
-		}*/
-		/*String dateStr = FileUtil.formatDate(new Date());
-		String filePath = config.getFilePath()+param.getDataSrcAbbr()+dateStr+"_extra.sql";
-		String filePath2 = config.getFilePath()+param.getDataSrcAbbr()+dateStr+"_inner.sql";
-		logger.info("外表路径:"+filePath);
-		logger.info("内表路径:"+filePath2);
-		try {
-			if(sql1==null||"".equals(sql1))
-				throw new Exception();
-			FileUtil.write(filePath, sql1,config.getFileEncode());
-			logger.info("write extra table file ");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "文件路径:"+filePath+",sql语句"+sql1+",文件编码"+config.getFileEncode()+",外表文件写入失败");
-			return map;
-		}*/
-		/*try {
-			if(sql2==null||"".equals(sql2))
-				throw new Exception();
-			logger.info(" exec cmd :"+BoncConstant.SHELL_CMD);
-			String exec = TestShell.exec(BoncConstant.SHELL_CMD+filePath);
-			if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
-				throw new Exception();
-			logger.info(exec);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "创建外表失败,执行命令:"+BoncConstant.SHELL_CMD+filePath);
-			return map;
-		}*/
-		/*try {
-			FileUtil.write(filePath2, sql2,config.getFileEncode());
-			logger.info("write inner table file ");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "文件路径:"+filePath2+",sql语句"+sql2+",文件编码"+config.getFileEncode()+",内表文件写入失败");
-			return map;
-		}*/
-		/*try {
-			logger.info(" exec cmd :"+BoncConstant.SHELL_CMD_INNER);
-			String exec = TestShell.exec(BoncConstant.SHELL_CMD_INNER+filePath2);
-			if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
-				throw new Exception();
-			logger.info(exec);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			map.put("msgCode", "1111");
-			map.put("msgData", "创建内表失败执行命令:"+BoncConstant.SHELL_CMD_INNER+filePath2);
-			return map;
-		}*/
-		/*map.put("filePath", filePath);
-		map.put("filePath2", filePath2);*/
-		
-		
-		/*Thread.sleep(500);
-		//创建使用单个线程的线程池
-		ExecutorService es = Executors.newFixedThreadPool(10);
-		//创建外表
-		try {
-			//使用lambda实现runnable接口
-			Runnable task = ()->{
-				logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建外表");
-				try {
-					logger.info(" exec cmd :"+BoncConstant.SHELL_CMD);
-					String exec = TestShell.exec(BoncConstant.SHELL_CMD+filePath);
-					if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
-						throw new Exception();
-					logger.info(exec);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//调用submit传递线程任务，开启线程
-			};
-			es.submit(task);
-			logger.info("创建外表线程开始");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			es.shutdown();
-			map.put("msgCode", "1111");
-			map.put("msgData", "创建外表失败");
-			return map;
-		}
-		try {
-			//使用lambda实现runnable接口
-			Runnable task = ()->{
-				logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建内表");
-				try {
-					logger.info(" exec cmd :"+BoncConstant.SHELL_CMD_INNER);
-					String exec = TestShell.exec(BoncConstant.SHELL_CMD_INNER+filePath2);
-					if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
-						throw new Exception();
-					logger.info(exec);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//调用submit传递线程任务，开启线程
-			};
-			es.submit(task);
-			logger.info("创建内表线程开始");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			es.shutdown();
-			map.put("msgCode", "1111");
-			map.put("msgData", "创建内表失败");
-			return map;
-		}
-		Thread.sleep(500);
-		map.put("msgCode", "0000");
-		map.put("msgData", "建表入库成功!接口名:"+Arrays.toString(tables)+",共计:"+tables.length+"个接口");
-		map.put("filePath", filePath);
-		map.put("filePath2", filePath2);
-		return map;*/
-		/*String [] tables = param.getTables();
-		String dbType = param.getDbType();
-		return factory.selectDb(dbType).insetDb(tables,dbType);*/
-	//}
-	
-	/*@ResponseBody
-	@RequestMapping(value="/tmpToSave",method = RequestMethod.POST)
-	@Transactional
-    public Map<String,String> tmpToSave(@RequestBody(required=false) ParamEntity param) {
-		String ds = "";
-		Map<String,String> map = new HashMap<String,String>();
-		String [] tables = param.getTables();
-		if(tables==null||tables.length<1){
-			map.put("msgData", "接口名不能为空");
-			map.put("dataSrcAbbr", ds);
-			return map;
-		}
-			
-		for(String table:tables) {
-			if(!table.contains("-"))
-				continue;
-			logger.info("导入数据加载算法:"+table);
-			String[] split = table.split("-");
-			ds = split[0];
-			String interNo = split[1];
-			String importType = split[2];
-			String batchNo = split[3];
-			//导入类型:1.新增,2.修改
-			if("1".equals(importType)) {
-				//导入类型是新增直接插入正式表
-				DataInterface2procTmp record = new DataInterface2procTmp();
-				record.setDataSrcAbbr(ds);
-				record.setDataInterfaceNo(interNo);
-				record.setBatchNo(batchNo);
-				logger.info(record.toString());
-				int tmpToSave = intService.tmpToSaveProc(record);
-				logger.info("tmpToSave proc success,num:"+tmpToSave);
-				if(tmpToSave>0) {
-					int delete = intService.deleteProc(record);
-					logger.info("delete proc tmp success num:"+delete);
-				}else {
-					map.put("msgData", "导入失败");
-					map.put("dataSrcAbbr", ds);
-					return map;
-				}
-			}else if("2".equals(importType)) {
-				//导入类型修改先将正式表原记录置为失效
-				DataInterface2proc record = new DataInterface2proc();
-				record.setDataSrcAbbr(ds);
-				record.setDataInterfaceNo(interNo);
-				record.setsDate(TimeUtil.getTw());
-				record.seteDate(TimeUtil.getTy());
-				logger.info(record.toString());
-				int update = intService.updateProc(record);
-				logger.info("update proc success,num:"+update);
-				if(update>=0) {
-					//再从临时表插入新记录到正式表
-					DataInterface2procTmp record2 = new DataInterface2procTmp();
-					record2.setDataSrcAbbr(ds);
-					record2.setDataInterfaceNo(interNo);
-					record2.setBatchNo(batchNo);
-					logger.info(record.toString());
-					int tmpToSave = intService.tmpToSaveProc(record2);
-					logger.info("tmpToSave proc success,num:"+tmpToSave);
-					if(tmpToSave>0) {
-						int delete = intService.deleteProc(record2);
-						logger.info("delete proc tmp success,num:"+delete);
-					}else {
-						map.put("msgData", "导入失败");
-						map.put("dataSrcAbbr", ds);
-						return map;
-					}
-				}else {
-					map.put("msgData", "导入失败");
-					map.put("dataSrcAbbr", ds);
-					return map;
-				}
-			}else if("3".equals(importType)) {
-				DataInterface2procTmp record2 = new DataInterface2procTmp();
-				record2.setDataSrcAbbr(ds);
-				record2.setDataInterfaceNo(interNo);
-				record2.setBatchNo(batchNo);
-				int delete = intService.deleteProc(record2);
-				logger.info("delete proc tmp success,num:"+delete);
-			}
-		}
-		map.put("msgData", "导入成功");
-		map.put("dataSrcAbbr", ds);
-		return map;
-    }*/
-	
-
+//		if(num==null||num.equals("null")||"".equals(num)){
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "接口"+tb+"没有配置字段");
+//			return map;
+//		}
+//		System.out.println("list:::"+list);
+////		String [] tables = param.getTables();
+//
+////		if(tables==null||tables.length<1) {
+////			map.put("msgCode", "1111");
+////			map.put("msgData", "表结构为空");
+////		}
+//		String sql1 = "";
+//		String sql2 = "";
+//		if(list.size()<1){
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "选中的接口都已建表,已存在表："+hasList.toString());
+//			return map;
+//		}
+//
+//		String dateStr = FileUtil.formatDate(new Date());
+//		String filePath="";
+//		try {
+//			filePath = config.getFilePath()+param.getDataSrcAbbr()+dateStr+".sql";
+//			logger.info("建表文件路径:"+filePath);
+//			filePath2 = config.getFilePath()+param.getDataSrcAbbr()+dateStr+"_inner.sql";
+//			logger.info("外表路径:"+filePath);
+//			logger.info("内表路径:"+filePath2);
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "文件路径:"+filePath+",文件编码"+config.getFileEncode()+",找不到文件路径");
+//			return map;
+//		}
+//		List<String> sqlList = new ArrayList<String>();
+//		List<String> failList = new ArrayList<String>();
+//		//创建使用单个线程的线程池
+//		ExecutorService es = Executors.newFixedThreadPool(5);
+//		//创建外表
+//		try {
+//			for(String table:list) {
+//				//使用lambda实现runnable接口
+//				Runnable task = ()->{
+//					long start2 = new Date().getTime();
+//					logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建表");
+//					try {
+//						Order order = testProduce.getSql(table,param.getDataSrcAbbr());
+//						sqlList.add(order.getSql1()+"\n"+order.getSql2()+"\n");
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						failList.add(table);
+//						e.printStackTrace();
+//					}
+//					long end2 = new Date().getTime();
+//					logger.info("存储过程用时:"+(end2-start2)+"毫秒");
+//					String sql1 =  order.getSql1() +"\n"+sql1;
+//					String sql2 =  order.getSql2() +"\n"+sql2;
+//				};
+//				es.submit(task);
+//				logger.info("创建表线程开始");
+//			}
+//
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "生成建表语句文件失败。\n1.请查看该表是否有对应字段\n2.是否有分桶字段\n3.建表语句是否有中文符号\n4.建表语句关键字是否有不支持的关键字");
+//			return map;
+//		}
+//		System.out.println("sqlList.size="+sqlList.size());
+//		System.out.println("failList.size="+failList.size());
+//		System.out.println("list.size="+list.size());
+//		try {
+//			if(list.size()==sqlList.size()){
+//				String totalSql="";
+//				for(String sql :sqlList){
+//					totalSql = totalSql+sql;
+//				}
+//				FileUtil.write(filePath, totalSql,config.getFileEncode());
+//				logger.info("write extra table file ");
+//			}
+//			int i =0;
+//			reWriteFile(list, sqlList,failList,filePath, i);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "文件写入失败,文件路径:"+filePath+",文件编码"+config.getFileEncode());
+//			return map;
+//		}
+//		long end = new Date().getTime();
+//		logger.info("一共用时:"+(end-start)+"毫秒");
+//		try {
+//			if(sql2==null||"".equals(sql2))
+//				throw new Exception();
+//			FileUtil.write(filePath2, sql2,config.getFileEncode());
+//			logger.info("write inner table file ");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "文件路径:"+filePath+",sql语句"+sql1+",文件编码"+config.getFileEncode()+",外表文件写入失败");
+//			return map;
+//		}
+//		map.put("msgCode", "0000");
+//		//String str = "建表语句文件生成成功,\n外表文件路径:"+filePath+",\n内表文件路径:"+filePath2;
+//		String str = "建表语句文件生成成功,\n路径:"+filePath+"\n";
+//		if(hasList.size()>0){
+//			str = str+","+hasList.toString()+"已存在,不进行生成文件，如有变更，请先删除表\n";
+//		}
+//		if(failList.size()>0){
+//			str =str +",其中接口"+failList.toString()+"生成建表语句失败";
+//		}
+//		map.put("idx", param.getDataSrcAbbr());
+//		map.put("msgData", str);
+//		map.put("filePath", filePath);
+//		return map;
+//		String filePath = config.getFilePath()+FileUtil.formatDate(new Date())+param.getDataSrcAbbr()+".txt";
+//		System.out.println("filepath:"+filePath);
+//		FileUtil.write(filePath, sql);
+//		//return factory.selectDb(dbType).createSqlAndFile(tables,dbType);
+//	}*/
+//	/*public void reWriteFile(List<String> list,List<String> sqlList,List<String> failList,String filePath,int i) throws Exception{
+//		i++;
+//		Thread.sleep(300);
+//		if(list.size()==sqlList.size()+failList.size()){
+//			String totalSql="";
+//			for(String sql :sqlList){
+//				totalSql = totalSql+sql;
+//			}
+//			if(!"".equals(totalSql)){
+//				FileUtil.write(filePath, totalSql,config.getFileEncode());
+//				logger.info("write table file ");
+//			}
+//		}else{
+//			System.out.println("i="+i);
+//			if(i>200){
+//
+//			}else{
+//				reWriteFile(list, sqlList,failList,filePath, i);
+//			}
+//		}
+//	}*/
+//
+//	/*@RequestMapping("/insertDb")
+//	@ResponseBody
+//	public Map<String,String> insertDb(@RequestBody(required=false) ParamEntity param) throws Exception{
+//		long start = new Date().getTime();
+//		Map<String,String> map = new HashMap<String,String>();
+//		String tmpTable[] = param.getTables();
+//		List<String> list = new ArrayList<String>();
+//		List<String> hasList = new ArrayList<String>();
+//		String tb ="";
+//		String num = "";
+//		for(int i=0;i<tmpTable.length;i++){
+//			if(tmpTable[i].equals("checkedAll"))
+//				continue;
+//			if(!tmpTable[i].contains("-"))
+//				continue;
+//			logger.info("执行接口:"+tmpTable[i]);
+//			String[] split = tmpTable[i].split("-");
+//			tb = split[0];
+//			String state = split[1];
+//			num = split[2];
+//			if(num==null||"null".equals(num)||"".equals(num))
+//				break;
+//			if(!state.contains("未")){
+//				hasList.add(tb);
+//			}else{
+//				list.add(tb);
+//			}
+//		}
+//		if(num==null||"null".equals(num)||"".equals(num)){
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "接口"+tb+"没有配置字段");
+//			return map;
+//		}
+//		if(list.size()<1){
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "选中的接口都已建表,已存在表为："+hasList.toString());
+//			return map;
+//		}
+//		logger.info("需要物化的表:"+list);
+//
+//
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+//		String date = sdf.format(new Date());
+//		List<String> sucTable = new ArrayList<String>();
+//		List<String> failTable = new ArrayList<String>();
+//		//创建使用单个线程的线程池
+//		ExecutorService es = Executors.newFixedThreadPool(5);
+//		//创建外表
+//		try {
+//			for(String table:list) {
+//				//使用lambda实现runnable接口
+//				Runnable task = ()->{
+//					logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建表");
+//					List<Map<String, Object>> queryForList = jdbc.queryForList("select * from data_log where action_id='"+param.getDataSrcAbbr()+"'"
+//							+ " and action_user='"+table+"' order by action_time desc limit 1");
+//					try {
+//						long start2 = new Date().getTime();
+//						Order order = dbProduce.getSql(table,param.getDataSrcAbbr());
+//						if(order.getSql1()==null||"".equals(order.getSql1())) {
+//							System.out.println(order.getSql1());
+//						}
+//						if(order.getSql2()==null||"".equals(order.getSql2())) {
+//							System.out.println(order.getSql2());
+//						}
+//						long end2 = new Date().getTime();
+//						logger.info("存储过程用时:"+(end2-start2)+"毫秒");
+//						cacheMap.put(param.getDataSrcAbbr()+table, "1");
+//						if(queryForList.size()>0){
+//							jdbc.update(" update data_log set action_desc='1',action_time='"+date+"'"
+//									+" where action_id='"+param.getDataSrcAbbr()+"'"
+//											+ " and action_user='"+table+"' order by action_time desc limit 1");
+//						}else{
+//							jdbc.update("insert into data_log(action_id,action_user,action_desc,action_time) "
+//									+ "values ('"+param.getDataSrcAbbr()+"','"+table+"','1','"+date+"')");
+//						}
+//						logger.info(table+"建表成功");
+//						sucTable.add(table);
+//
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						if(queryForList.size()>0){
+//							jdbc.update(" update data_log set action_desc='2',action_time='"+date+"'"
+//									+" where action_id='"+param.getDataSrcAbbr()+"'"
+//											+ " and action_user='"+table+"' order by action_time desc limit 1");
+//						}else{
+//							jdbc.update("insert into data_log(action_id,action_user,action_desc,action_time) "
+//									+ "values ('"+param.getDataSrcAbbr()+"','"+table+"','2','"+date+"')");
+//						}
+//						//cacheMap.put(param.getDataSrcAbbr()+table, "2");
+//						logger.info(table+"建表失败");
+//						failTable.add(table);
+//					}
+//					//调用submit传递线程任务，开启线程
+//				};
+//				es.submit(task);
+//				logger.info("创建表线程开始");
+//			}
+//			//System.out.println("cacheMap="+cacheMap.keySet());
+//			int i =0;
+//			complete(list,sucTable,failTable,i);
+//			long end = new Date().getTime();
+//			logger.info("一共用时:"+(end-start)+"毫秒");
+//			map.put("msgCode", "0000");
+//			map.put("idx", param.getDataSrcAbbr());
+//			String str = "建表入库执行完成,请关注建表创建状态!本次建表接口名:"+list.toString()+",共计:"+list.size()+"个接口";
+//					+ ",其中成功接口："+sucTable+",失败接口:"+failTable;
+//			if(hasList.size()>0){
+//				str = str +",接口"+hasList.toString()+"已存在,没有执行建表，如有变更，请先删除表";
+//			}
+//			map.put("msgData", str);
+//
+//			+ " and action_user='"+table+"'");
+//			return map;
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			es.shutdown();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "建表失败,1.请查看该表是否有对应字段\n2.是否有分桶字段\n3.建表语句是否有中文符号\n4.建表语句关键字是否有不支持的关键字");
+//			return map;
+//		}
+//	}*/
+//
+//
+//
+//
+//	/*@RequestMapping("/insertDbBak")
+//	@ResponseBody
+//	public Map<String,String> insertDbBak(@RequestBody(required=false) ParamEntity param) throws Exception{
+//		return null;*/
+//		/*Map<String,String> map = new HashMap<String,String>();
+//		String tmpTable[] = param.getTables();
+//		List<String> list = new ArrayList<String>();
+//		for(int i=0;i<tmpTable.length;i++){
+//			if(tmpTable[i].equals("checkedAll"))
+//				continue;
+//			list.add(tmpTable[i]);
+//		}
+//		logger.info("需要物化的表:"+list);
+//		map.put("msgCode", "0000");
+//		map.put("msgData", "建表入库成功!接口名:"+list.toString()+",共计:"+list.size()+"个接口");
+//		String sql1 = "";
+//		String sql2 = "";
+//		try {
+//			for(String table:list) {
+//				Order order = dbProduce.getSql(table,param.getDataSrcAbbr());
+//				if(order.getSql1()==null||"".equals(order.getSql1())) {
+//					map.put("msgCode", "1111");
+//					map.put("msgData", "接口"+table+"外表建表语句为空");
+//					break;
+//				}
+//				if(order.getSql2()==null||"".equals(order.getSql2())) {
+//					map.put("msgCode", "1111");
+//					map.put("msgData", "接口"+table+"内表建表语句为空");
+//					break;
+//				}
+//				sql1 =  order.getSql1() +"\n"+sql1;
+//				sql2 =  order.getSql2() +"\n"+sql2;
+//
+//			}
+//			return map;
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "建表失败,1.请查看该表是否有对应字段2.是否有分桶字段3.建表语句是否有中文符号4.建表语句关键字是否有不支持的关键字");
+//			return map;
+//		}*/
+//		/*String dateStr = FileUtil.formatDate(new Date());
+//		String filePath = config.getFilePath()+param.getDataSrcAbbr()+dateStr+"_extra.sql";
+//		String filePath2 = config.getFilePath()+param.getDataSrcAbbr()+dateStr+"_inner.sql";
+//		logger.info("外表路径:"+filePath);
+//		logger.info("内表路径:"+filePath2);
+//		try {
+//			if(sql1==null||"".equals(sql1))
+//				throw new Exception();
+//			FileUtil.write(filePath, sql1,config.getFileEncode());
+//			logger.info("write extra table file ");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "文件路径:"+filePath+",sql语句"+sql1+",文件编码"+config.getFileEncode()+",外表文件写入失败");
+//			return map;
+//		}*/
+//		/*try {
+//			if(sql2==null||"".equals(sql2))
+//				throw new Exception();
+//			logger.info(" exec cmd :"+BoncConstant.SHELL_CMD);
+//			String exec = TestShell.exec(BoncConstant.SHELL_CMD+filePath);
+//			if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
+//				throw new Exception();
+//			logger.info(exec);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "创建外表失败,执行命令:"+BoncConstant.SHELL_CMD+filePath);
+//			return map;
+//		}*/
+//		/*try {
+//			FileUtil.write(filePath2, sql2,config.getFileEncode());
+//			logger.info("write inner table file ");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "文件路径:"+filePath2+",sql语句"+sql2+",文件编码"+config.getFileEncode()+",内表文件写入失败");
+//			return map;
+//		}*/
+//		/*try {
+//			logger.info(" exec cmd :"+BoncConstant.SHELL_CMD_INNER);
+//			String exec = TestShell.exec(BoncConstant.SHELL_CMD_INNER+filePath2);
+//			if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
+//				throw new Exception();
+//			logger.info(exec);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "创建内表失败执行命令:"+BoncConstant.SHELL_CMD_INNER+filePath2);
+//			return map;
+//		}*/
+//		/*map.put("filePath", filePath);
+//		map.put("filePath2", filePath2);*/
+//
+//
+//		/*Thread.sleep(500);
+//		//创建使用单个线程的线程池
+//		ExecutorService es = Executors.newFixedThreadPool(10);
+//		//创建外表
+//		try {
+//			//使用lambda实现runnable接口
+//			Runnable task = ()->{
+//				logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建外表");
+//				try {
+//					logger.info(" exec cmd :"+BoncConstant.SHELL_CMD);
+//					String exec = TestShell.exec(BoncConstant.SHELL_CMD+filePath);
+//					if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
+//						throw new Exception();
+//					logger.info(exec);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				//调用submit传递线程任务，开启线程
+//			};
+//			es.submit(task);
+//			logger.info("创建外表线程开始");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			es.shutdown();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "创建外表失败");
+//			return map;
+//		}
+//		try {
+//			//使用lambda实现runnable接口
+//			Runnable task = ()->{
+//				logger.info(Thread.currentThread().getName()+"创建了一个新的线程执行,创建内表");
+//				try {
+//					logger.info(" exec cmd :"+BoncConstant.SHELL_CMD_INNER);
+//					String exec = TestShell.exec(BoncConstant.SHELL_CMD_INNER+filePath2);
+//					if(exec!=null&&!"".equals(exec)&&exec.contains("1111"))
+//						throw new Exception();
+//					logger.info(exec);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				//调用submit传递线程任务，开启线程
+//			};
+//			es.submit(task);
+//			logger.info("创建内表线程开始");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			es.shutdown();
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "创建内表失败");
+//			return map;
+//		}
+//		Thread.sleep(500);
+//		map.put("msgCode", "0000");
+//		map.put("msgData", "建表入库成功!接口名:"+Arrays.toString(tables)+",共计:"+tables.length+"个接口");
+//		map.put("filePath", filePath);
+//		map.put("filePath2", filePath2);
+//		return map;*/
+//		/*String [] tables = param.getTables();
+//		String dbType = param.getDbType();
+//		return factory.selectDb(dbType).insetDb(tables,dbType);*/
+//	//}
+//
+//	/*@ResponseBody
+//	@RequestMapping(value="/tmpToSave",method = RequestMethod.POST)
+//	@Transactional
+//    public Map<String,String> tmpToSave(@RequestBody(required=false) ParamEntity param) {
+//		String ds = "";
+//		Map<String,String> map = new HashMap<String,String>();
+//		String [] tables = param.getTables();
+//		if(tables==null||tables.length<1){
+//			map.put("msgData", "接口名不能为空");
+//			map.put("dataSrcAbbr", ds);
+//			return map;
+//		}
+//
+//		for(String table:tables) {
+//			if(!table.contains("-"))
+//				continue;
+//			logger.info("导入数据加载算法:"+table);
+//			String[] split = table.split("-");
+//			ds = split[0];
+//			String interNo = split[1];
+//			String importType = split[2];
+//			String batchNo = split[3];
+//			//导入类型:1.新增,2.修改
+//			if("1".equals(importType)) {
+//				//导入类型是新增直接插入正式表
+//				DataInterface2procTmp record = new DataInterface2procTmp();
+//				record.setDataSrcAbbr(ds);
+//				record.setDataInterfaceNo(interNo);
+//				record.setBatchNo(batchNo);
+//				logger.info(record.toString());
+//				int tmpToSave = intService.tmpToSaveProc(record);
+//				logger.info("tmpToSave proc success,num:"+tmpToSave);
+//				if(tmpToSave>0) {
+//					int delete = intService.deleteProc(record);
+//					logger.info("delete proc tmp success num:"+delete);
+//				}else {
+//					map.put("msgData", "导入失败");
+//					map.put("dataSrcAbbr", ds);
+//					return map;
+//				}
+//			}else if("2".equals(importType)) {
+//				//导入类型修改先将正式表原记录置为失效
+//				DataInterface2proc record = new DataInterface2proc();
+//				record.setDataSrcAbbr(ds);
+//				record.setDataInterfaceNo(interNo);
+//				record.setsDate(TimeUtil.getTw());
+//				record.seteDate(TimeUtil.getTy());
+//				logger.info(record.toString());
+//				int update = intService.updateProc(record);
+//				logger.info("update proc success,num:"+update);
+//				if(update>=0) {
+//					//再从临时表插入新记录到正式表
+//					DataInterface2procTmp record2 = new DataInterface2procTmp();
+//					record2.setDataSrcAbbr(ds);
+//					record2.setDataInterfaceNo(interNo);
+//					record2.setBatchNo(batchNo);
+//					logger.info(record.toString());
+//					int tmpToSave = intService.tmpToSaveProc(record2);
+//					logger.info("tmpToSave proc success,num:"+tmpToSave);
+//					if(tmpToSave>0) {
+//						int delete = intService.deleteProc(record2);
+//						logger.info("delete proc tmp success,num:"+delete);
+//					}else {
+//						map.put("msgData", "导入失败");
+//						map.put("dataSrcAbbr", ds);
+//						return map;
+//					}
+//				}else {
+//					map.put("msgData", "导入失败");
+//					map.put("dataSrcAbbr", ds);
+//					return map;
+//				}
+//			}else if("3".equals(importType)) {
+//				DataInterface2procTmp record2 = new DataInterface2procTmp();
+//				record2.setDataSrcAbbr(ds);
+//				record2.setDataInterfaceNo(interNo);
+//				record2.setBatchNo(batchNo);
+//				int delete = intService.deleteProc(record2);
+//				logger.info("delete proc tmp success,num:"+delete);
+//			}
+//		}
+//		map.put("msgData", "导入成功");
+//		map.put("dataSrcAbbr", ds);
+//		return map;
+//    }*/
 }

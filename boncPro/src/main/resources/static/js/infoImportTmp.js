@@ -25,13 +25,13 @@ $('#interfaceTable').width('100%').dataTable({
     "serverSide": false,
     "pageLength": 10,
     "columns": [
-        {"title": "<input type=\"checkbox\" id=\"checkedAll\" >", "data": null, "width": "5%","render": function (data, type, row) {
+        /*{"title": "<input type=\"checkbox\" id=\"checkedAll\" >", "data": null, "width": "5%","render": function (data, type, row) {
                 return '<input type="checkbox" id="'+row.dataSrcAbbr+'-'+row.dataInterfaceNo+'-'+row.importType+'-'+row.batchNo+'-'+row.dataInterfaceName+'" name="items">';
             }},
         {"title":"操作" ,"data": null,"width":"5%","render": function(data, type, row) {
                 var html = '<div><span onclick="version(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceNo+'\',\''+row.dataInterfaceName+'\')" class="btn-sm cm-tblA">版本</span></div>';
                 return html;
-            }},
+            }},*/
         {"title": "导入类型", "data": "importType","render":function(data,type,row){
                 if(data=='1'){
                     return '<font color="blue">新增</font>';
@@ -91,7 +91,7 @@ $('#columnTable').width('100%').dataTable({
     "serverSide": false,
     "pageLength": 10,
     "columns": [
-        {"title": "<input type=\"checkbox\" id=\"checkedAll\"> ", "data": null, "width": "5%","render": function (data, type, row) {
+        /*{"title": "<input type=\"checkbox\" id=\"checkedAll\"> ", "data": null, "width": "5%","render": function (data, type, row) {
                 return '<input type="checkbox" id="'+row.dataSrcAbbr+'-'+row.dataInterfaceNo+'-'+row.importType+'-'+row.batchNo+'-'+row.columnNo+'-'+row.dataInterfaceName+'" name="itemsColumn">';
             }},
         {"title":"操作" ,"data": null,"render": function(data, type, row) {
@@ -100,7 +100,7 @@ $('#columnTable').width('100%').dataTable({
                 html += '</div>';
                 $("#row_"+row.functionId).data("rowData",row);
                 return html;
-            }},
+            }},*/
         {"title": "导入类型", "data": "importType","render":function(data,type,row){
                 if(data=='1'){
                     return '<font color="blue">新增</font>';
@@ -165,9 +165,9 @@ $('#procTable').width('100%').dataTable({
     "serverSide": false,
     "pageLength": 10,
     "columns": [
-        {"title": "<input type=\"checkbox\" id=\"checkedAll\" >", "data": null, "width": "5%","render": function (data, type, row) {
+        /*{"title": "<input type=\"checkbox\" id=\"checkedAll\" >", "data": null, "width": "5%","render": function (data, type, row) {
                 return '<input type="checkbox" id="'+row.dataSrcAbbr+'-'+row.dataInterfaceNo+'-'+row.importType+'-'+row.batchNo+'" name="itemsProc">';
-            }},
+            }},*/
         {"title": "导入类型", "data": "importType","render":function(data,type,row){
                 if(data=='1'){
                     return '<font color="blue">新增</font>';
@@ -181,16 +181,16 @@ $('#procTable').width('100%').dataTable({
         /*{"title": "数据接口名", "data": "dataInterfaceName"},*/
         /*{"title": "数据接口描述", "data": "dataInterfaceDesc"},*/
         {"title": "存储过程数据库名", "data": "procDatabaseName"},
-        {"title": "存储过程", "data": "procName"},
+        {"title": "存储过程", "data": "procName"}
         /*{"title": "起效日期", "data": "sDate"},
         {"title": "失效日期", "data": "eDate"},*/
-        {"title":"操作" ,"data": null,"render": function(data, type, row) {
+       /* {"title":"操作" ,"data": null,"render": function(data, type, row) {
                 var html = '<div>';
                 html += '<span onclick="version(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceNo+'\')" class="btn-sm cm-tblA">版本</span>';
                 html += '</div>';
                 $("#row_"+row.functionId).data("rowData",row);
                 return html;
-            }}
+            }}*/
     ],
     ajax: {
         url: '/model/queryProcTmp',

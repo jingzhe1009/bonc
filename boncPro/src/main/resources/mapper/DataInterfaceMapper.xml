@@ -262,7 +262,7 @@
        and data_src_abbr=#{dataSrcAbbr}
     </if>
     <if test="dataInterfaceNo != null">
-       and data_interface_no=#{dataInterfaceNo}
+       and data_interface_no like CONCAT("%",#{dataInterfaceNo},"%")
     </if>
     and e_date >= #{eDate}
     order by data_src_abbr,data_interface_no;
@@ -355,6 +355,23 @@
 	    </foreach>
 	</insert>
 	
+	<insert id="batchInsertHis" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterfaceHistory">
+	  insert into data_interface (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, data_interface_name, 
+      data_interface_desc, data_load_freq, data_load_mthd, 
+      filed_delim, line_delim, extrnl_database_name, 
+      intrnl_database_name, extrnl_table_name, intrnl_table_name, 
+      table_type, bucket_number, s_date, e_date)
+	  	values
+	    <foreach collection="list" item="model" separator=",">
+	      (#{model.needVrsnNbr,jdbcType=VARCHAR},#{model.exptSeqNbr,jdbcType=VARCHAR},#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.dataInterfaceName,jdbcType=VARCHAR}, 
+	      #{model.dataInterfaceDesc,jdbcType=VARCHAR}, #{model.dataLoadFreq,jdbcType=VARCHAR}, #{model.dataLoadMthd,jdbcType=VARCHAR}, 
+	      #{model.filedDelim,jdbcType=VARCHAR}, #{model.lineDelim,jdbcType=VARCHAR}, #{model.extrnlDatabaseName,jdbcType=VARCHAR}, 
+	      #{model.intrnlDatabaseName,jdbcType=VARCHAR}, #{model.extrnlTableName,jdbcType=VARCHAR}, #{model.intrnlTableName,jdbcType=VARCHAR}, 
+	      #{model.tableType,jdbcType=VARCHAR}, #{model.bucketNumber,jdbcType=INTEGER}, #{model.sDate,jdbcType=DATE}, 
+	      #{model.eDate,jdbcType=DATE})
+	    </foreach>
+	</insert>
+	
 	<select id="queryByList" resultMap="BaseResultMap">
 		select  <include refid="Base_Column_List" />
     	from data_interface where 1=1
@@ -405,8 +422,7 @@
 		       and data_interface_no = #{model.dataInterfaceNo,jdbcType=VARCHAR}
 		       and batch_no = #{model.batchNo,jdbcType=VARCHAR};
 	   </foreach>
-  </delete>
-  
+   </delete>
   <select id="queryIntNum" resultMap="BaseResultMap" >
     select data_interface_name,count(*) as bucket_number from data_interface_columns where e_date='3000-12-31' group by data_interface_name
   </select>

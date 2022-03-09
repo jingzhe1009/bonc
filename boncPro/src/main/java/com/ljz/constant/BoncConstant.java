@@ -1,7 +1,7 @@
 package com.ljz.constant;
 
 public class BoncConstant {
-	
+
 	public static final String COLUMN = ",AND,ARRAY,BEGIN,CASE,CONST,CONTINUE,DELETE,DIV,DO,DOWNTO,ELSE,ELSIF,END,ENDIF,EXCEPTION,EXEC,EXECUTE,EXIT,"
 			+ "CURRENT ,OVER,NOWAIT,WAIT,ADD,COLUMN,LINK,IDENTIFIED,ORACLE,DB2,MYSQL,FILE,FOR,FROM,FUNCTION,GOTO,IF,IMMEDIATE,IN,SELECT ,INSERT,INTO,"
 			+ "LABEL,LOOP,MOD,NIL,NOT,UNBOUNDED ,PRECEDING,SKIP,LOCKED,DROP,TAG,DATABASE,MINMAX,SECTION,OF,OR,OUT,PACKED,PROCEDURE,PACKAGE,BODY,PROGRAM,"
@@ -18,7 +18,7 @@ public class BoncConstant {
 			+ "RVER_BPRESELANKS,NULLIF,ACCESS,PARAMETERS,FIELDS,TERMINATED,CLUSTER,DATA,BEHAVIOR,REPLICATION,DISTRIBUTION,FILETYPE,COMPRESSION,"
 			+ "NUMBER_SIGN,DBMS_RANDOM,CURSOR,OPEN,FETCH,CLOSE,SQL,NOTFOUND,FOUND,ROWCOUNT,ISOPEN,ROWTYPE,CONNECT_BY_ISCYCLE,CONNECT_BY_ISLEAF,LEVEL,,PRIOR,"
 			+ "CONNECT_BY_ROOT,MEMBER,MULTISET,CARDINALITY,PREFIX,CONDITION,";
-	
+
 	public static String getStr() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[DIR]<br>");
@@ -28,22 +28,22 @@ public class BoncConstant {
 		sb.append("QUEUE=/cdbetl/ETL/TDHOT/DATA/QUEUE<br>");
 		return sb.toString();
 	}
-	
+
 	public static final String outDbName="";
 	public static final String outTableName="";
-	
+
 	public static final String CON_E_DATE="3000-12-31";
-	
+
 	public static final String SHELL_CMD = "beeline -u jdbc:hive2://10.97.10.82:6666/sdata_oltp_cfg -n  -p   -f ";
-	
+
 	public static final String SHELL_CMD_INNER = "beeline -u jdbc:hive2://10.97.10.82:6666/odata -n  -p  -f ";
-	
+
 	public static final String SDATA="sdata_oltp";
 	public static final String ODATA="odata";
-	
+
 	public static void main(String[] args) {
 		String db ="33tD";
-		
+
 		System.out.println(COLUMN.indexOf(db));
 	}
 }

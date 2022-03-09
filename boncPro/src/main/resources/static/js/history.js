@@ -8,7 +8,7 @@ var historyModel = {
 		obj['dataSrcAbbr'] = idx;
 		initHistoryTable(obj);
 		//按条件查询用
-		$("#inter_dataSrcAbbr").val(idx);
+		//$("#inter_dataSrcAbbr").val(idx);
 	},
     //按条件查询
     search: function(){
@@ -66,12 +66,13 @@ function initHistoryTable(obj) {
         "serverSide": false,
         "pageLength": 10,
         "columns": [
-            {"title": "版本", "data": "dataSrcAbbr"},
-            {"title": "导入文件名称", "data": "dataInterfaceNo"},
-            {"title": "接口总数", "data": "dataInterfaceName"},
-            {"title": "新增", "data": "dataLoadFreq"},
-            {"title": "修改", "data": "dataLoadMthd"},
-            {"title": "修改时间", "data": "sDate","render": function(data, type, row) {
+            {"title": "版本", "data": "needVrsnNbr"},
+            {"title": "流水号", "data": "exptSeqNbr"},
+            {"title": "导入文件名称", "data": "exptFileName"},
+            {"title": "接口总数", "data": "intfTot"},
+            {"title": "新增", "data": "intfNew"},
+            {"title": "修改", "data": "intfAlt"},
+            {"title": "导入时间", "data": "exptDate","render": function(data, type, row) {
             	var oDate = new Date(data);
             	var oYear = oDate.getFullYear();
             	var oMonth = oDate.getMonth()+1;
@@ -81,7 +82,7 @@ function initHistoryTable(obj) {
             /*{"title": "失效日期", "data": "eDate","hidden":"true"},*/
             {"title":"操作" ,"data": null,"render": function(data, type, row) {
             	var html = '<div>';
-            		html += '<span onclick="" class="btn-sm cm-tblA"><img src="imgs/index/history.png">历史信息</span>';
+            		/*html += '<span onclick="" class="btn-sm cm-tblA"><img src="imgs/index/history.png">历史信息</span>';*/
             		html += '<span onclick="" class="btn-sm cm-tblA"><img src="imgs/index/down.png">生成上线脚本</span>';
             		html += '</div>';
             	//$("#row_"+row.functionId).data("rowData",row);
@@ -89,7 +90,7 @@ function initHistoryTable(obj) {
 			}}
             ],
         ajax: {
-            url: '/interface/queryInterface',
+            url: '/interface/queryRecord',
             "type": 'GET',
             "data": function (d) { // 查询参数
             	debugger;

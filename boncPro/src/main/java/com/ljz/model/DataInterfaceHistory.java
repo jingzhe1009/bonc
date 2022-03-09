@@ -33,6 +33,10 @@ public class DataInterfaceHistory extends DataInterfaceHistoryKey implements Ser
     private String flag;
     
     private String red;
+    
+    private String procDatabaseName;
+    
+    private String procName;
 
     private static final long serialVersionUID = 1L;
 
@@ -155,6 +159,24 @@ public class DataInterfaceHistory extends DataInterfaceHistoryKey implements Ser
 	public void setRed(String red) {
 		this.red = red;
 	}
+
+	public String getProcDatabaseName() {
+		return procDatabaseName;
+	}
+
+	public void setProcDatabaseName(String procDatabaseName) {
+		this.procDatabaseName = procDatabaseName;
+	}
+
+	public String getProcName() {
+		return procName;
+	}
+
+	public void setProcName(String procName) {
+		this.procName = procName;
+	}
+	
+	
 	
 	
     

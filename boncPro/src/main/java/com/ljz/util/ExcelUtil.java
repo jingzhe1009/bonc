@@ -26,12 +26,12 @@ import com.ljz.model.entityC2e;
 
 @Component
 public class ExcelUtil {
-	
+
 	@Autowired
 	DirectoryMapper mapper;
-	
+
 	private static volatile ExcelUtil instance;
-	
+
 	public static ExcelUtil getInstance() {
 		if (null == instance) {
             synchronized (ExcelUtil.class) {
@@ -42,19 +42,19 @@ public class ExcelUtil {
         }
 		return instance;
 	}
-	
+
 	private Map<String,String> constantMap = new HashMap<String,String> ();
-	
+
 	private Map<String,String> tableMap = new HashMap<String,String> ();
-	
+
 	private Map<String,String> colMap = new HashMap<String,String> ();
-	
+
 	private Map<String,Map<String,String>> columnMap = new HashMap<String,Map<String,String>> ();
-	
+
 	private Map<String,Map<String,String>> interfaceMap = new HashMap<String,Map<String,String>> ();
-	
+
 	private Map<String,Map<String,String>> procMap = new HashMap<String,Map<String,String>> ();
-	
+
 	public Map<String, String> getTableMap() {
 		return tableMap;
 	}
@@ -78,7 +78,7 @@ public class ExcelUtil {
 	public void setConstantMap(Map<String, String> constantMap) {
 		this.constantMap = constantMap;
 	}
-	
+
 	public Map<String, String> getColumnMap(String dataSrcAbbr) {
 		return columnMap.get(dataSrcAbbr);
 	}
@@ -94,7 +94,7 @@ public class ExcelUtil {
 	public void setInterfaceMap(Map<String, Map<String, String>> interfaceMap) {
 		this.interfaceMap = interfaceMap;
 	}
-	
+
 
 	public Map<String, String> getProcMap(String dataSrcAbbr) {
 		return procMap.get(dataSrcAbbr);
@@ -105,9 +105,9 @@ public class ExcelUtil {
 	}
 
 	private ExcelUtil() {
-		
+
 	};
-	
+
 	public void init(List<Directory> directoryList) {
 		//词根存入缓存map中
 		for(Directory obj :directoryList) {
@@ -115,7 +115,7 @@ public class ExcelUtil {
 		}
 		setConstantMap(constantMap);
 	}
-	
+
 	public void initDTable(List<entityC2e> directoryList) {
 		//词根表存入缓存map中
 		for(entityC2e obj :directoryList) {
@@ -123,7 +123,7 @@ public class ExcelUtil {
 		}
 		setTableMap(tableMap);
 	}
-	
+
 	public void initDCol(List<attrC2e> directoryList) {
 		//词根字段存入缓存map中
 		for(attrC2e obj :directoryList) {
@@ -131,29 +131,29 @@ public class ExcelUtil {
 		}
 		setColMap(colMap);
 	}
-	
+
 	public void initColumn(List<DataInterfaceColumns> list) {
 		Map<String,String> map = new HashMap<String,String>();
 		String dataSrcAbbr = "";
 		for(DataInterfaceColumns obj :list) {
 			dataSrcAbbr = obj.getDataSrcAbbr();
-			map.put(obj.getDataSrcAbbr()+obj.getDataInterfaceNo()+obj.getDataInterfaceName()+obj.getColumnNo(), obj.toStr());
+			map.put(obj.getDataInterfaceName()+obj.getColumnNo(), obj.toStr());
 		}
 		columnMap.put(dataSrcAbbr, map);
-		setColumnMap(columnMap);
+		//setColumnMap(columnMap);
 	}
-	
+
 	public void initInterface(List<DataInterface> list) {
 		Map<String,String> map = new HashMap<String,String>();
 		String dataSrcAbbr = "";
 		for(DataInterface obj :list) {
 			dataSrcAbbr = obj.getDataSrcAbbr();
-			map.put(obj.getDataSrcAbbr()+obj.getDataInterfaceNo()+obj.getDataInterfaceName(), obj.toStr());
+			map.put(obj.getDataInterfaceName(), obj.toStr());
 		}
 		interfaceMap.put(dataSrcAbbr, map);
-		setInterfaceMap(interfaceMap);
+		//setInterfaceMap(interfaceMap);
 	}
-	
+
 	public void initProc(List<DataInterface2proc> list) {
 		Map<String,String> map = new HashMap<String,String>();
 		String dataSrcAbbr = "";
@@ -162,24 +162,25 @@ public class ExcelUtil {
 			map.put(obj.getDataSrcAbbr()+obj.getDataInterfaceNo(), obj.toStr());
 		}
 		procMap.put(dataSrcAbbr, map);
-		setProcMap(procMap);
+		//setProcMap(procMap);
 	}
-	
+
 	public void clearInterface(String dataSrcAbbr){
 		interfaceMap.remove(dataSrcAbbr);
 	}
-	
+
 	public void clearProc(String dataSrcAbbr){
 		procMap.remove(dataSrcAbbr);
 	}
-	
+
 	public void clearColumn(String dataSrcAbbr){
 		columnMap.remove(dataSrcAbbr);
 	}
 
+
 	//检查cell非空
 	public String getCellValue(Cell cell) throws Exception{
-		
+
 		if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK) {
 			String column = "";
 			if(cell.getCellType()==Cell.CELL_TYPE_STRING) {
@@ -197,7 +198,7 @@ public class ExcelUtil {
 			return "";
 		}
 	}
-	
+
 	/*public String getValue(Row row,DataInterface di) throws Exception{
 		Field[] f1=DataInterface model.class.getFields();
 		di.get
@@ -224,10 +225,10 @@ public class ExcelUtil {
 		boolean b= m.matches();
 		return b;
 	}
-	
+
 	//检查cell非空
 	public String getCellValue(Cell cell,Map<String,String> constantMap,String key) throws Exception{
-		
+
 		if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK) {
 			String column = "";
 			if(cell.getCellType()==Cell.CELL_TYPE_STRING) {
@@ -297,24 +298,24 @@ public class ExcelUtil {
 //		}
 //		return trans(rightStr, constantMap);
 //	}
-	
+
 //	public static void main(String[] args) {
 //		Map<String,String>  constantMap = new HashMap<String, String>();
 //		constantMap.put("客户", "	_CUSTOMER");
 //		constantMap.put("关系", "	_RLTN");
 //		translate(constantMap,"客户关系");
 //	}
-	
+
 	public String getTime(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		return sdf.format(date);
 	}
-	
+
 	public String getDate(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return sdf.format(date);
 	}
-	
+
 	public java.sql.Date StringToDate(String str) {
 		str = str.replaceAll("//", "-");
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -336,18 +337,18 @@ public class ExcelUtil {
 	 * @param list
 	 * @return
 	 */
-	public static List removeDuplicate(List list){  
+	public static List removeDuplicate(List list){
 		//去重
 		/*List list=(List) a.stream().distinct().collect(Collectors.toList());
         System.out.println(list);*/
-        List listTemp = new ArrayList();  
-        for(int i=0;i<list.size();i++){  
-            if(!listTemp.contains(list.get(i))){  
-                listTemp.add(list.get(i));  
-            }  
-        }  
-        return listTemp;  
+        List listTemp = new ArrayList();
+        for(int i=0;i<list.size();i++){
+            if(!listTemp.contains(list.get(i))){
+                listTemp.add(list.get(i));
+            }
+        }
+        return listTemp;
     }
-	
+
 
 }

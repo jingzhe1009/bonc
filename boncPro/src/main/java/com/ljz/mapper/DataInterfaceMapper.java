@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.ljz.model.DataInterface;
+import com.ljz.model.DataInterfaceHistory;
 import com.ljz.model.DataInterfaceTmp;
 
 public interface DataInterfaceMapper {
@@ -29,6 +30,8 @@ public interface DataInterfaceMapper {
     int batchInsert(List<DataInterfaceTmp> list);
     
     int batchInsertPro(List<DataInterface> list);
+    
+    int batchInsertHis(List<DataInterfaceHistory> list);
     
     int tmpToSave(DataInterfaceTmp record);
     

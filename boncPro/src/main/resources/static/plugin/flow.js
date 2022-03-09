@@ -115,8 +115,24 @@ function checkBtn(index, count) {
 	 /*默认进来隐藏上一步按钮*/
 	$("#btnBack").hide();	
 	/*下一步点击事件*/ 
-    $("#btnNext").click(function () {			 
+    $("#btnNext").click(function () {	
+		if(index==1){
+			debugger;
+			if($("#batchNo").val()==''){
+				zUI.dialog.alert('<pre>请上传文件</pre>');
+				return;
+			}
+		}
         methodBtn(index++, 'forward', false);
+		var idx = localStorage.getItem("idx");
+        if(index==3){
+			//加载信息确认table
+			compareModel.init(idx);
+		}else if(index==4){
+			importInfo();
+		}else if(index==2){
+			tmpInfoCheck();
+		}
 		if(index>maxstep){
 			maxstep=index;
 			 
@@ -127,7 +143,7 @@ function checkBtn(index, count) {
 			$("#btnBack").show();
         }
         if (index >= count) {  
-		/*到最后一步时 去掉下一步 显示上一步和完成*/
+			/*到最后一步时 去掉下一步 显示上一步和完成*/
             $("#btnNext").hide();
             /*$("#btnNext").removeClass("disabled");*/
             $("#btnBack").show();

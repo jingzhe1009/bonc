@@ -9,10 +9,6 @@ public class DataInterfaceRecordsKey implements Serializable {
 
     private String dataSrcAbbr;
 
-    private String dataInterfaceNo;
-
-    private String dataInterfaceName;
-
     private static final long serialVersionUID = 1L;
 
     public String getNeedVrsnNbr() {
@@ -37,21 +33,5 @@ public class DataInterfaceRecordsKey implements Serializable {
 
     public void setDataSrcAbbr(String dataSrcAbbr) {
         this.dataSrcAbbr = dataSrcAbbr == null ? null : dataSrcAbbr.trim();
-    }
-
-    public String getDataInterfaceNo() {
-        return dataInterfaceNo;
-    }
-
-    public void setDataInterfaceNo(String dataInterfaceNo) {
-        this.dataInterfaceNo = dataInterfaceNo == null ? null : dataInterfaceNo.trim();
-    }
-
-    public String getDataInterfaceName() {
-        return dataInterfaceName;
-    }
-
-    public void setDataInterfaceName(String dataInterfaceName) {
-        this.dataInterfaceName = dataInterfaceName == null ? null : dataInterfaceName.trim();
     }
 }

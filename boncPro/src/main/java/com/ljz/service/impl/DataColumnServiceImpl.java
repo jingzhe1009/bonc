@@ -1,40 +1,114 @@
 package com.ljz.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ljz.entity.ParamEntity;
+import com.ljz.mapper.DataInterfaceColumnsHistoryMapper;
 import com.ljz.mapper.DataInterfaceColumnsMapper;
 import com.ljz.model.DataInterfaceColumns;
+import com.ljz.model.DataInterfaceColumnsHistory;
 import com.ljz.model.DataInterfaceColumnsTmp;
+import com.ljz.model.DataInterfaceHistory;
 import com.ljz.service.IDataColumnService;
 import com.ljz.util.ExcelUtil;
 import com.ljz.util.TimeUtil;
 
+import javax.annotation.Resource;
+
 @Service
 public class DataColumnServiceImpl implements IDataColumnService{
-	
-	@Autowired
+
+	@Resource
 	DataInterfaceColumnsMapper mapper;
+
+	@Autowired
+	DataInterfaceColumnsHistoryMapper hisMapper;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DataColumnServiceImpl.class);
 
 	@Autowired
 	JdbcTemplate jdbc;
 
+
+
+	@Override
+	public List<DataInterfaceColumns> queryDup(String dataInterfaceName) {
+		// TODO Auto-generated method stub
+		return mapper.queryDup(dataInterfaceName);
+	}
+
 	@Override
 	public List<DataInterfaceColumns> queryAll(DataInterfaceColumns record) {
 		// TODO Auto-generated method stub
 		return mapper.queryAll(record);
+	}
+
+	@Override
+	public List<DataInterfaceColumnsHistory> queryColumnCompare(DataInterfaceColumnsHistory record) {
+		List<DataInterfaceColumnsHistory> historyList = hisMapper.queryAll(record);
+		List<DataInterfaceColumnsHistory> resultList = new ArrayList<DataInterfaceColumnsHistory>();
+		
+		try {
+			DataInterfaceColumnsHistory tmp = new DataInterfaceColumnsHistory();
+			for(DataInterfaceColumnsHistory data:historyList) {
+				String red = "";
+				if("0".equals(data.getFlag())) {
+					tmp = data;
+				}else if("1".equals(data.getFlag())) {
+					if(tmp==null) {
+						data.setFlag("3");
+					}
+					//对比
+					Class cls = data.getClass();  
+			        Field[] fields = cls.getDeclaredFields();  
+			        for(int i=0; i<fields.length; i++){  
+			            Field f = fields[i];  
+			            f.setAccessible(true);  
+			            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
+			            Class cls2 = tmp.getClass();  
+			            Field[] fields2 = cls2.getDeclaredFields();  
+			            if("flag".equals(f.getName())||"serialVersionUID".equals(f.getName()))
+		                	continue;
+			            for(int j=0; j<fields2.length; j++){  
+			                Field f2 = fields2[j];  
+			                f2.setAccessible(true);  
+			                System.out.println("tmp属性名:" + f2.getName() + " tmp属性值:" + f2.get(tmp)); 
+			                if(f.getName()==null||f2.getName()==null||f.get(data)==null||f2.get(tmp)==null)
+			                	continue;
+			                if(f.getName().equals(f2.getName())) {
+			                	if(f.get(data)!=f2.get(tmp)&&!f.get(data).equals(f2.get(tmp))) {
+			                		red +=f.get(data)+",";
+			                		data.setFlag("2");
+			                	}
+			                }
+			            }
+			        }
+				}
+				data.setRed(red);
+				resultList.add(data);
+			}
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		//record.setExptSeqNbr("1.0.0");
+		//List<DataInterfaceHistory> historyList = hisMapper.queryAll(record);
+		return resultList;
 	}
 	
 	@Override
@@ -53,6 +127,41 @@ public class DataColumnServiceImpl implements IDataColumnService{
 	public int delete(DataInterfaceColumnsTmp record) {
 		// TODO Auto-generated method stub
 		return mapper.deleteByPrimaryKey(record);
+	}
+
+	@Override
+	public String batchDeleteColumns(ParamEntity param) throws Exception {
+		System.out.println("param:::" + param);
+
+		long start = new Date().getTime();
+		List<Object[]> recordList=new ArrayList<Object[]>();
+		String[] tables = param.getTables();
+		String dataSrcAbbr = null;
+		for (String table : tables){
+			if(!table.contains("-"))
+				continue;
+			String[] split = table.split("-");
+			if(split.length!=2)
+				continue;
+			String dataInterfaceName = split[0];
+			String[] strings = dataInterfaceName.split("_");
+			dataSrcAbbr = strings[0];
+			String columnName = split[1];
+			recordList.add(new Object[] {dataInterfaceName,columnName});
+		}
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String updateSql = "update data_interface_columns set e_date = '"+ simpleDateFormat.format(new Date())
+				+ "' where data_interface_name = ? and `column_name` = ? and e_date = '3000-12-31' ";
+		if(recordList.size()>0){
+			int[] batchUpdate = jdbc.batchUpdate(updateSql, recordList);
+			logger.info("batch update interface success:"+batchUpdate.length);
+			for (int i=0;i<batchUpdate.length;i++) {
+				System.out.println("batchUpdate[i]:::"+batchUpdate[i]);
+			}
+		}
+		long end = new Date().getTime();
+		logger.info("删除结束,删除用时："+(end-start));
+		return dataSrcAbbr;
 	}
 
 	@Override
@@ -79,7 +188,7 @@ public class DataColumnServiceImpl implements IDataColumnService{
 			List<DataInterfaceColumnsTmp> queryAllTmp = mapper.queryAllTmp(record);
 			Map<String,String> columnMap =obj.getColumnMap(record.getDataSrcAbbr());
 			for(DataInterfaceColumnsTmp tmp:queryAllTmp){
-				String key = tmp.getDataSrcAbbr()+tmp.getDataInterfaceNo()+tmp.getDataInterfaceName()+tmp.getColumnNo();
+				String key = tmp.getDataInterfaceName()+tmp.getColumnNo();
 				if(columnMap!=null&&columnMap.containsKey(key)){
 					if(tmp.toStr().equalsIgnoreCase(columnMap.get(key))){//无变化
 						tmp.setImportType("3");
@@ -139,7 +248,7 @@ public class DataColumnServiceImpl implements IDataColumnService{
 		List<Object[]> delList=new ArrayList<Object[]>();
 		String [] tables = param.getTables();
 		String dbType = param.getDbType();
-		
+
 		long time1 = new Date().getTime();
 		String dataSrcAbbr = "";
 		String batchNo = "";
@@ -152,10 +261,12 @@ public class DataColumnServiceImpl implements IDataColumnService{
 			dataSrcAbbr = split[0];
 			String dataInterfaceNo = split[1];
 			String importType = split[2];
+			logger.info("importType:::"+importType);
+
 			batchNo = split[3];
 			String columnNo = split[4];
 			String dataInterfaceName = split[5];
-			
+
 			if("1".equals(importType)) {
 				//导入类型是新增直接插入正式表
 				tmpList.add(new Object[] {batchNo,dataSrcAbbr,dataInterfaceNo,columnNo,dataInterfaceName});
@@ -196,16 +307,16 @@ public class DataColumnServiceImpl implements IDataColumnService{
 				logger.info("batch delete column tmp success:"+batchUpdate3.length);
 			}
 		}else if("2".equals(dbType)){
-			
+
 			List<Object[]> tmpList2=new ArrayList<Object[]>();
 			List<Object[]> recordList2=new ArrayList<Object[]>();
 			List<Object[]> delList2=new ArrayList<Object[]>();
-			
+
 			ExcelUtil obj = ExcelUtil.getInstance();
 			Map<String, String> columnMap = obj.getColumnMap(dataSrcAbbr);
 			List<DataInterfaceColumns> list = new ArrayList<DataInterfaceColumns>();
-			
-			
+
+
 			DataInterfaceColumnsTmp condition = new DataInterfaceColumnsTmp();
 			condition.setBatchNo(batchNo);
 			List<DataInterfaceColumnsTmp> queryAllTmp = mapper.queryAllTmp(condition);
@@ -227,9 +338,12 @@ public class DataColumnServiceImpl implements IDataColumnService{
 					data.setComma(tmp.getComma());
 					data.setDataType(tmp.getDataType());
 					data.setDataFormat(tmp.getDataFormat());
-					data.setIsbucket(tmp.getIsbucket());
 					data.setNullable(tmp.getNullable());
 					data.setReplacenull(tmp.getReplacenull());
+					data.setIsbucket(tmp.getIsbucket());
+					data.setIskey(tmp.getIskey());
+					data.setIsvalid(tmp.getIsvalid());
+					data.setIncrementfield(tmp.getIncrementfield());
 					data.setsDate(tmp.getsDate());
 					data.seteDate(tmp.geteDate());
 					list.add(data);
@@ -260,5 +374,7 @@ public class DataColumnServiceImpl implements IDataColumnService{
 		logger.info("导入字段结束,导入用时："+(time2-time1));
 		return dataSrcAbbr;
 	}
+
+	
 
 }

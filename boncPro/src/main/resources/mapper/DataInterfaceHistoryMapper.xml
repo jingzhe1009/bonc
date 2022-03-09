@@ -271,25 +271,26 @@
     and e_date = '3000-12-31'
     order by data_src_abbr,data_interface_no,data_interface_name,need_vrsn_nbr,expt_seq_nbr;
   </select>
-  
+
   <select id="queryAll"  parameterType="com.ljz.model.DataInterfaceHistory" resultMap="BaseResultMap">
-    select flag,need_vrsn_nbr,expt_seq_nbr,data_src_abbr,data_interface_no,data_interface_name,data_interface_desc,data_load_freq,data_load_mthd,filed_delim,line_delim,extrnl_database_name,intrnl_database_name,extrnl_table_name,intrnl_table_name,table_type,bucket_number
+    select flag,proc_name as procName,data_src_abbr,data_interface_no,data_interface_name,data_interface_desc,data_load_freq,data_load_mthd,filed_delim,line_delim,extrnl_database_name,intrnl_database_name,extrnl_table_name,intrnl_table_name,table_type,bucket_number
  	from (
-	select 
-	(case when 
-	a.data_src_abbr+a.data_interface_no+a.data_interface_name+a.data_interface_desc+a.data_load_freq+a.data_load_mthd+a.filed_delim+a.line_delim+a.extrnl_database_name+a.intrnl_database_name+a.extrnl_table_name+a.intrnl_table_name+a.table_type+a.bucket_number
-	=b.data_src_abbr+b.data_interface_no+b.data_interface_name+b.data_interface_desc+b.data_load_freq+b.data_load_mthd+b.filed_delim+b.line_delim+b.extrnl_database_name+b.intrnl_database_name+b.extrnl_table_name+b.intrnl_table_name+b.table_type+b.bucket_number
-	then '无变化' 
-	when 
-	a.data_src_abbr+a.data_interface_no+a.data_interface_name+a.data_interface_desc+a.data_load_freq+a.data_load_mthd+a.filed_delim+a.line_delim+a.extrnl_database_name+a.intrnl_database_name+a.extrnl_table_name+a.intrnl_table_name+a.table_type+a.bucket_number
-	!=b.data_src_abbr+b.data_interface_no+b.data_interface_name+b.data_interface_desc+b.data_load_freq+b.data_load_mthd+b.filed_delim+b.line_delim+b.extrnl_database_name+b.intrnl_database_name+b.extrnl_table_name+b.intrnl_table_name+b.table_type+b.bucket_number
-	then '修改' 
-	else '新增' end) as flag
-	,a.need_vrsn_nbr,a.expt_seq_nbr,a.data_src_abbr,a.data_interface_no,a.data_interface_name,a.data_interface_desc,a.data_load_freq,a.data_load_mthd,a.filed_delim,a.line_delim,a.extrnl_database_name,a.intrnl_database_name,a.extrnl_table_name,a.intrnl_table_name,a.table_type,a.bucket_number
-	from data_interface_history a left join data_interface b on a.data_interface_name = b.data_interface_name where a.expt_seq_nbr='1.0.1' and a.e_date='3000-12-31'
-	union all select '-','-','1.0.0'
-	,c.data_src_abbr,c.data_interface_no,c.data_interface_name,c.data_interface_desc,c.data_load_freq,c.data_load_mthd,c.filed_delim,c.line_delim,c.extrnl_database_name,c.intrnl_database_name,c.extrnl_table_name,c.intrnl_table_name,c.table_type,c.bucket_number
-	 from data_interface c
-	) d order by d.data_interface_name,expt_seq_nbr
+	select '1' as flag, b.proc_name,
+	a.data_src_abbr,a.data_interface_no,a.data_interface_name,a.data_interface_desc,a.data_load_freq,a.data_load_mthd,a.filed_delim,a.line_delim,a.extrnl_database_name,a.intrnl_database_name,a.extrnl_table_name,a.intrnl_table_name,a.table_type,a.bucket_number
+	from data_interface_tmp a left join data_interface2proc_tmp b on a.data_src_abbr = b.data_src_abbr and a.data_interface_no = b.data_interface_no and a.e_date=b.e_date
+	where  a.e_date='3000-12-31' and b.e_date='3000-12-31' and a.batch_no=#{exptSeqNbr} and b.batch_no=#{exptSeqNbr}
+	union all 
+	select '0' as flag, d.proc_name,
+	c.data_src_abbr,c.data_interface_no,c.data_interface_name,c.data_interface_desc,c.data_load_freq,c.data_load_mthd,c.filed_delim,c.line_delim,c.extrnl_database_name,c.intrnl_database_name,c.extrnl_table_name,c.intrnl_table_name,c.table_type,c.bucket_number
+	from data_interface c left join data_interface2proc d on c.data_src_abbr = d.data_src_abbr and c.data_interface_no = d.data_interface_no and c.e_date=d.e_date
+  	where c.e_date='3000-12-31' and d.e_date='3000-12-31'
+	) d order by d.data_interface_name,d.flag
+  </select>
+  
+  <select id="queryFirst"  parameterType="com.ljz.model.DataInterfaceHistory" resultMap="BaseResultMap">
+	select '3' as flag,'-' as red, b.proc_name,
+	a.data_src_abbr,a.data_interface_no,a.data_interface_name,a.data_interface_desc,a.data_load_freq,a.data_load_mthd,a.filed_delim,a.line_delim,a.extrnl_database_name,a.intrnl_database_name,a.extrnl_table_name,a.intrnl_table_name,a.table_type,a.bucket_number
+	from data_interface_tmp a left join data_interface2proc_tmp b on a.data_src_abbr = b.data_src_abbr and a.data_interface_no = b.data_interface_no and a.e_date=b.e_date
+	where  a.e_date='3000-12-31' and b.e_date='3000-12-31' and a.batch_no=#{exptSeqNbr} and b.batch_no=#{exptSeqNbr}
   </select>
 </mapper>

@@ -2,12 +2,11 @@
  * 字段明细
  */
 var detailModel = {
-	init: function(dataSrcAbbr,dataInterfaceNo,dataInterfaceName){
+	init: function(dataInterfaceName){
 		debugger;
 		var obj = {}
-		obj['dataSrcAbbr'] = dataSrcAbbr;
-    	obj['dataInterfaceNo'] = dataInterfaceNo;
     	obj['dataInterfaceName'] = dataInterfaceName;
+    	obj['batchNo'] = localStorage.getItem("batchNo");
 		initDetailTable(obj);
 	}
 }
@@ -40,22 +39,47 @@ function initDetailTable(obj) {
         "serverSide": false,
         "pageLength": 10,
         "columns": [
+			{"title": "状态", "data": "flag","width":"10%","render":function(data,type,row){
+				if(data=='2'){
+					return '<font color="red">修改</font>';
+				}else if(data=='3'){
+					return '<font color="blue">新增</font>';
+				}else if(data=='1'){
+					return '无变化';
+				}else{
+					return '-';
+				}
+            }},
             {"title": "数据源缩写", "data": "dataSrcAbbr","width":"10%"},
             {"title": "接口编号", "data": "dataInterfaceNo","width":"10%" },
-            /*{"title": "接口名", "data": "dataInterfaceName" },*/
+            {"title": "接口名", "data": "dataInterfaceName" },
             {"title": "字段编号", "data": "columnNo","width":"10%" },
-            {"title": "字段名", "data": "columnName" },
-            {"title": "数据类型", "data": "dataType","width":"10%" },
-            /*{"title": "格式", "data": "dataFormat" },*/
-            /*{"title": "是否非空", "data": "nullable"},*/
-            /*{"title": "分隔符", "data": "comma" },*/
-            {"title": "字段描述", "data": "columnComment"},
-            {"title": "分桶字段", "data": "isbucket","width":"10%" },
+            {"title": "字段名", "data": "columnName","render":function(data,type,row){
+				return getData(row,data);
+            } },
+            {"title": "数据类型", "data": "dataType","width":"10%","render":function(data,type,row){
+				return getData(row,data);
+            } },
+            {"title": "格式", "data": "dataFormat","render":function(data,type,row){
+				return getData(row,data);
+            } },
+            {"title": "是否非空", "data": "nullable","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "分隔符", "data": "comma","render":function(data,type,row){
+				return getData(row,data);
+            } },
+            {"title": "字段描述", "data": "columnComment","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "分桶字段", "data": "isbucket","width":"10%","render":function(data,type,row){
+				return getData(row,data);
+            } }
             /*{"title": "生效日期", "data": "sData"}*/
             /*{"title": "失效日期", "data": "eDate" },*/
             ],
         ajax: {
-            url: '/col/queryColumn',
+            url: '/col/queryColumnCompare',
             "type": 'GET',
             "data": function (d) { // 查询参数
                 return $.extend({}, d, obj);

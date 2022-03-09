@@ -17,15 +17,10 @@ function importExcel() {
 			contentType: false,
 			processData: false,
 			success: function (result) {
-				//$('#loadAlert').modal('hide');
 				console.log(result);//打印服务端返回的数据(调试用)
-				// zUI.dialog.alert('<pre>' + result.msgData + '</pre>');
-				var obj = {};
-				obj['batchNo'] = $("#batchNo").val();
-				obj['dataSrcAbbr'] = result.dataSrcAbbr;
-				localStorage.setItem("batchNo",obj['batchNo']);
-				localStorage.setItem("dataSrcTmp",obj['dataSrcAbbr']);
-				alert('<pre>' + result.msgData + '</pre>');
+				localStorage.setItem("batchNo",$("#batchNo").val());
+				localStorage.setItem("dataSrcTmp",result.dataSrcAbbr);
+				zUI.dialog.alert('<pre>' + result.msgData + '</pre>');
 			},
 			error: function (error) {
 				debugger

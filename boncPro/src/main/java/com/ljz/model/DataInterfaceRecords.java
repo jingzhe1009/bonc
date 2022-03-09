@@ -5,9 +5,17 @@ import java.io.Serializable;
 public class DataInterfaceRecords extends DataInterfaceRecordsKey implements Serializable {
     private String exptFileName;
 
-    private String dataInterfaceDesc;
-
     private String intfTot;
+
+    private String intfNew;
+
+    private String intfAlt;
+
+    private String intfDscr;
+
+    private String createDate;
+
+    private String altDate;
 
     private String exctPsn;
 
@@ -23,20 +31,52 @@ public class DataInterfaceRecords extends DataInterfaceRecordsKey implements Ser
         this.exptFileName = exptFileName == null ? null : exptFileName.trim();
     }
 
-    public String getDataInterfaceDesc() {
-        return dataInterfaceDesc;
-    }
-
-    public void setDataInterfaceDesc(String dataInterfaceDesc) {
-        this.dataInterfaceDesc = dataInterfaceDesc == null ? null : dataInterfaceDesc.trim();
-    }
-
     public String getIntfTot() {
         return intfTot;
     }
 
     public void setIntfTot(String intfTot) {
         this.intfTot = intfTot == null ? null : intfTot.trim();
+    }
+
+    public String getIntfNew() {
+        return intfNew;
+    }
+
+    public void setIntfNew(String intfNew) {
+        this.intfNew = intfNew == null ? null : intfNew.trim();
+    }
+
+    public String getIntfAlt() {
+        return intfAlt;
+    }
+
+    public void setIntfAlt(String intfAlt) {
+        this.intfAlt = intfAlt == null ? null : intfAlt.trim();
+    }
+
+    public String getIntfDscr() {
+        return intfDscr;
+    }
+
+    public void setIntfDscr(String intfDscr) {
+        this.intfDscr = intfDscr == null ? null : intfDscr.trim();
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate == null ? null : createDate.trim();
+    }
+
+    public String getAltDate() {
+        return altDate;
+    }
+
+    public void setAltDate(String altDate) {
+        this.altDate = altDate == null ? null : altDate.trim();
     }
 
     public String getExctPsn() {

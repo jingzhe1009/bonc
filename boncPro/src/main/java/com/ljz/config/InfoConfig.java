@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:info.properties")
 @Component
 public class InfoConfig {
-	
+
 	private String filePath;
-	
+
 	private String fileEncode;
 
 	public String getFilePath() {
@@ -30,11 +30,11 @@ public class InfoConfig {
 	public void setFileEncode(String fileEncode) {
 		this.fileEncode = fileEncode;
 	}
-	
-	
 
-	
-	
-	
+
+
+
+
+
 
 }

@@ -24,11 +24,11 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 public class MyBatisConfig implements TransactionManagementConfigurer{
-	
+
 	@Autowired
     DataSource dataSource;
-	
-	
+
+
 	@Bean(name = "sqlSessionFactory")
     public SqlSessionFactory sqlSessionFactoryBean() {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
@@ -58,7 +58,7 @@ public class MyBatisConfig implements TransactionManagementConfigurer{
             throw new RuntimeException(e);
         }
     }
-	
+
 
 	@Bean(name = "sqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {

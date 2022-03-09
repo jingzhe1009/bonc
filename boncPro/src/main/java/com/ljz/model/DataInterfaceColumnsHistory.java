@@ -2,6 +2,7 @@ package com.ljz.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
 public class DataInterfaceColumnsHistory extends DataInterfaceColumnsHistoryKey implements Serializable {
     private String columnName;
@@ -20,9 +21,19 @@ public class DataInterfaceColumnsHistory extends DataInterfaceColumnsHistoryKey 
 
     private String isbucket;
 
-    private LocalDate sDate;
+    private Date sDate;
 
-    private LocalDate eDate;
+    private Date eDate;
+    
+    private String flag;
+    
+    private String red;
+    
+    private String iskey;
+
+    private String isvalid;
+
+    private String incrementfield;
 
     private static final long serialVersionUID = 1L;
 
@@ -90,19 +101,61 @@ public class DataInterfaceColumnsHistory extends DataInterfaceColumnsHistoryKey 
         this.isbucket = isbucket == null ? null : isbucket.trim();
     }
 
-    public LocalDate getsDate() {
+    public Date getsDate() {
         return sDate;
     }
 
-    public void setsDate(LocalDate sDate) {
+    public void setsDate(Date sDate) {
         this.sDate = sDate;
     }
 
-    public LocalDate geteDate() {
+    public Date geteDate() {
         return eDate;
     }
 
-    public void seteDate(LocalDate eDate) {
+    public void seteDate(Date eDate) {
         this.eDate = eDate;
     }
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+	public String getRed() {
+		return red;
+	}
+
+	public void setRed(String red) {
+		this.red = red;
+	}
+	
+	public String getIskey() {
+		return iskey;
+	}
+
+	public void setIskey(String iskey) {
+		this.iskey = iskey;
+	}
+
+	public String getIsvalid() {
+		return isvalid;
+	}
+
+	public void setIsvalid(String isvalid) {
+		this.isvalid = isvalid;
+	}
+
+    public String getIncrementfield() {
+        return incrementfield;
+    }
+
+    public void setIncrementfield(String incrementfield) {
+        this.incrementfield = incrementfield;
+    }
+    
+    
 }

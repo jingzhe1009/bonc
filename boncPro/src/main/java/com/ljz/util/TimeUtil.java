@@ -9,14 +9,14 @@ import java.util.GregorianCalendar;
 import com.ljz.constant.BoncConstant;
 
 public class TimeUtil {
-	
+
 	public static java.sql.Date getTomorrow() {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
         calendar.add(Calendar.DATE, 1);
         return new java.sql.Date(calendar.getTime().getTime());
     }
-	
+
 	public static Date getTw() {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
@@ -25,16 +25,26 @@ public class TimeUtil {
         String format = sdf.format(calendar.getTime());
         return StringtoDate(format);
     }
-	
+
 	public static java.sql.Date getToday(){
 		return new java.sql.Date(new Date().getTime());
 	}
-	
+
 	public static String getDate(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return sdf.format(date);
 	}
-	
+
+	public static String getDateToString(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		return sdf.format(date);
+	}
+
+	public static void main(String[] args) {
+		String s = getDateToString(getTw());
+		System.out.println(s);
+	}
+
 	public static Date getTy(){
 		return new Date();
 	}
@@ -42,11 +52,8 @@ public class TimeUtil {
 	public static java.sql.Date getEdate() {
 		return ExcelUtil.getInstance().StringToDate(BoncConstant.CON_E_DATE);
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(getTw());
-	}
-	
+
+
 	public static Date getE(){
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		try {
@@ -58,7 +65,7 @@ public class TimeUtil {
 		}
 		return new Date();
 	}
-	
+
 	public static Date StringtoDate(String str){
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		try {

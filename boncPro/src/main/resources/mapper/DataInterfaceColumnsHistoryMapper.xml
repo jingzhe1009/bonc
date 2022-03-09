@@ -16,13 +16,16 @@
     <result column="comma" jdbcType="VARCHAR" property="comma" />
     <result column="column_comment" jdbcType="VARCHAR" property="columnComment" />
     <result column="isbucket" jdbcType="VARCHAR" property="isbucket" />
+    <result column="iskey" jdbcType="VARCHAR" property="iskey" />
+    <result column="isvalid" jdbcType="VARCHAR" property="isvalid" />
+    <result column="increment_field" jdbcType="VARCHAR" property="incrementfield" />
     <result column="s_date" jdbcType="DATE" property="sDate" />
     <result column="e_date" jdbcType="DATE" property="eDate" />
   </resultMap>
   <sql id="Base_Column_List">
     need_vrsn_nbr, expt_seq_nbr, data_src_abbr, data_interface_no, data_interface_name, 
     column_no, column_name, data_type, data_format, nullable, replacenull, comma, column_comment, 
-    isbucket, s_date, e_date
+    isbucket, iskey, isvalid, increment_field, s_date, e_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="com.ljz.model.DataInterfaceColumnsHistoryKey" resultMap="BaseResultMap">
     select 
@@ -221,4 +224,47 @@
       and data_interface_name = #{dataInterfaceName,jdbcType=VARCHAR}
       and column_no = #{columnNo,jdbcType=INTEGER}
   </update>
+  <!-- 历史表查询 -->
+  <select id="queryAllbak"  parameterType="com.ljz.model.DataInterfaceColumnsHistory" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_interface_columns_history
+    where 1=1 
+    <if test="needVrsnNbr != null">
+       and need_vrsn_nbr=#{needVrsnNbr}
+    </if>
+    <if test="exptSeqNbr != null">
+       and expt_seq_nbr=#{exptSeqNbr}
+    </if>
+    <if test="dataSrcAbbr != null">
+       and data_src_abbr=#{dataSrcAbbr}
+    </if>
+    <if test="dataInterfaceNo != null">
+       and data_interface_no=#{dataInterfaceNo}
+    </if>
+    <if test="dataInterfaceName != null">
+       and data_interface_name=#{dataInterfaceName}
+    </if>
+    <if test="columnNo != null">
+       and column_no=#{columnNo}
+    </if>
+    and e_date = '3000-12-31'
+    order by data_src_abbr,data_interface_no,data_interface_name,column_no,need_vrsn_nbr,expt_seq_nbr;
+  </select>
+  <select id="queryAll"  parameterType="com.ljz.model.DataInterfaceColumnsHistory" resultMap="BaseResultMap">
+    select flag,data_src_abbr, data_interface_no, column_no, data_interface_name, column_name, data_type, 
+    data_format, nullable, replacenull, comma, column_comment, iskey, isvalid, increment_field
+ 	from (
+	select '1' as flag,
+	a.data_src_abbr,a.data_interface_no,a.column_no,a.data_interface_name,a.column_name,a.data_type,a.data_format,a.nullable,a.replacenull,a.comma,a.column_comment,a.isbucket
+	, a.iskey, a.isvalid, a.increment_field
+	from data_interface_columns_tmp a 
+	where a.batch_no=#{exptSeqNbr} and a.e_date='3000-12-31' and data_interface_name=#{dataInterfaceName}
+	union all select '0' as flag,
+	c.data_src_abbr,c.data_interface_no,c.column_no,c.data_interface_name,c.column_name,c.data_type,c.data_format,c.nullable,c.replacenull,c.comma,c.column_comment,c.isbucket
+	, c.iskey, c.isvalid, c.increment_field
+	 from data_interface_columns c
+	 where c.e_date='3000-12-31' and data_interface_name=#{dataInterfaceName}
+	) d order by d.data_interface_name,d.column_no,d.flag
+  </select>
 </mapper>

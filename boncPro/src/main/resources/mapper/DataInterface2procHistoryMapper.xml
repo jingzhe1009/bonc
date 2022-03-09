@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljz.mapper.DataInterface2procHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.ljz.model.DataInterface2procHistory">
+    <result column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <result column="expt_seq_nbr" jdbcType="VARCHAR" property="exptSeqNbr" />
+    <result column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <result column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <result column="proc_database_name" jdbcType="VARCHAR" property="procDatabaseName" />
+    <result column="proc_name" jdbcType="VARCHAR" property="procName" />
+    <result column="s_date" jdbcType="DATE" property="sDate" />
+    <result column="e_date" jdbcType="DATE" property="eDate" />
+  </resultMap>
+  <insert id="insert" parameterType="com.ljz.model.DataInterface2procHistory">
+    insert into data_interface2proc_history (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, 
+      data_interface_no, proc_database_name, proc_name, 
+      s_date, e_date)
+    values (#{needVrsnNbr,jdbcType=VARCHAR}, #{exptSeqNbr,jdbcType=VARCHAR}, #{dataSrcAbbr,jdbcType=VARCHAR}, 
+      #{dataInterfaceNo,jdbcType=VARCHAR}, #{procDatabaseName,jdbcType=VARCHAR}, #{procName,jdbcType=VARCHAR}, 
+      #{sDate,jdbcType=DATE}, #{eDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ljz.model.DataInterface2procHistory">
+    insert into data_interface2proc_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        need_vrsn_nbr,
+      </if>
+      <if test="exptSeqNbr != null">
+        expt_seq_nbr,
+      </if>
+      <if test="dataSrcAbbr != null">
+        data_src_abbr,
+      </if>
+      <if test="dataInterfaceNo != null">
+        data_interface_no,
+      </if>
+      <if test="procDatabaseName != null">
+        proc_database_name,
+      </if>
+      <if test="procName != null">
+        proc_name,
+      </if>
+      <if test="sDate != null">
+        s_date,
+      </if>
+      <if test="eDate != null">
+        e_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="needVrsnNbr != null">
+        #{needVrsnNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="exptSeqNbr != null">
+        #{exptSeqNbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSrcAbbr != null">
+        #{dataSrcAbbr,jdbcType=VARCHAR},
+      </if>
+      <if test="dataInterfaceNo != null">
+        #{dataInterfaceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="procDatabaseName != null">
+        #{procDatabaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="procName != null">
+        #{procName,jdbcType=VARCHAR},
+      </if>
+      <if test="sDate != null">
+        #{sDate,jdbcType=DATE},
+      </if>
+      <if test="eDate != null">
+        #{eDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+</mapper>

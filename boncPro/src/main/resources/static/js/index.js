@@ -77,11 +77,11 @@ function initMenu(){
 	});
 	
 	//监听接口双击
-	/*$("#interfaceTable").on('dblclick','tr',function(){
-		var table=$("#interfaceTable").DataTable();
+	/*$("#compareTable").on('dblclick','tr',function(){
+		var table=$("#compareTable").DataTable();
 		var data=table.row(this).data();
 		console.log(data);
-		interfaceModel.detail(data.dataSrcAbbr,data.dataInterfaceNo);
+		compareModel.detail(data.dataSrcAbbr,data.dataInterfaceNo);
 	});*/
 	
 	//监听词根管理
@@ -275,6 +275,7 @@ function changeTab(tabId){
 		$("#syContent").show();
 		$("#importContent").hide();
     	$("#pageHeader").html('<p>当前位置：接口信息导入</p>');
+    	$('.base_title').html('当前数据源:'+desc+"("+idx+")");
     	historyModel.init(idx);
 	}
 }
@@ -360,8 +361,12 @@ function getInput(key,value){
 	var text ='<div class="form-group"><label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>'+key+'</label><div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input name="'+value+'param" type="text" class="form-control" ></div></div>';
 	return text;
 }
-
-function yjdr(){
+function yjdr() {
+	//document.getElementById("ehdel_upload_text").value=null;
+	$("#syContent").hide();
+	$("#importContent").show();
+}
+function yjdr_bak(){
 	$("#syContent").hide();
 	$("#importContent").show();
 	var obj ={};
@@ -377,8 +382,4 @@ function yjdr(){
         var tabId = $(this).attr('tab-id');
 		changeTab2(tabId,obj);
     });
-    //加载信息确认table
-    var idx = localStorage.getItem("idx");
-    compareModel.init(idx);
-    dataModelModel.init(idx);
 }

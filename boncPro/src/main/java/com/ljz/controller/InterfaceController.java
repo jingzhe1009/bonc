@@ -3,15 +3,25 @@ package com.ljz.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ljz.mapper.attrC2eMapper;
+import com.ljz.mapper.entityC2eMapper;
+import com.ljz.model.*;
+import com.ljz.service.impl.DataSourceServiceImpl;
 import com.ljz.service.impl.ExcelServiceImpl;
+import com.ljz.util.ExcelUtil;
+import com.ljz.util.TransUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -33,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ljz.entity.ParamEntity;
 import com.ljz.model.DataInterface;
 import com.ljz.model.DataInterfaceHistory;
+import com.ljz.model.DataInterfaceRecords;
 import com.ljz.model.DataInterfaceTmp;
 import com.ljz.service.IDataInterfaceService;
 import com.ljz.util.TimeUtil;
@@ -44,21 +55,29 @@ import com.ljz.util.TimeUtil;
 @Controller
 @RequestMapping("/interface")
 public class InterfaceController extends MainController{
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(InterfaceController.class);
-	
+
 	@Autowired
 	IDataInterfaceService intService;
-	
+
 	@Autowired
 	JdbcTemplate jdbc;
-	
+
 	@Autowired
 	ExcelServiceImpl excelService;
 
+	@Autowired
+	DataSourceServiceImpl dsService;
+
+	@Resource
+	attrC2eMapper aMapper;
+
+	@Resource
+	entityC2eMapper eMapper;
+
 	@ResponseBody
 	@RequestMapping(value="/queryInterface",method = RequestMethod.GET)
-
     public Map<String, Object> queryInterface(String dataSrcAbbr,String dataInterfaceNo,Integer start, Integer length) {
 
 		DataInterface record = new DataInterface();
@@ -75,14 +94,29 @@ public class InterfaceController extends MainController{
         logger.info("query interface success,num:"+list.size());
         return resultMap;
     }
+
+	@ResponseBody
+	@RequestMapping(value="/queryRecord",method = RequestMethod.GET)
+    public Map<String, Object> queryRecord(String dataSrcAbbr) {
+
+		DataInterfaceRecords record = new DataInterfaceRecords();
+		record.setDataSrcAbbr(dataSrcAbbr);
+		List<DataInterfaceRecords> list = intService.queryRecord(record);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("recordsTotal", list.size());
+        resultMap.put("recordsFiltered", list.size());
+        resultMap.put("total", list.size());
+        resultMap.put("data", list);
+        logger.info("query records success,num:"+list.size());
+        return resultMap;
+    }
 	
 	@ResponseBody
 	@RequestMapping(value="/queryInterfaceCompare",method = RequestMethod.GET)
-    public Map<String, Object> queryInterfaceCompare(String dataSrcAbbr) {
-
+    public Map<String, Object> queryInterfaceCompare(String dataSrcAbbr,String batchNo) {
 		DataInterfaceHistory record = new DataInterfaceHistory();
 		record.setDataSrcAbbr(dataSrcAbbr);
-		record.setExptSeqNbr("1.0.1");//当前导入版本
+		record.setExptSeqNbr(batchNo);//当前导入临时表的批次号
 		logger.info(record.toString());
 		List<DataInterfaceHistory> list = intService.queryInterfaceCompare(record);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -93,6 +127,29 @@ public class InterfaceController extends MainController{
         logger.info("query interface compare success,num:"+list.size());
         return resultMap;
     }
+
+	@ResponseBody
+	@RequestMapping(value="/saveAll",method = RequestMethod.POST)
+    public Map<String,String> saveAll(@RequestBody(required=false) ParamEntity param) throws Exception{
+		Map<String,String> map = new HashMap<String,String>();
+		long start = new Date().getTime();
+		try {
+			logger.info(param.toString());
+			String content = intService.saveAll(param);
+			if(!"success".equals(content)) {
+				throw new Exception();
+			}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			map.put("msgData", "导入失败");
+			return map;
+		}
+		long end = new Date().getTime();
+		logger.info("导入用时:"+(end-start)+"毫秒");
+		map.put("msgData", "导入成功");
+		return map;
+	}
 	
 	@ResponseBody
 	@RequestMapping(value="/createInterface",method = RequestMethod.POST)
@@ -100,9 +157,53 @@ public class InterfaceController extends MainController{
     public Map<String,String> createInterface(DataInterface record) {
 		Map<String,String> map = new HashMap<String,String>();
 		StringBuffer stringBuffer = new StringBuffer();
+		List<entityC2e> eList = eMapper.queryAll(new entityC2e());
+		List<attrC2e> aList = aMapper.queryAll(new attrC2e());
+		ExcelUtil obj = ExcelUtil.getInstance();
+		obj.initDTable(eList);
+		obj.initDCol(aList);
+		TransUtil.sb=new StringBuffer();
+		if("".equals(record.getIntrnlTableName())) {  //内表表名为空，去词根表找
+			record.setIntrnlTableName(TransUtil.transTable(record.getDataInterfaceDesc(), obj.getTableMap()));
+			if ("".equals(record.getIntrnlTableName())) {  //词根表查找为空，去词根字段查找
+				record.setIntrnlTableName(TransUtil.translateField(obj.getColMap(), record.getDataInterfaceDesc()));
+				//obj.getCellValue(record.getIntrnlTableName(),obj.getColMap(),record.getDataInterfaceDesc()));// = obj.getCellValue(row.getCell(11),obj.getColMap(),record.getIntrnlTableName());
+				if (record.getIntrnlTableName().equals("")){
+					record.setIntrnlTableName("");
+				}else if (!record.getIntrnlTableName().startsWith("_")){
+					record.setIntrnlTableName(record.getDataSrcAbbr() + "_" + record.getIntrnlTableName().toUpperCase());// = record.getDataSrcAbbr() + "_" + record.getIntrnlTableName().toUpperCase();
+				}else {
+					record.setIntrnlTableName(record.getDataSrcAbbr() + record.getIntrnlTableName().toUpperCase());// = record.getDataSrcAbbr() + record.getIntrnlTableName().toUpperCase();
+				}
+			}
+		}
+//内表表名校验
+		String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
+		Pattern p = Pattern.compile(REGEX_CHINESE);
+		Matcher m = p.matcher(record.getIntrnlTableName());
+		if (m.find()){
+			stringBuffer.append("[内表表名]"+"「"+record.getIntrnlTableName()+"」"+"中文字符在词根找不到映射"+"\n");
+		}
+		if (!record.getIntrnlTableName().startsWith(record.getDataSrcAbbr()) && !record.getIntrnlTableName().equals("")){
+			stringBuffer.append("[内表表名]"+"「"+record.getIntrnlTableName()+"」"+"需前缀数据源"+"\n");
+		}else if (!record.getIntrnlTableName().equals("") && record.getIntrnlTableName().endsWith("_TB")  ){
+			stringBuffer.append("[内表表名]"+"「"+record.getIntrnlTableName()+"」"+"需前删除后缀'_TB'"+"\n");
+		}else if ("".equals(record.getIntrnlTableName())){
+			stringBuffer.append("[内表表名]"+"「"+record.getIntrnlTableName()+"」不能为空"+"\n");
+		}
+
+		List<DataInterface> list = intService.queryDsAndInfaceName(record.getDataSrcAbbr());
+		if (list.stream().anyMatch(e -> e.getDataInterfaceName().equals(record.getDataInterfaceName()))){
+			stringBuffer.append("[接口名]「"+record.getDataInterfaceName()+"」已存在\n");
+		}else if (list.stream().anyMatch(e -> e.getDataInterfaceDesc().equals(record.getDataInterfaceDesc()))) {
+			stringBuffer.append("[接口中文名]「"+record.getDataInterfaceDesc()+"」已存在\n");
+		}else if (list.stream().anyMatch(e -> e.getIntrnlTableName().equals(record.getIntrnlTableName()))) {
+			stringBuffer.append("[内表表名]「"+record.getIntrnlTableName()+"」已存在\n");
+		}
+
 		stringBuffer.append(excelService.verifyInfaceInfo(record.getDataSrcAbbr(),record.getDataInterfaceNo(),record.getDataInterfaceName(),
 				record.getDataInterfaceDesc(),record.getDataLoadFreq(),record.getDataLoadMthd(),record.getFiledDelim(),record.getLineDelim(),record.getExtrnlDatabaseName(),
-				record.getExtrnlTableName(),record.getIntrnlDatabaseName(),record.getIntrnlTableName(),record.getTableType(),record.getBucketNumber().toString()));
+				record.getExtrnlTableName(),record.getIntrnlDatabaseName(),record.getIntrnlTableName().toUpperCase(),record.getTableType(),record.getBucketNumber().toString()));
 		String string = stringBuffer.toString().trim();
 		if (string!=null && !string.isEmpty() && !string.isEmpty()){
 			map.put("message","保存失败，填入信息有误：\n"+record.getDataInterfaceName()+":\n"+stringBuffer);
@@ -120,16 +221,62 @@ public class InterfaceController extends MainController{
 		map.put("idx", record.getDataSrcAbbr());
 		return map;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/editInterface",method = RequestMethod.POST)
 	@Transactional
     public Map<String,String> editInterface(DataInterface record) {
 		Map<String,String> map = new HashMap<String,String>();
 		StringBuffer stringBuffer = new StringBuffer();
+		List<entityC2e> eList = eMapper.queryAll(new entityC2e());
+		List<attrC2e> aList = aMapper.queryAll(new attrC2e());
+		ExcelUtil obj = ExcelUtil.getInstance();
+		obj.initDTable(eList);
+		obj.initDCol(aList);
+		TransUtil.sb=new StringBuffer();
+		if("".equals(record.getIntrnlTableName())) {  //内表表名为空，去词根表找
+			record.setIntrnlTableName(TransUtil.transTable(record.getDataInterfaceDesc(), obj.getTableMap()));
+			System.out.println("record.getIntrnlTableName()111:::" + record.getIntrnlTableName());
+			if ("".equals(record.getIntrnlTableName())) {  //词根表查找为空，去词根字段查找
+				record.setIntrnlTableName(TransUtil.translateField(obj.getColMap(), record.getDataInterfaceDesc()));
+				//obj.getCellValue(record.getIntrnlTableName(),obj.getColMap(),record.getDataInterfaceDesc()));// = obj.getCellValue(row.getCell(11),obj.getColMap(),record.getIntrnlTableName());
+				if (record.getIntrnlTableName().equals("")){
+					record.setIntrnlTableName("");
+				}else if (!record.getIntrnlTableName().startsWith("_")){
+					record.setIntrnlTableName(record.getDataSrcAbbr() + "_" + record.getIntrnlTableName().toUpperCase());// = record.getDataSrcAbbr() + "_" + record.getIntrnlTableName().toUpperCase();
+				}else {
+					record.setIntrnlTableName(record.getDataSrcAbbr() + record.getIntrnlTableName().toUpperCase());// = record.getDataSrcAbbr() + record.getIntrnlTableName().toUpperCase();
+				}
+			}
+		}
+//内表表名校验
+		String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
+		Pattern p = Pattern.compile(REGEX_CHINESE);
+		Matcher m = p.matcher(record.getIntrnlTableName());
+		if (m.find()){
+			stringBuffer.append("[内表表名]"+"「"+record.getIntrnlTableName()+"」"+"中文字符在词根找不到映射"+"\n");
+		}
+		if (!record.getIntrnlTableName().startsWith(record.getDataSrcAbbr()) && !record.getIntrnlTableName().equals("")){
+			stringBuffer.append("[内表表名]"+"「"+record.getIntrnlTableName()+"」"+"需前缀数据源"+"\n");
+		}else if (!record.getIntrnlTableName().equals("") && record.getIntrnlTableName().endsWith("_TB")  ){
+			stringBuffer.append("[内表表名]"+"「"+record.getIntrnlTableName()+"」"+"需前删除后缀'_TB'"+"\n");
+		}else if ("".equals(record.getIntrnlTableName())){
+			stringBuffer.append("[内表表名]「"+record.getIntrnlTableName()+"」不能为空"+"\n");
+		}
+
+		List<DataInterface> list = intService.queryDsAndInfaceName(record.getDataSrcAbbr());
+		List<DataInterface> listDataInterfaceDesc = list.stream().filter(e -> !e.getDataInterfaceDesc().equals(record.getDataInterfaceDesc())).collect(Collectors.toList());
+
+		List<DataInterface> listDataInterfaceName = list.stream().filter(e -> !e.getDataInterfaceName().equals(record.getDataInterfaceName())).collect(Collectors.toList());
+		if (listDataInterfaceDesc.stream().anyMatch(e -> e.getDataInterfaceDesc().equals(record.getDataInterfaceDesc()))) {
+			stringBuffer.append("[接口中文名]'"+record.getDataInterfaceDesc()+"'已存在\n");
+		}else if (listDataInterfaceName.stream().anyMatch(e -> e.getIntrnlTableName().equals(record.getIntrnlTableName()))) {
+			stringBuffer.append("[内表表名]'"+record.getIntrnlTableName()+"'已存在\n");
+		}
+
 		stringBuffer.append(excelService.verifyInfaceInfo(record.getDataSrcAbbr(),record.getDataInterfaceNo(),record.getDataInterfaceName(),
 				record.getDataInterfaceDesc(),record.getDataLoadFreq(),record.getDataLoadMthd(),record.getFiledDelim(),record.getLineDelim(),record.getExtrnlDatabaseName(),
-				record.getExtrnlTableName(),record.getIntrnlDatabaseName(),record.getIntrnlTableName(),record.getTableType(),record.getBucketNumber().toString()));
+				record.getExtrnlTableName(),record.getIntrnlDatabaseName(),record.getIntrnlTableName().toUpperCase(),record.getTableType(),record.getBucketNumber().toString()));
 		String string = stringBuffer.toString().trim();
 		if (string!=null && !string.isEmpty() && !string.isEmpty()){
 			map.put("message","保存失败，填入信息有误：\n"+record.getDataInterfaceName()+":\n"+stringBuffer);
@@ -161,7 +308,10 @@ public class InterfaceController extends MainController{
 		map.put("idx", record.getDataSrcAbbr());
 		return map;
     }
-	
+	static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor){
+		Map<Object,Boolean> seen = new ConcurrentHashMap<>();
+		return t -> seen.putIfAbsent(keyExtractor.apply(t),Boolean.TRUE) == null;
+	}
 	@ResponseBody
 	@RequestMapping(value="/deleteInterface",method = RequestMethod.POST)
     public String deleteInterface(DataInterface record) {
@@ -207,6 +357,7 @@ public class InterfaceController extends MainController{
     public Map<String, Object> queryInterfaceTmp(String batchNo,String dataSrcAbbr) {
 		DataInterfaceTmp record = new DataInterfaceTmp();
 		record.setBatchNo(batchNo);
+		logger.info("batchNo:::"+batchNo+"\ndataSrcAbbr:::"+dataSrcAbbr);
 		record.setDataSrcAbbr(dataSrcAbbr);
 		logger.info(record.toString());
 		List<DataInterfaceTmp> list = intService.queryAllTmp(record);
@@ -218,7 +369,7 @@ public class InterfaceController extends MainController{
         logger.info("query interface tmp success,num:"+list.size());
         return resultMap;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/tmpToSaveAll",method = RequestMethod.POST)
     public Map<String,String> tmpToSaveAll(@RequestBody(required=false) ParamEntity param) throws Exception{
@@ -226,7 +377,7 @@ public class InterfaceController extends MainController{
 		String dataSrcAbbr ="";
 		long start = new Date().getTime();
 		try {
-			logger.info(param.toString());
+			logger.info("InfaceParam:::"+param.toString());
 			dataSrcAbbr = intService.batchImportFinal(param);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -241,7 +392,7 @@ public class InterfaceController extends MainController{
 		map.put("dataSrcAbbr", dataSrcAbbr);
 		return map;
 	}
-	
+
 	/**
 	 * 导入接口页面
 	 * @param model
@@ -252,7 +403,7 @@ public class InterfaceController extends MainController{
 		logger.info("enter into importTable page");
 		return "importTable";
 	}
-	
+
 	/**
 	 * 导入接口
 	 * @param file
@@ -278,7 +429,7 @@ public class InterfaceController extends MainController{
 		logger.info("start import interface excel...");
 		return excelService.importTable(file,batchNo);
 	}
-	
+
 	/**
 	 * 导出接口
 	 * @param response
@@ -304,8 +455,8 @@ public class InterfaceController extends MainController{
 		}
 	    return "importTable";
 	}
-	
-	
+
+
 	@ResponseBody
 	@RequestMapping(value="/queryModel",method = RequestMethod.GET)
     public Map<String, Object> queryModel(String dataSrcAbbr,String dataInterfaceNo,Integer start, Integer length) {
@@ -323,7 +474,16 @@ public class InterfaceController extends MainController{
         logger.info("query model success,num:"+list.size());
         return resultMap;
     }
-	
+
+    @ResponseBody
+    @RequestMapping(value = "/infaceInfoList",method = RequestMethod.GET)
+	public Map<String, Object> infaceInfoList(){
+		Map<String,Object> resultMap = new HashMap<>();
+		List<Map<String, Object>> dataLoadMtdList = jdbc.queryForList("select item_type,data_struct_code from data_code_config WHERE item_name = '数据加载方式' AND  database_name = 'interface'  AND  database_code = 'tdh' ");
+		resultMap.put("dataLoadMtdList", dataLoadMtdList);
+		return resultMap;
+	}
+
 	@ResponseBody
 	@RequestMapping(value="/delTable",method = RequestMethod.POST)
 	public Map<String,String> dropTable(@RequestBody(required=false) ParamEntity param) {

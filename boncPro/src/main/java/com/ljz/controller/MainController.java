@@ -1,6 +1,9 @@
 package com.ljz.controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,30 +54,30 @@ import com.ljz.util.TimeUtil;
 @Controller
 @RequestMapping("/bonc")
 public class MainController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
-	
+
 	@Autowired
 	DataSourceServiceImpl dsService;
-	
+
 	@Autowired
 	ExcelServiceImpl excelService;
-	
+
 	@Autowired
 	VersionServiceImpl versionService;
-	
+
 	@Autowired
 	InfoConfig config;
-	
+
 	@Autowired
 	LogServiceImpl logService;
-	
+
 	@RequestMapping(value= {"/","/index"})
 	public String index() {
 		logger.info("hello,world");
 		return "index";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value="/datasource",method = RequestMethod.GET)
     public Map<String, Object> datasource(String dataSrcAbbr) {
@@ -89,7 +92,7 @@ public class MainController {
         resultMap.put("data", list);
         return resultMap;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/queryDataSrc",method = RequestMethod.GET)
     public Map<String, Object> queryDataSrc(DataSrc record) {
@@ -97,44 +100,62 @@ public class MainController {
 		record.seteDate(new java.sql.Date(new Date().getTime()));
 		List<DataSrc> list = dsService.queryAll(record);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		
+
 		//resultMap.put("word", funcService.getWord(record.getDataSrcAbbr(),"1"));
         resultMap.put("data", list);
         return resultMap;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/queryDataSrcInfo",method = RequestMethod.GET)
     public Map<String, Object> queryDataSrcInfo() {
 		logger.info("datasrcInfo query success");
-		
+
 		List list = new ArrayList();
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map map = new HashMap();
 		map.put("fileName", "data_src.ini");
 		map.put("fileFunc", "配置文件，指定目录扫描及文件预处理所需的配置信息");
 		map.put("fileLocal", "/cdbetl/ETL/TDHOT/CFG");
+		map.put("cmd", "");
+		list.add(map);
+		map = new HashMap<String, Object>();
+		map.put("fileName", "源数据文件");
+		map.put("fileFunc", "存放各数据源的源数据文件");
+		map.put("fileLocal", "/cdbetl/ETL/TDHOT/DATA/DATASRC");
 		map.put("cmd", "python file_monitor.py");
 		list.add(map);
 		map = new HashMap<String, Object>();
-		map.put("fileName", "functionByTrans.py");
-		map.put("fileFunc", "存放目录扫描及文件预处理所需的所有函数");
-		map.put("fileLocal", "/cdbetl/ETL/TDHOT/APP");
+		map.put("fileName", "结构化数据文件");
+		map.put("fileFunc", "结构化数据源文件备份");
+		map.put("fileLocal", "/cdbetl/ETL/TDHOT/DATA/BAKUP");
 		map.put("cmd", "python file_monitor.py");
 		list.add(map);
 		map = new HashMap<String, Object>();
-		map.put("fileName", "file_monitor.py");
-		map.put("fileFunc", "执行目录扫描功能的脚本");
-		map.put("fileLocal", "/cdbetl/ETL/TDHOT/APP");
+		map.put("fileName", "非结构化数据文件");
+		map.put("fileFunc", "非结构化数据源文件备份");
+		map.put("fileLocal", "/cdbetl/ETL/TDHOT/DATA/F_BAKUP");
 		map.put("cmd", "python file_monitor.py");
+		list.add(map);
+		map = new HashMap<String, Object>();
+		map.put("fileName", "目录扫描后的数据文件");
+		map.put("fileFunc", "存放目录扫描后的数据文件");
+		map.put("fileLocal", "/cdbetl/ETL/TDHOT/DATA/PEND");
+		map.put("cmd", "python file_trans.py");
+		list.add(map);
+		map = new HashMap<String, Object>();
+		map.put("fileName", "文件与处理后的数据文件");
+		map.put("fileFunc", "存放文件与处理后的数据文件");
+		map.put("fileLocal", "/cdbetl/ETL/TDHOT/DATA/QUEUE");
+		map.put("cmd", "python file2orc.py");
 		list.add(map);
 		//resultMap.put("word", funcService.getWord(record.getDataSrcAbbr(),"1"));
         resultMap.put("data", list);
         //System.out.println(resultMap);
         return resultMap;
     }
-	
-	
+
+
 	@ResponseBody
 	@RequestMapping(value="/createDataSrc",method = RequestMethod.POST)
 	@Transactional
@@ -145,7 +166,7 @@ public class MainController {
 		List list = dsService.queryDataSrc();
 		Map map = new HashMap();
 		for (int i=0;i<list.size();i++){
-			if (dataSrcAbbr.equals(list.get(i))){
+			if (dataSrcAbbr.equalsIgnoreCase(list.get(i).toString())){
 				map.put("message","保存失败，数据源"+dataSrcAbbr+"已存在");
 				return map;
 			}
@@ -158,7 +179,7 @@ public class MainController {
 		map.put("message","保存成功");
 		return map;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/editDataSrc",method = RequestMethod.POST)
 	@Transactional
@@ -179,7 +200,7 @@ public class MainController {
 		map.put("message","保存成功");
 		return map;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/deleteDataSrc",method = RequestMethod.POST)
     public String deleteDataSrc(DataSrc record) {
@@ -187,16 +208,16 @@ public class MainController {
 		logger.info("DataSrc delete success");
         return record.getDataSrcAbbr();
     }
-	
-	
-	
-	
+
+
+
+
 	@RequestMapping(value="/log")
 	public String log(HttpServletResponse response,HttpServletRequest request) {
-	   
+
 	    return "log";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value="/queryLog",method = RequestMethod.GET)
     public Map<String, Object> queryLog(DataLog record) {
@@ -222,7 +243,7 @@ public class MainController {
         logger.info("version query success");
 		return resultMap;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value="/tmpToSaveBak",method = RequestMethod.POST)
 	@Transactional
@@ -233,15 +254,13 @@ public class MainController {
 			return "字段名不能为空";
 		List<DataInterfaceTmp> tmpList = new ArrayList<DataInterfaceTmp>();
 		List<DataInterface> colList = new ArrayList<DataInterface>();
-		
-		
 		//创建使用单个线程的线程池
 		ExecutorService es = Executors.newFixedThreadPool(10);
-		
+
 		return "导入成功";
-		
+
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/tmpToSaveBakCol",method = RequestMethod.POST)
 	@Transactional
@@ -284,7 +303,7 @@ public class MainController {
 				logger.info("update column success,num:"+update);*/
 			}
 		}
-		
+
 		return "导入成功";
     }
 	/**
@@ -321,7 +340,7 @@ public class MainController {
 		data.setVersionDesc(desc);
 		versionService.insert(data);
 	}
-	
+
 	void downLoadExcel(String fileName, HttpServletResponse response, Workbook workbook){
 		ServletOutputStream outputStream = null;
 		try {
@@ -342,6 +361,42 @@ public class MainController {
 			}
 		}
     }
+
+	void downLoadSql(String filePath, String fileName, HttpServletResponse response){
+		OutputStream outputStream = null;
+		InputStream inputStream = null;
+		try {
+//			String fileName = filePath.substring(tablePathCfgService.queryExPath().length());
+			response.setCharacterEncoding("UTF-8");
+			response.setHeader("content-Type", "text/html;charset=UTF-8");
+			response.setHeader("Content-Disposition",
+					"attachment;filename=\"" + URLEncoder.encode(fileName, "UTF-8") + "\"");
+			outputStream = response.getOutputStream();
+
+			//读取文件
+			inputStream = new FileInputStream(filePath);
+			byte[] buffer = new byte[1024];
+			int len;
+			while((len = inputStream.read(buffer)) != -1){
+				logger.info("len:::"+len+"");
+				outputStream.write(buffer, 0, len);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(outputStream != null){
+					outputStream.close();
+				}
+				if(inputStream != null){
+					inputStream.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public static java.sql.Date getTomorrow() {
         Calendar calendar = new GregorianCalendar();
@@ -349,14 +404,14 @@ public class MainController {
         calendar.add(Calendar.DATE, 1);
         return new java.sql.Date(calendar.getTime().getTime());
     }
-	
+
 	public static java.sql.Date getToday(){
 		return new java.sql.Date(new Date().getTime());
 	}
-	
+
 	public static java.sql.Date getEdate() {
 		return ExcelUtil.getInstance().StringToDate(BoncConstant.CON_E_DATE);
 	}
-	
-	
+
+
 }

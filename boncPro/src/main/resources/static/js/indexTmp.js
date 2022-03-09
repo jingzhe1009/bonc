@@ -1,4 +1,24 @@
-
+function tmpInfoCheck(){
+	$("#syContent").hide();
+	$("#importContent").show();
+	var obj ={};
+	obj['batchNo'] = localStorage.getItem("batchNo");
+	obj['dataSrcAbbr'] =  localStorage.getItem("dataSrcTmp");
+	//for (var i=1;i<=3;i++) {
+		// debugger
+		//changeTab2(i, obj);
+	//}
+	changeTab2(1,obj);	 //默认显示第一个tab页
+	// 监听切换数据源工作流程tab选项卡
+	$('#authorityTab2 li').click(function () {
+		var tabId = $(this).attr('tab-id');
+		changeTab2(tabId,obj);
+	});
+	//加载信息确认table
+	var idx = localStorage.getItem("idx");
+	compareModel.init(idx);
+	dataModelModel.init(idx);
+}
 
 //切换数据源工作流程标签
 function changeTab2(tabId,obj){

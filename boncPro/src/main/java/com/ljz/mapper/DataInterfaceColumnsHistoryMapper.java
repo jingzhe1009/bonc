@@ -1,5 +1,7 @@
 package com.ljz.mapper;
 
+import java.util.List;
+
 import com.ljz.model.DataInterfaceColumnsHistory;
 import com.ljz.model.DataInterfaceColumnsHistoryKey;
 
@@ -15,4 +17,6 @@ public interface DataInterfaceColumnsHistoryMapper {
     int updateByPrimaryKeySelective(DataInterfaceColumnsHistory record);
 
     int updateByPrimaryKey(DataInterfaceColumnsHistory record);
+    
+    List<DataInterfaceColumnsHistory> queryAll(DataInterfaceColumnsHistory record);
 }

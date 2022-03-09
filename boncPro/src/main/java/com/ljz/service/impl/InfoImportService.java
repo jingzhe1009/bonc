@@ -1,5 +1,6 @@
 package com.ljz.service.impl;
 
+import com.ljz.config.InfoConfig;
 import com.ljz.entity.ParamEntity;
 import com.ljz.mapper.DataInterface2procMapper;
 import com.ljz.mapper.DataInterfaceColumnsMapper;
@@ -7,6 +8,7 @@ import com.ljz.mapper.DataInterfaceMapper;
 import com.ljz.mapper.DataRvsdRecordMapper;
 import com.ljz.model.*;
 import com.ljz.util.ExcelUtil;
+import com.ljz.util.FileUtil;
 import com.ljz.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,12 @@ public class InfoImportService {
 
     @Autowired
     JdbcTemplate jdbc;
+
+    @Autowired
+    InfoConfig config;
+
+    public String date = TimeUtil.getDateToString(TimeUtil.getTy());
+    public String DMLFilePath = "";
 
     @Transactional
     public String batchImportRecord(ParamEntity param) throws Exception {
@@ -135,6 +143,8 @@ public class InfoImportService {
             DataInterfaceTmp condition = new DataInterfaceTmp();
             condition.setBatchNo(batchNo);
             List<DataInterfaceTmp> queryAllTmp = infacemapper.queryAllTmp(condition);
+//            String DMLFilePath = config.getFilePath()+param.getDataSrcAbbr()+"_DML_"+FileUtil.formatDate(new Date())+".sql";
+            DMLFilePath = config.getFilePath()+param.getDataSrcAbbr()+"_DML_"+date;
             for(DataInterfaceTmp tmp:queryAllTmp){
                 String key = tmp.getDataSrcAbbr()+tmp.getDataInterfaceNo()+tmp.getDataInterfaceName();
                 if(interfaceMap!=null&&interfaceMap.containsKey(key)){
@@ -161,6 +171,25 @@ public class InfoImportService {
                     data.setsDate(tmp.getsDate());
                     data.seteDate(tmp.geteDate());
                     list.add(data);
+                    String DMLSql = "INSERT INTO SDATA_OLTP_CFG.DATA_INTERFACE VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()+"','"+tmp.getDataInterfaceName()
+                            +"','"+tmp.getDataInterfaceDesc()+"','"+tmp.getDataLoadFreq()+"','"+tmp.getDataLoadMthd()+"','"+tmp.getFiledDelim()
+                            +"','"+tmp.getLineDelim()+"','"+tmp.getExtrnlDatabaseName()+"','"+tmp.getIntrnlDatabaseName()+"','"+tmp.getExtrnlTableName()
+                            +"','"+tmp.getIntrnlTableName()+"','"+tmp.getTableType()+"',"+tmp.getBucketNumber()+",'"+TimeUtil.getDate(tmp.getsDate())
+                            +"','"+TimeUtil.getDate(tmp.geteDate())+"')"
+                            +"\n\n"
+                            +"DECLARE \n"
+                            +"o_extrnl_table_ddl STRING\n"
+                            +"o_intrnl_table_ddl STRING\n"
+                            +"BEGIN\n"
+                            +"pkg_ruku_ddl.pro_sp_ddl('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceName()+"',o_extrnl_table_ddl,o_intrnl_table_ddl)\n"
+                            +"DBMS_OUTPUT.PUT_LINE(o_extrnl_table_ddl)\n"
+                            +"DBMS_OUTPUT.PUT_LINE(o_intrnl_table_ddl)"
+                            +"\n\n"
+                            ;
+
+
+                    FileUtil.write(DMLFilePath, DMLSql, config.getFileEncode());
+
                 }
             }
 
@@ -269,6 +298,8 @@ public class InfoImportService {
             DataInterfaceColumnsTmp condition = new DataInterfaceColumnsTmp();
             condition.setBatchNo(batchNo);
             List<DataInterfaceColumnsTmp> queryAllTmp = columnmapper.queryAllTmp(condition);
+            DMLFilePath = config.getFilePath()+param.getDataSrcAbbr()+"_DML_"+date;
+
             for(DataInterfaceColumnsTmp tmp:queryAllTmp){
                 String key = tmp.getDataSrcAbbr()+tmp.getDataInterfaceNo()+tmp.getDataInterfaceName()+tmp.getColumnNo();
 //				logger.info("\n"+"columnMap:::"+columnMap.get(key)+"\n"+"tmp:::"+tmp);
@@ -297,6 +328,12 @@ public class InfoImportService {
                     data.setsDate(tmp.getsDate());
                     data.seteDate(tmp.geteDate());
                     list.add(data);
+                    String DMLSql = "INSERT INTO SDATA_OLTP_CFG.DATA_INTERFACE_COLUMNS VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()
+                            +"','"+tmp.getDataInterfaceName()+"','"+tmp.getColumnNo()+"','"+tmp.getColumnName()+"','"+tmp.getColumnComment()
+                            +"','"+tmp.getComma()+"','"+tmp.getDataType()+"','"+tmp.getDataFormat()+"','"+tmp.getNullable()
+                            +"','"+tmp.getReplacenull()+"','"+tmp.getIsbucket()+"','"+tmp.getIskey()+"','"+tmp.getIsvalid()
+                            +"','"+tmp.getIncrementfield()+"','"+TimeUtil.getDate(tmp.getsDate())+"','"+TimeUtil.getDate(tmp.geteDate())+"')";
+                    FileUtil.write(DMLFilePath, DMLSql, config.getFileEncode());
                 }
             }
             //修改 原纪录update
@@ -402,6 +439,8 @@ public class InfoImportService {
             DataInterface2procTmp condition = new DataInterface2procTmp();
             condition.setBatchNo(batchNo);
             List<DataInterface2procTmp> queryAllTmp = procMapper.queryAllTmp(condition);
+            DMLFilePath = config.getFilePath()+param.getDataSrcAbbr()+"_DML_"+date;
+
             for(DataInterface2procTmp tmp:queryAllTmp){
                 if(procMap!=null&&procMap.containsKey(tmp.getDataSrcAbbr()+tmp.getDataInterfaceNo())){
                     if(!tmp.toStr().equals(procMap.get(tmp.getDataSrcAbbr()+tmp.getDataInterfaceNo()))){
@@ -417,6 +456,10 @@ public class InfoImportService {
                     data.setsDate(tmp.getsDate());
                     data.seteDate(tmp.geteDate());
                     list.add(data);
+                    String DMLSql = "INSERT INTO SDATA_OLTP_CFG.DATA_INTERFACE2PROC VALUES('"+tmp.getDataSrcAbbr()
+                            +"','"+tmp.getDataInterfaceNo()+"','"+tmp.getProcDatabaseName()+"','"+tmp.getProcName()
+                            +"','"+TimeUtil.getDate(tmp.getsDate())+"','"+TimeUtil.getDate(tmp.geteDate())+"')";
+                    FileUtil.write(DMLFilePath, DMLSql, config.getFileEncode());
                 }
             }
 

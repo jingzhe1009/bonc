@@ -466,7 +466,7 @@ input[type=checkbox]:checked:before,
 .tableIcon{
     /*color: #3280FC;*/
     color: var(--colorNormal);
-    margin: 0 0 15px 0px;
+    margin: 15 auto;
 }
 .mustIcon{
     color: #EA644A;
@@ -720,7 +720,7 @@ html, body {
     width: 100%;
     margin: 10px 10px;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .importB {

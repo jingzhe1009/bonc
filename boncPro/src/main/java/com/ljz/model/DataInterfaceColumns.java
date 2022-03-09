@@ -4,6 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class DataInterfaceColumns implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private String dataSrcAbbr;
+
+    private String dataInterfaceNo;
+
+    private Integer columnNo;
+    
     private String dataInterfaceName;
 
     private String columnName;
@@ -26,23 +35,15 @@ public class DataInterfaceColumns implements Serializable {
 
     private Date eDate;
     
-    private String num;
-
-    private static final long serialVersionUID = 1L;
-    
-    private String dataSrcAbbr;
-
-    private String dataInterfaceNo;
-
-    private Integer columnNo;
-    
     private String condition;
 
-    private String iskey; 
-    
+    private String iskey;
+
     private String isvalid;
-    
+
     private String incrementfield;
+    
+    private String num;
     
     
     public String getDataSrcAbbr() {
@@ -210,8 +211,6 @@ public class DataInterfaceColumns implements Serializable {
 //        return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable + replacenull + comma + columnComment + isbucket;
         return 	 dataSrcAbbr + dataInterfaceNo + columnNo + dataInterfaceName + columnName + dataType + dataFormat + nullable +
                 replacenull + comma + columnComment + isbucket + iskey + isvalid + incrementfield;
-
-
     }
 
 	public DataInterfaceColumns( String dataType, String dataFormat,

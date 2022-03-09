@@ -7,6 +7,7 @@ var compareModel = {
 		debugger;
 		var obj = {}
 		obj['dataSrcAbbr'] = idx;
+		obj['batchNo'] = localStorage.getItem("batchNo");
 		initCompareTable(obj);
 		//按条件查询用
 	},
@@ -60,37 +61,72 @@ function initCompareTable(obj) {
 				return html;
 			}},*/
 			{"title": "状态", "data": "flag","render":function(data,type,row){
-				if(data=='修改'){
+				if(data=='2'){
 					return '<font color="red">修改</font>';
-				}else if(data=='新增'){
+				}else if(data=='3'){
 					return '<font color="blue">新增</font>';
+				}else if(data=='1'){
+					return '无变化';
+				}else{
+					return '-';
 				}
-            	return data;
             }},
-			{"title": "导入流水号", "data": "exptSeqNbr"},
             {"title": "数据源缩写", "data": "dataSrcAbbr"},
-            {"title": "数据接口编号", "data": "dataInterfaceNo"},
+            {"title": "数据接口编号", "data": "dataInterfaceNo","render":function(data,type,row){
+				if(row.flag=='0'){
+					return data;
+				}
+				return '<a href="#" onclick=compareModel.detail("'+row.dataInterfaceName+'")>'+data+'</a>';
+            }},
             {"title": "数据接口名", "data": "dataInterfaceName"},
             {"title": "数据接口描述", "data": "dataInterfaceDesc","render":function(data,type,row){
+				var red=row.red;
+				if(red.indexOf(data)!=-1){
+					return '<p style="word-wrap:break-word;"><font color="red">'+data+'</font></p>';
+				}
             	return '<p style="word-wrap:break-word;">' + data + '</p>';
             }},
-            {"title": "数据加载频率", "data": "dataLoadFreq"},
-            {"title": "数据加载方式", "data": "dataLoadMthd"},
-            {"title": "字段分割符", "data": "filedDelim"},
-            {"title": "行分隔符", "data": "lineDelim"},
-            {"title": "外表数据库", "data": "extrnlDatabaseName"},
-            {"title": "内表数据库", "data": "intrnlDatabaseName"},
-            {"title": "外表表名", "data": "extrnlTableName"},
-            {"title": "内表表名", "data": "intrnlTableName"},
-            {"title": "表类型", "data": "tableType"},
-            {"title": "分桶数", "data": "bucketNumber"},
+            {"title": "存储过程", "data": "procName","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "数据加载频率", "data": "dataLoadFreq","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "数据加载方式", "data": "dataLoadMthd","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "字段分割符", "data": "filedDelim","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "行分隔符", "data": "lineDelim","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "外表数据库", "data": "extrnlDatabaseName","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "内表数据库", "data": "intrnlDatabaseName","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "外表表名", "data": "extrnlTableName","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "内表表名", "data": "intrnlTableName","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "表类型", "data": "tableType","render":function(data,type,row){
+				return getData(row,data);
+            }},
+            {"title": "分桶数", "data": "bucketNumber","render":function(data,type,row){
+            	return getData(row,data);
+            }},
             {"title": "起效日期", "data": "sDate","render": function(data, type, row) {
             	var oDate = new Date(data);
             	var oYear = oDate.getFullYear();
             	var oMonth = oDate.getMonth()+1;
             	var oDay = oDate.getDate();
             	return oYear+"-"+oMonth+"-"+oDay;
-            }}
+            }},
+            {"title": "标红", "data": "red","visible":false}
             ],
         ajax: {
             url: '/interface/queryInterfaceCompare',
@@ -104,4 +140,32 @@ function initCompareTable(obj) {
             
         }
     });
+}
+function getData(row,data){
+	console.log(row.red);
+	console.log(data);
+	if(row.red.indexOf(data)!=-1){
+		return '<font color="red">'+data+'</font>';
+	}
+	return data;
+}
+function importInfo(){
+	var param = {};
+	param.dataSrcAbbr=localStorage.getItem("idx");
+	param.batchNo = localStorage.getItem("batchNo");
+	param.needVrsnNbr=localStorage.getItem("batchNo");
+	var json = JSON.stringify(param);
+	$('#loadAlert').modal({'show': 'center', "backdrop": "static"});
+	$.ajax({
+		url:"/interface/saveAll",
+		type:"post",
+		data:json,
+		contentType:"application/json;charset=UTF-8",
+		success:function(data){
+			$('#loadAlert').modal('hide');
+			console.log(data);
+			zUI.dialog.alert('<pre>'+data.msgData+'</pre>');
+			dataModelModel.init(localStorage.getItem("idx"));
+		}
+	}) 
 }

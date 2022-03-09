@@ -108,11 +108,11 @@
 	                <div class="tableIcon" id="tabContainer">
 	                    <ul class="nav nav-tabs" id="authorityTab">
 	                        <!-- <li tab-id="0"><a data-toggle="tab">数据源信息</a></li> -->
-	                        <li tab-id="13"><a data-toggle="tab">配置说明</a></li>
+	                        <!-- <li tab-id="13"><a data-toggle="tab">配置说明</a></li> -->
 	                        <li tab-id="14"><a data-toggle="tab">接口信息导入</a></li>
 	                        <!-- <li tab-id="10"><a data-toggle="tab">一键导入</a></li> -->
-	                        <li tab-id="11"><a data-toggle="tab">接口信息下载</a></li>
-	                        <li tab-id="12"><a data-toggle="tab">接口查看</a></li>
+	                        <!-- <li tab-id="11"><a data-toggle="tab">接口信息下载</a></li>
+	                        <li tab-id="12"><a data-toggle="tab">接口查看</a></li> -->
 	                    </ul>
 	                </div>
 	                
@@ -180,7 +180,7 @@
 					<div class="tab-content tab-import" id="historyContent">
 						<div id="syContent">
 							<div class="indexImport">
-								<h1>当前数据源：上交所（SSE）</h1>
+								<h1><b class="base_title" style="font-size: 16px;color:#02BABC"></b></h1>
 								<h2 class="importH1">当前数据结构：结构化</h2>
 								<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
 								<div class="importA">
@@ -235,17 +235,20 @@
 													        <div class="row clearfix">
 													            <div class="col-md-12 column">
 													                <form id="form"  enctype="multipart/form-data">
-													                    <input type=hidden id="batchNo" name="batchNo">
-													                    <span  style="font-family: PingFangSC-Medium;font-size: 18px;color: #333333;width: 167px;height: 25px">选择EXCEL接口文件  </span>
-													                    <div class="ehdel_upload_show">
-													                        <input id="ehdel_upload_text" type="text" name="txt" />
-													                        <input id="ehdel_upload_btn" type="button" style="background-color: #1890FF;font-size: 12px;color: white;border-radius: 4px;" value="选择文件" />
-													                    </div>
-													                    <div class="clear"></div>
-													                    <input id="filename" type="file" name="filename" onchange="ehdel_upload_text.value=this.value" class="ehdel_upload" />
-													                    <a class="btn btn-primary btn-large" style="font-size: 12px;background: #1890FF;border-radius: 4px;" href="/interface/exportTable">模板下载</a>
-													                    <p style="padding-left: 170px;font-family: PingFangSC-Regular;font-size: 14px;color: #E34747;">注：请上传扩展名为xlsx、xls文件</p>
-													                    <a class="btn btn-primary btn-large " href="#" style="position:relative;left:300px;top:400px" onclick="importExcel()" >上传</a>
+													                	<input type=hidden id="batchNo" name="batchNo">
+																		<!--导入策略说明-->
+																        <div class="modelImportStrategyInstruction" align="center">
+																            <p style="color: #02BABC;">【导入策略说明】</p>
+																            <p><b>注：请上传扩展名为xlsx、xls文件</b></p>
+																            <p><b>导入校验、跳转信息核对</b></p>
+																        </div>
+																        <div class="form-group" align="center">
+																			<input type="file" id="filename" class="file-list" name="filename" />
+																		</div>
+																        <div class="form-group" align="center">
+																        	<a class="btn btn-primary btn-large uploader-btn-browse"  href="/interface/exportTable">模板下载</a>
+																			<button type="button" class="btn btn-primary uploader-btn-browse" onclick="importExcel()"><i class="icon icon-cloud-upload"></i>上传</button>
+													                	</div>
 													                </form>
 													            </div>
 													        </div>
@@ -292,33 +295,36 @@
 									                    </div>
 													</div>
 													<div class="contentList" id="contC">
-														<div class="container" align="center">
-															<div id="syContent">
+														<div class="container">
+															<div>
 																<div class="indexImport">
 																	<h1>当前数据源：上交所（SSE）</h1>
-																	<h2 class="importH1">当前数据结构：结构化</h2>
-																	<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
-																</div>
-															</div>
-															<div class="row clearfix">
-																<div class="col-md-3 column">
-																	<div class="alert alert-dismissable alert-success">
-																		<h4>
-																			接口变更信息
-																		</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
-																	</div>
-																</div>
-																<div class="col-md-3 column">
-																	<div class="alert alert-dismissable alert-danger">
-																		<h4>
-																			接口字段变更信息
-																		</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
-																	</div>
+																	<h3 class="importH1">当前数据结构：结构化</h3>
+																	<h3 class="importH11">当前数据库：星环HIVE</h3><br/>
 																</div>
 															</div>
 														</div>
 														<div id="compareContent" style="width:100%">
-											        		<!-- <div class="tableIcon">接口列表</i></div> -->
+											        		<div class="tableIcon" align="center" >
+												        		<div class="row clearfix" style="width:1200px">
+												        			<div class="col-md-3 column">
+												        			</div>
+																	<div class="col-md-3 column">
+																		<div class="alert alert-dismissable alert-success">
+																			<h4>
+																				接口变更信息
+																			</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
+																		</div>
+																	</div>
+																	<div class="col-md-3 column">
+																		<div class="alert alert-dismissable alert-danger">
+																			<h4>
+																				接口字段变更信息
+																			</h4> <strong>新增</strong> 1个 <strong>修改</strong> 1个
+																		</div>
+																	</div>
+																</div>
+															</div>
 											        		<form class="navbar-form navbar-left" role="search" id="form" >
 												        		<!-- <div class="selfAdaptionLeft">
 												        			<div>
