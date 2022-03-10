@@ -2,7 +2,7 @@ var colorList;
 var count;
 
 $(function(){
-  count= 5; 
+  count= 6; 
   loadFlow(count);
   checkColor(colorList);
     
@@ -64,21 +64,25 @@ function loadFlow(count){
     console.log('count='+count);
     if(i==1){
       flowVar += "<div class='flowList for-cur "+flowFor +"' style='position:relative'>\n";
-      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>接口导入</strong>\n";
+      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>配置说明</strong>\n";
       flowVar += "</div>\n";
     }else if(i==2){
       flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
-      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息核对</strong>\n";
+      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>接口导入</strong>\n";
       flowVar += "</div>\n";
     }else if(i==3){
       flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
-      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息确认</strong>\n";
+      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息核对</strong>\n";
       flowVar += "</div>\n";
     }else if(i==4){
       flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
+      flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息确认</strong>\n";
+      flowVar += "</div>\n";
+    }else if(i==5){
+      flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
       flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>物化建模</strong>\n";
       flowVar += "</div>\n";
-    }else{
+    }else if(i==6){
       flowVar += "<div class='flowList "+flowFor +"' style='position:relative'>\n";
       flowVar += "	<em style='position:absolute;left:35%'>"+i+"</em><br/><strong style='position:absolute;left:40%'>信息下载</strong>\n";
       flowVar += "</div>\n";
@@ -99,24 +103,25 @@ function loadFlowDiv(index){
  if(index==3){strVar="cc"}
  if(index==4){strVar="dd"}
  $("#iList").html(strVar);*/
- if(index==1){$("#contA").removeClass("contentList");$("#contA").siblings().addClass("contentList")}
- if(index==2){$("#contB").removeClass("contentList");$("#contB").siblings().addClass("contentList")}
- if(index==3){$("#contC").removeClass("contentList");$("#contC").siblings().addClass("contentList")}
- if(index==4){$("#contD").removeClass("contentList");$("#contD").siblings().addClass("contentList")}
- if(index==5){$("#contE").removeClass("contentList");$("#contE").siblings().addClass("contentList")}
+ if(index==1){$("#contX").removeClass("contentList");$("#contX").siblings().addClass("contentList")}
+ if(index==2){$("#contA").removeClass("contentList");$("#contA").siblings().addClass("contentList")}
+ if(index==3){$("#contB").removeClass("contentList");$("#contB").siblings().addClass("contentList")}
+ if(index==4){$("#contC").removeClass("contentList");$("#contC").siblings().addClass("contentList")}
+ if(index==5){$("#contD").removeClass("contentList");$("#contD").siblings().addClass("contentList")}
+ if(index==6){$("#contE").removeClass("contentList");$("#contE").siblings().addClass("contentList")}
 
 
 }
 //上一步下一步按钮点击事件
 var maxstep=1;
 function checkBtn(index, count) {
-	
     //$("#btnBack").addClass("disabled");
 	 /*默认进来隐藏上一步按钮*/
-	$("#btnBack").hide();	
+	$("#btnBack").hide();
+	$("#btnok").hide();	
 	/*下一步点击事件*/ 
     $("#btnNext").click(function () {	
-		if(index==1){
+		if(index==2){
 			debugger;
 			if($("#batchNo").val()==''){
 				zUI.dialog.alert('<pre>请上传文件</pre>');
@@ -125,21 +130,25 @@ function checkBtn(index, count) {
 		}
         methodBtn(index++, 'forward', false);
 		var idx = localStorage.getItem("idx");
-        if(index==3){
-			//加载信息确认table
-			compareModel.init(idx);
-		}else if(index==4){
-			importInfo();
-		}else if(index==2){
-			tmpInfoCheck();
-		}
+		
 		if(index>maxstep){
 			maxstep=index;
-			 
-			}
+		}
         if (index != 1) {
 			/*非第一步的时候，显示上一步*/
-            $("#btnBack").removeClass("disabled");
+			if(index==5){
+				importInfo();
+				$("#btnBack").addClass("disabled");
+			}else{
+				$("#btnBack").removeClass("disabled");
+			}
+			if(index==3){
+				tmpInfoCheck();
+			}
+			if(index==4){
+				//加载信息确认table
+				compareModel.init(idx);
+			}
 			$("#btnBack").show();
         }
         if (index >= count) {  
@@ -147,12 +156,13 @@ function checkBtn(index, count) {
             $("#btnNext").hide();
             /*$("#btnNext").removeClass("disabled");*/
             $("#btnBack").show();
-			/*$("#btnok").show();*/
+			$("#btnok").show();
         }
         refreshBack(index);
     });
 	/*上一步点击事件*/
     $("#btnBack").click(function () {
+		$("#btnok").hide();
         if (refreshBack(index) > 1) {
             methodBtn(index--, 'back', false);
 			 $("#btnNext").show();
@@ -161,6 +171,9 @@ function checkBtn(index, count) {
                 //$("#btnBack").addClass("disabled");
                 $("#btnBack").hide();
             } 
+            if(index==5){
+				$("#btnBack").addClass("disabled");
+			}
 			/* for(var num=1;num<=maxstep;num++){
 				 if(num==maxstep+1){
 					  $(".flowList.for-cur").css({ "border": "2px solid #1ABB9C"});

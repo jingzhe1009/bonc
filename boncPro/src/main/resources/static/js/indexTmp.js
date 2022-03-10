@@ -15,9 +15,9 @@ function tmpInfoCheck(){
 		changeTab2(tabId,obj);
 	});
 	//加载信息确认table
-	var idx = localStorage.getItem("idx");
-	compareModel.init(idx);
-	dataModelModel.init(idx);
+	//var idx = localStorage.getItem("idx");
+	//compareModel.init(idx);
+	//dataModelModel.init(idx);
 }
 
 //切换数据源工作流程标签

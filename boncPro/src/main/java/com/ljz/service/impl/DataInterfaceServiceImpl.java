@@ -887,7 +887,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					                	continue;
 					                if(f.getName().equals(f2.getName())) {
 					                	if(f.get(data)!=f2.get(tmp)&&!f.get(data).equals(f2.get(tmp))) {
-					                		red +=f.get(data)+",";
+					                		red +="'"+f.get(data)+"',";
 					                	}
 					                }
 					            }
@@ -1534,6 +1534,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		 * 流水表
 		 */
 		try {
+//			jdbc.queryfor
 //			lautch.await();
 			DataInterfaceRecords records = new DataInterfaceRecords();
 			records.setNeedVrsnNbr(needVrsnNbr);
@@ -1546,12 +1547,22 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			records.setCreateDate(TimeUtil.getDate(new Date()));
 			records.setAltDate(TimeUtil.getDate(new Date()));
 			records.setExctPsn("");
-			records.setExptDate(TimeUtil.getDate(new Date()));
+			records.setExptDate(TimeUtil.getTime(new Date()));
 			recordsMapper.insertSelective(records);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 //		es.shutdown();
+		/**
+		 * 修订版本表
+		 */
+		try {
+			jdbc.update(" insert into data_rvsd_record (need_vrsn_nbr,expt_seq_nbr,data_src_abbr,chg_psn,exct_psn,corr_intf_std_vrsn,intf_dscr,s_date,e_date) "
+					+ " select b.need_vrsn_nbr,b.batch_no,b.data_src_abbr,b.chg_psn,exct_psn,b.corr_intf_std_vrsn,b.intf_dscr,b.s_date,b.e_date "
+					+ "from data_rvsd_record_tmp b where b.batch_no='"+batchNo+"'");
+		} catch (DataAccessException e1) {
+			e1.printStackTrace();
+		}
 		/**
 		 * 历史表
 		 */

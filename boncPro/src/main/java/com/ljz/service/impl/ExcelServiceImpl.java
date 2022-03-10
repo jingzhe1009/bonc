@@ -1071,7 +1071,7 @@ public class ExcelServiceImpl implements IExcelService{
 
 					DataRvsdRecordTmp model = new DataRvsdRecordTmp();
 					model.setNeedVrsnNbr(needVrsnNbr);
-					model.setDataDrcAbbr(ds);
+					model.setDataSrcAbbr(ds);
 					model.setChgPsn(chgPsn);
 					model.setExctPsn(exctPsn);
 					model.setCorrIntfStdVrsn(corrIntfStdVrsn);
@@ -1276,9 +1276,13 @@ public class ExcelServiceImpl implements IExcelService{
 			if (mapInface.get("msgData") == null && mapColumn.get("msgData") == null && mapProc.get("msgData") == null ){
 				try {
 					//sheet1批量入库临时表
-//					batchInsertRecord = recordMapper.batchInsert(listRecord);
-//					mapRecord.put("msgData", "接口修订记录校验成功!记录条数:" + batchInsertRecord + "\n");
-//					mapRecord.put("dataSrcAbbr", ds);
+					int recordCount =0;
+					for(DataRvsdRecordTmp recordTmp:listRecord) {
+						batchInsertRecord = recordMapper.batchInsert(recordTmp);
+						recordCount++;
+					}
+					mapRecord.put("msgData", "接口修订记录校验成功!记录条数:" + recordCount + "\n");
+					mapRecord.put("dataSrcAbbr", ds);
 
 					//sheet2批量入库临时表
 					batchInsertInface = interMapper.batchInsert(listInface);
@@ -1324,8 +1328,9 @@ public class ExcelServiceImpl implements IExcelService{
 			return msgMap;
 		}
 
-		msgMap.put("msgData",mapRecord.get("msgdata")+mapInface.get("msgData")+mapColumn.get("msgData")+mapProc.get("msgData"));
+		msgMap.put("msgData",mapRecord.get("msgData")+mapInface.get("msgData")+mapColumn.get("msgData")+mapProc.get("msgData"));
 		msgMap.put("dataSrcAbbr", ds);
+		msgMap.put("fileName", file.getOriginalFilename());
 		return msgMap;
 	}
 

@@ -28,9 +28,9 @@ var dataModelModel = {
     	$('#columnQueryAlert').modal({'show': 'center', "backdrop": "static"});
     	detailModel.init(dataSrcAbbr,dataInterfaceNo);
     },*/
-    detail: function(dataSrcAbbr,dataInterfaceNo){
+    detail: function(dataInterfaceName){
     	$('#detailAlert').modal({'show': 'center', "backdrop": "static"});
-    	detailModel.init(dataSrcAbbr,dataInterfaceNo);
+    	detailModel.init(dataInterfaceName);
     },
     common:function(url,type){
     	var chkBoxes = $('#dataModelTable').find('input:checked');
@@ -198,7 +198,7 @@ function initDataModelTable(obj) {
 	
     $('#dataModelTable').width('100%').dataTable({
     	//默认搜索组件
-        "searching": false,
+        "searching": true,
         //排序功能
         "ordering": false,
         "destroy": true,
@@ -225,9 +225,9 @@ function initDataModelTable(obj) {
              }},*/
              {"title":"操作" ,"data": null,"width":"15%","render": function(data, type, row) {
              	var html = '<div>';
-             		html += '<span onclick="dataModelModel.detail(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceNo+'\');" class="btn-sm cm-tblA">字段</span>';
+             		/*html += '<span onclick=dataModelModel.detail("'+row.dataInterfaceName+'") class="btn-sm cm-tblA">字段</span>';*/
              		html += '<span onclick="dataModelModel.viewSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\')" class="btn-sm cm-tblA">查看建表语句</span>';
-             		html += '<span onclick="dataModelModel.delModel(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',\''+row.intrnlTableName+'\')" class="btn-sm cm-tblA">删除表</span>';
+             		/*html += '<span onclick="dataModelModel.delModel(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',\''+row.intrnlTableName+'\')" class="btn-sm cm-tblA">删除表</span>';*/
              		/*html += '<span onclick="dataModelModel.createSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',1);" class="btn-sm cm-tblA">查看外表</span>';*/
              		/*html += '<span onclick="dataModelModel.createSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',2);" class="btn-sm cm-tblA">查看内表</span>';*/
              		/*html += '<span onclick="interfaceModel.version(1,\''+row.dataSrcAbbr+'|'+row.dataInterfaceNo+'\');" class="btn-sm cm-tblA">版本</span>';

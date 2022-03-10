@@ -6,16 +6,16 @@ function initInterfaceTable(obj) {
 
 $('#interfaceTable').width('100%').dataTable({
     //默认搜索组件
-    "searching": false,
+    "searching": true,
     //排序功能
     "ordering": false,
     "destroy": true,
     // 自动列宽
     "autoWidth": false,
     //滚动条
-    "scrollX":true,
+    "scrollX":false,
     //控制每页显示条数
-    "lengthChange": true,
+    "lengthChange": false,
     "pagingType": "full_numbers",
     //翻页功能
     "paging": true,
@@ -72,16 +72,16 @@ $('#interfaceTable').width('100%').dataTable({
 function initColumnTable(obj) {
 $('#columnTable').width('100%').dataTable({
     //默认搜索组件
-    "searching": false,
+    "searching": true,
     //排序功能
     "ordering": false,
     "destroy": true,
     // 自动列宽
     "autoWidth": false,
     //滚动条
-    "scrollX":true,
+    "scrollX":false,
     //控制每页显示条数
-    "lengthChange": true,
+    "lengthChange": false,
     "pagingType": "full_numbers",
     //翻页功能
     "paging": true,
@@ -146,16 +146,16 @@ function initProcTable(obj) {
 
 $('#procTable').width('100%').dataTable({
     //默认搜索组件
-    "searching": false,
+    "searching": true,
     //排序功能
     "ordering": false,
     "destroy": true,
     // 自动列宽
-    "autoWidth": true,
+    "autoWidth": false,
     //滚动条
     "scrollX":false,
     //控制每页显示条数
-    "lengthChange": true,
+    "lengthChange": false,
     "pagingType": "full_numbers",
     //翻页功能
     "paging": true,

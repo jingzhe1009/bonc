@@ -21,6 +21,12 @@ function importExcel() {
 				localStorage.setItem("batchNo",$("#batchNo").val());
 				localStorage.setItem("dataSrcTmp",result.dataSrcAbbr);
 				zUI.dialog.alert('<pre>' + result.msgData + '</pre>');
+				if(result.msgData.indexOf('成功')){
+					$("#resultText").text('导入成功,请进行下一步');
+				}else{
+					$("#resultText").text('');
+				}
+				
 			},
 			error: function (error) {
 				debugger

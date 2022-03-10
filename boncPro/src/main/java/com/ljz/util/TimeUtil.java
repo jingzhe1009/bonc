@@ -34,6 +34,11 @@ public class TimeUtil {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return sdf.format(date);
 	}
+	
+	public static String getTime(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(date);
+	}
 
 	public static String getDateToString(Date date){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");

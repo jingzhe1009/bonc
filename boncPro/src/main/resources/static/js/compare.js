@@ -73,18 +73,23 @@ function initCompareTable(obj) {
             }},
             {"title": "数据源缩写", "data": "dataSrcAbbr"},
             {"title": "数据接口编号", "data": "dataInterfaceNo","render":function(data,type,row){
+				if(data==null||data==''){
+					return data;
+				}
 				if(row.flag=='0'){
 					return data;
 				}
-				return '<a href="#" onclick=compareModel.detail("'+row.dataInterfaceName+'")>'+data+'</a>';
+				return getData(row,'<a href="#" onclick=compareModel.detail("'+row.dataInterfaceName+'")>'+data+'</a>');
             }},
             {"title": "数据接口名", "data": "dataInterfaceName"},
             {"title": "数据接口描述", "data": "dataInterfaceDesc","render":function(data,type,row){
-				var red=row.red;
-				if(red.indexOf(data)!=-1){
-					return '<p style="word-wrap:break-word;"><font color="red">'+data+'</font></p>';
+				if(data==null||data==''){
+					return data;
 				}
-            	return '<p style="word-wrap:break-word;">' + data + '</p>';
+				if(row.flag=='0'){
+					return data;
+				}
+				return getData(row,data);
             }},
             {"title": "存储过程", "data": "procName","render":function(data,type,row){
 				return getData(row,data);
@@ -144,7 +149,11 @@ function initCompareTable(obj) {
 function getData(row,data){
 	console.log(row.red);
 	console.log(data);
-	if(row.red.indexOf(data)!=-1){
+	var red = row.red;
+	if(red==null||red==''){
+		 return data;
+	}
+	if(red.indexOf("'"+data+"'")!=-1){
 		return '<font color="red">'+data+'</font>';
 	}
 	return data;

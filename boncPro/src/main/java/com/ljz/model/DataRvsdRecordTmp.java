@@ -12,7 +12,7 @@ public class DataRvsdRecordTmp implements Serializable {
 
 	private String needVrsnNbr;
 
-    private String dataDrcAbbr;
+    private String dataSrcAbbr;
     
     private String chgPsn;
 
@@ -25,6 +25,7 @@ public class DataRvsdRecordTmp implements Serializable {
 	private String sDate;
 
 	private String eDate;
+	
 
 	public String getImportType() {
 		return importType;
@@ -50,12 +51,13 @@ public class DataRvsdRecordTmp implements Serializable {
 		this.needVrsnNbr = needVrsnNbr;
 	}
 
-	public String getDataDrcAbbr() {
-		return dataDrcAbbr;
+
+	public String getDataSrcAbbr() {
+		return dataSrcAbbr;
 	}
 
-	public void setDataDrcAbbr(String dataDrcAbbr) {
-		this.dataDrcAbbr = dataDrcAbbr;
+	public void setDataSrcAbbr(String dataSrcAbbr) {
+		this.dataSrcAbbr = dataSrcAbbr;
 	}
 
 	public String getChgPsn() {
@@ -105,6 +107,8 @@ public class DataRvsdRecordTmp implements Serializable {
 	public void seteDate(String eDate) {
 		this.eDate = eDate;
 	}
+	
+	
 
 	@Override
 	public String toString() {
@@ -112,7 +116,7 @@ public class DataRvsdRecordTmp implements Serializable {
 				"importType='" + importType + '\'' +
 				", batchNo='" + batchNo + '\'' +
 				", needVrsnNbr='" + needVrsnNbr + '\'' +
-				", dataDrcAbbr='" + dataDrcAbbr + '\'' +
+				", dataSrcAbbr='" + dataSrcAbbr + '\'' +
 				", chgPsn='" + chgPsn + '\'' +
 				", exctPsn='" + exctPsn + '\'' +
 				", corrIntfStdVrsn='" + corrIntfStdVrsn + '\'' +

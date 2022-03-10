@@ -1,4 +1,4 @@
-zUI.select.init(0);
+//zUI.select.init(0);
 $(function () {
 	initMenu();
 	$(".tab-content").hide();

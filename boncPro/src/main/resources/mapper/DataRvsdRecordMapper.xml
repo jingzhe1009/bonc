@@ -26,14 +26,10 @@
     <result column="s_date" jdbcType="VARCHAR" property="eDate" />
     <result column="e_date" jdbcType="VARCHAR" property="eDate" />
   </resultMap>
-  <sql id="Base_Column_List">
-    needVrsnNbr,dataDrcAbbr,chgPsn,exctPsn,corrIntfStdVrsn,intfDscr,sDate,eDate
-
-  </sql>
   <insert id="batchInsert" parameterType="com.ljz.model.DataRvsdRecordTmp">
-      insert into data_rvsd_record_tmp (needVrsnNbr,dataSrcAbbr,chgPsn,exctPsn,corrIntfStdVrsn,intfDscr,sDate,eDate,batch_no)
+      insert into data_rvsd_record_tmp (need_vrsn_nbr,data_src_abbr,chg_psn,exct_psn,corr_intf_std_vrsn,intf_dscr,s_date,e_date,batch_no)
       values
-          (#{needVrsnNbr},#{dataSrcAbbr},#{chgPsn},#{exctPsn},#{corrIntfStdVrsn},#{intfDscr},#{sDate},#{eDate},#{batch_no})
+          (#{needVrsnNbr},#{dataSrcAbbr},#{chgPsn},#{exctPsn},#{corrIntfStdVrsn},#{intfDscr},#{sDate},#{eDate},#{batchNo})
   </insert>
   <select id="queryExptSeqNbr" parameterType="java.lang.String" resultMap="BaseResultMap">
     select expt_seq_nbr from data_rvsd_record where data_src_abbr=#{data_src_abbr}

@@ -115,66 +115,6 @@
 	                        <li tab-id="12"><a data-toggle="tab">接口查看</a></li> -->
 	                    </ul>
 	                </div>
-	                
-	                <div class="tab-content" id="baseContent">
-		                <div style="height:60px">
-		               	</div>
-		               	<div align="center" style="height:60px">
-		               		<b class="base_title" style="font-size: 16px;color:#02BABC"></b>
-		               	</div>
-		               	<div style="font-size: 14px;height:150px" align="center">
-		               		<table style="border-collapse:separate; border-spacing:0px 10px;">
-		               			<tr>
-		               				<td style="text-align:right">
-	               						<b>数据结构:</b>
-								    </td>
-								    <td>
-								    	<label class="radio-inline">
-								    		&nbsp;&nbsp;&nbsp;&nbsp;
-										  <input type="radio" name="radioOptionsExample"> 结构化数据
-										</label>
-										<label class="radio-inline">
-										  <input type="radio" name="radioOptionsExample"> 非结构化数据
-										</label>
-								    </td>
-		               			</tr>
-		               			<tr>
-		               				<td style="text-align:right">
-	               						<b>数据库类型:</b>
-		               				</td>
-		               				<td style="text-align:left">
-		               					<label class="radio-inline">
-		               						<select class="form-control" style="width:200px">
-											  <option value="tdh">星环HIVE</option>
-											  <option value="td">TERADATA</option>
-											  <option value="mysql">MYSQL</option>
-											</select>
-										</label>
-		               				</td>
-		               			</tr>
-		               			<tr>
-		               				<td style="text-align:right">
-	               						<b>文件命名规则:</b>
-		               				</td>
-		               				<td style="text-align:left">
-		               					<label class="radio-inline">
-		               						[数据源机构编码]_[接口标识]_[版本号]_[数据日期]_[排批次号]_[增量/全量标识].[文件扩展名]
-		               					</label>
-		               				</td>
-		               			</tr>
-		               			<tr>
-		               				<td style="text-align:right">
-	               						<b>示例:</b>
-		               				</td>
-		               				<td style="text-align:left">
-		               					<label class="radio-inline">
-		               						SSE_J0101_V01_20141105_0000_Z.CSV
-		               					</label>
-		               				</td>
-		               			</tr>
-		               		</table>
-		              	</div>
-	              	</div>
 	              	
 	              	<!-- 接口信息导入（首页） -->
 					<div class="tab-content tab-import" id="historyContent">
@@ -229,7 +169,69 @@
 											</div>
 											<div class="col-md-12" id="flowDiv">
 												<ol id="iList">
-													<div id="contA">
+													<div id="contX">
+										                <div style="height:60px">
+										               	</div>
+										               	<div align="center" style="height:60px">
+										               		<b class="base_title" style="font-size: 16px;color:#02BABC"></b>
+										               	</div>
+										               	<div style="font-size: 14px;height:150px" align="center">
+										               		<table style="border-collapse:separate; border-spacing:0px 10px;">
+										               			<tr>
+										               				<td style="text-align:right">
+									               						<b>数据结构:</b>
+																    </td>
+																    <td>
+																    	<label class="radio-inline">
+																    		结构化数据
+																    		<!-- &nbsp;&nbsp;&nbsp;&nbsp;
+																		    <input type="radio" name="radioOptionsExample" disabled checked> 结构化数据 -->
+																		</label>
+																		<label class="radio-inline">
+																		  <!-- <input type="radio" name="radioOptionsExample" disabled> 非结构化数据 -->
+																		</label>
+																    </td>
+										               			</tr>
+										               			<tr>
+										               				<td style="text-align:right">
+									               						<b>数据库类型:</b>
+										               				</td>
+										               				<td style="text-align:left">
+										               					
+										               					<label class="radio-inline">
+										               						星环HIVE
+										               						<!-- <select class="form-control" style="width:200px" disabled>
+																			  <option value="tdh">星环HIVE</option>
+																			  <option value="td">TERADATA</option>
+																			  <option value="mysql">MYSQL</option>
+																			</select> -->
+																		</label>
+										               				</td>
+										               			</tr>
+										               			<tr>
+										               				<td style="text-align:right">
+									               						<b>文件命名规则:</b>
+										               				</td>
+										               				<td style="text-align:left">
+										               					<label class="radio-inline">
+										               						[数据源机构编码]_[接口标识]_[版本号]_[数据日期]_[排批次号]_[增量/全量标识].[文件扩展名]
+										               					</label>
+										               				</td>
+										               			</tr>
+										               			<tr>
+										               				<td style="text-align:right">
+									               						<b>示例:</b>
+										               				</td>
+										               				<td style="text-align:left">
+										               					<label class="radio-inline">
+										               						SSE_J0101_V01_20141105_0000_Z.CSV
+										               					</label>
+										               				</td>
+										               			</tr>
+										               		</table>
+										              	</div>
+									              	</div>
+													<div class="contentList" id="contA">
 														<div >
 													        <div class="alert alert-inverse" style="width:200px;display:none" id="loadShow">正在导入，请稍等。。。</div>
 													        <div class="row clearfix">
@@ -239,11 +241,15 @@
 																		<!--导入策略说明-->
 																        <div class="modelImportStrategyInstruction" align="center">
 																            <p style="color: #02BABC;">【导入策略说明】</p>
-																            <p><b>注：请上传扩展名为xlsx、xls文件</b></p>
-																            <p><b>导入校验、跳转信息核对</b></p>
+																            <p><b>选择文件-点击上传按钮,进行导入校验,并反馈导入校验结果-点击下一步继续</b></p>
+																            <p><b><font color=red>注：请上传扩展名为xlsx、xls文件</font></b></p>
+																            
 																        </div>
 																        <div class="form-group" align="center">
 																			<input type="file" id="filename" class="file-list" name="filename" />
+																		</div>
+																		<div class="modelImportStrategyInstruction" align="center">
+																			<p><font color=blue id="resultText"></font></p>
 																		</div>
 																        <div class="form-group" align="center">
 																        	<a class="btn btn-primary btn-large uploader-btn-browse"  href="/interface/exportTable">模板下载</a>
@@ -254,7 +260,7 @@
 													        </div>
 													    </div>
 													</div>
-													<div id="contB">
+													<div class="contentList" id="contB">
 														<!--Tab-->
 									                    <div class="tableIcon" id="tabContainer2">
 									                        <ul class="nav nav-tabs" id="authorityTab2">
@@ -355,19 +361,19 @@
 											        		<!-- <div class="tableIcon">数据模型列表</i></div> -->
 											        		<form class="navbar-form navbar-left" role="search" id="form" >
 												        		<div class="selfAdaptionLeft">
-												        			<div>
+												        			<!-- <div>
 																		<div class="input-group">
 																			<input data-col="dataSrcAbbr" type="hidden" class="form-control" id="model_dataSrcAbbr"  placeholder="数据源">
 																			<input data-col="dataInterfaceNo" type="text" class="form-control" id="model_dataInterfaceNo"  placeholder="接口编号">
 											                                <ul class="dropdown-menu pull-right modelBaseGroupList"></ul>
 																		</div>
-																	</div>
+																	</div> -->
 												        		</div>
 												        		<div class="selfAdaptionRight">
-												        			<button type="button" class="btn btn-primary" onclick="dataModelModel.search()">查询</button>
+												        			<!-- <button type="button" class="btn btn-primary" onclick="dataModelModel.search()">查询</button>
 																	<button type="reset" class="btn btn-primary" >重置</button>
 																	<button type="button" class="btn btn-primary" onclick="dataModelModel.createFile()">生成建表语句文件</button>
-													            	<button type="button" class="btn btn-primary" onclick="dataModelModel.insertDb()">物化(创建)</button>
+													            	<button type="button" class="btn btn-primary" onclick="dataModelModel.insertDb()">物化(创建)</button> -->
 											                    </div>
 										                    </form>
 										                    <div style="clear: both"></div>
@@ -454,6 +460,7 @@
 								<div class="foot-btn">
 									<button type="button" class="btn btn-primary"  style="float:right; margin-right:10px;" id="btnNext">下一步</button>
 									<button type="button" class="btn btn-primary" style="float:right; margin-right:10px;" id="btnBack">上一步</button>
+									<button type="button" class="btn btn-primary" style="float:right; margin-right:10px;" id="btnok">完成</button>
 								</div>
 				            </div>
 		                </div>
