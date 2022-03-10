@@ -39,6 +39,13 @@ function initDetailTable(obj) {
         "serverSide": false,
         "pageLength": 10,
         "columns": [
+			{"title": "版本", "data": "flag","render":function(data,type,row){
+				if(data=='0'){
+					return '上一版本';
+				}else{
+					return '本次导入版本';
+				}
+            }},
 			{"title": "状态", "data": "flag","width":"10%","render":function(data,type,row){
 				if(data=='2'){
 					return '<font color="red">修改</font>';
@@ -46,6 +53,8 @@ function initDetailTable(obj) {
 					return '<font color="blue">新增</font>';
 				}else if(data=='1'){
 					return '无变化';
+				}else if(data=='4'){
+					return '<font color="red">缺失</font>';
 				}else{
 					return '-';
 				}

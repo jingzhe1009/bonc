@@ -105,7 +105,7 @@ public class DataColumnServiceImpl implements IDataColumnService{
 					                	continue;
 					                if(tmpKey.equals(proKey)) {
 					                	if(!tmpValue.equals(proValue)) {
-					                		red +=tmpValue+",";
+					                		red +="'"+tmpValue+"',";
 					                		data.setFlag("2");
 					                	}
 					                }
@@ -114,15 +114,20 @@ public class DataColumnServiceImpl implements IDataColumnService{
 						}else{//修改
 	                		data.setFlag("2");//修改
 						}
-				        tmp = null;
 					}else{//新增
-                		data.setFlag("3");//新增
-                		resultList.add(new DataInterfaceColumnsHistory());
+                		DataInterfaceColumnsHistory add = new DataInterfaceColumnsHistory();
+						add.setFlag("0");
+						resultList.add(add);
+						data.setFlag("3");
+						resultList.add(data);//新增
 					}
-					
+					if("2".equals(data.getFlag())) {//修改
+						data.setRed(red);
+						resultList.add(tmp);
+						resultList.add(data);
+					}
+					tmp = null;
 				}
-				data.setRed(red);
-				resultList.add(data);
 			}
 		} catch (DataAccessException e) {
 			e.printStackTrace();

@@ -1048,7 +1048,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		String exptDate ="";
 		
 		
-		List<Map<String, Object>> recordList = jdbc.queryForList("select max(expt_seq_nbr) as expt_seq_nbr,need_vrsn_nbr from data_interface_records where data_src_abbr= '"+dataSrcAbbr+"'");
+		List<Map<String, Object>> recordList = jdbc.queryForList("select max(expt_seq_nbr) as expt_seq_nbr,max(need_vrsn_nbr) as need_vrsn_nbr from data_interface_records where data_src_abbr= '"+dataSrcAbbr+"'");
 		if(recordList!=null&&recordList.size()>0) {
 			for(Map<String, Object> recordMap:recordList) {
 				needVrsnNbr = getNewId(recordMap.get("need_vrsn_nbr")+"");
