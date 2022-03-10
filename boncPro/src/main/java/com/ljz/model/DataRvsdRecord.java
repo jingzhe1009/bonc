@@ -24,6 +24,8 @@ public class DataRvsdRecord implements Serializable {
 	private String sDate;
 
 	private String eDate;
+	
+	private String fileName;
 
 	public String getNeedVrsnNbr() {
 		return needVrsnNbr;
@@ -95,6 +97,16 @@ public class DataRvsdRecord implements Serializable {
 
 	public void seteDate(String eDate) {
 		this.eDate = eDate;
+	}
+	
+	
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	@Override

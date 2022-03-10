@@ -69,7 +69,13 @@ public class DataColumnServiceImpl implements IDataColumnService{
 				if("0".equals(data.getFlag())) {
 					tmp = data;
 				}else if("1".equals(data.getFlag())) {
-					
+					if(!data.getDataInterfaceName().equals(tmp.getDataInterfaceName())) {
+						tmp.setFlag("0");
+						resultList.add(tmp);
+						DataInterfaceColumnsHistory del =new DataInterfaceColumnsHistory();
+						del.setFlag("4");
+						resultList.add(del);//删除
+					}
 					Map<String,String> columnMap =obj.getColumnMap(data.getDataSrcAbbr());
 					String colKey = data.getDataInterfaceName()+data.getColumnNo();
 					if(columnMap!=null&&columnMap.containsKey(colKey)){

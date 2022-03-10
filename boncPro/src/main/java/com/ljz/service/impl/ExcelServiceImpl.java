@@ -1076,9 +1076,10 @@ public class ExcelServiceImpl implements IExcelService{
 					model.setExctPsn(exctPsn);
 					model.setCorrIntfStdVrsn(corrIntfStdVrsn);
 					model.setIntfDscr(intfDscr);
-					model.setsDate(getDate(getToday()));
+					model.setsDate(TimeUtil.getTime(new Date()));
 					model.seteDate(getDate(getE()));
 					model.setBatchNo(batchNo);
+					model.setFileName(file.getOriginalFilename());
 					listRecord.add(model);
 					logger.info("listRecord:::" + listRecord.toString());
 				}

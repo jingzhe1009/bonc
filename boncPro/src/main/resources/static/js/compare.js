@@ -60,6 +60,13 @@ function initCompareTable(obj) {
             		html += '</div>';
 				return html;
 			}},*/
+			{"title": "版本", "data": "flag","render":function(data,type,row){
+				if(data=='0'){
+					return '上一版本';
+				}else{
+					return '本次导入版本';
+				}
+            }},
 			{"title": "状态", "data": "flag","render":function(data,type,row){
 				if(data=='2'){
 					return '<font color="red">修改</font>';
@@ -67,6 +74,8 @@ function initCompareTable(obj) {
 					return '<font color="blue">新增</font>';
 				}else if(data=='1'){
 					return '无变化';
+				}else if(data=='4'){
+					return '<font color="red">缺失</font>';
 				}else{
 					return '-';
 				}
@@ -76,9 +85,9 @@ function initCompareTable(obj) {
 				if(data==null||data==''){
 					return data;
 				}
-				if(row.flag=='0'){
+				/*if(row.flag=='0'&&row.flag!='4'){
 					return data;
-				}
+				}*/
 				return getData(row,'<a href="#" onclick=compareModel.detail("'+row.dataInterfaceName+'")>'+data+'</a>');
             }},
             {"title": "数据接口名", "data": "dataInterfaceName"},

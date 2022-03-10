@@ -26,6 +26,8 @@ public class DataRvsdRecordTmp implements Serializable {
 
 	private String eDate;
 	
+	private String fileName;
+	
 
 	public String getImportType() {
 		return importType;
@@ -109,6 +111,16 @@ public class DataRvsdRecordTmp implements Serializable {
 	}
 	
 	
+	
+	
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 
 	@Override
 	public String toString() {
