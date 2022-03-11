@@ -38,6 +38,7 @@ import com.ljz.mapper.attrC2eMapper;
 import com.ljz.mapper.entityC2eMapper;
 import com.ljz.service.IExcelService;
 import com.ljz.util.ExcelUtil;
+import com.ljz.util.SqlCacheUtil;
 import com.ljz.util.TimeUtil;
 import com.ljz.util.TransUtil;
 
@@ -1277,9 +1278,14 @@ public class ExcelServiceImpl implements IExcelService{
 			if (mapInface.get("msgData") == null && mapColumn.get("msgData") == null && mapProc.get("msgData") == null ){
 				try {
 					//sheet1批量入库临时表
+					SqlCacheUtil cache = SqlCacheUtil.getInstance();
 					int recordCount =0;
-					for(DataRvsdRecordTmp recordTmp:listRecord) {
+					for(int i=0;i<listRecord.size();i++) {
+						if(i!=0)
+							continue;
+						DataRvsdRecordTmp recordTmp = listRecord.get(i);
 						batchInsertRecord = recordMapper.batchInsert(recordTmp);
+						cache.put(ds+"DataRvsdRecordTmp",recordTmp);
 						recordCount++;
 					}
 					mapRecord.put("msgData", "接口修订记录校验成功!记录条数:" + recordCount + "\n");

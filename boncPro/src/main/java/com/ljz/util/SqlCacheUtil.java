@@ -24,6 +24,8 @@ public class SqlCacheUtil {
 	}
 	
 	private Map<String,Map<String,Object>> constantMap = new HashMap<String,Map<String,Object>> ();
+	
+	private Map<String,Object> entityMap = new HashMap<String,Object> ();
 
 	public Map<String, Map<String,Object>> getConstantMap() {
 		return constantMap;
@@ -33,12 +35,24 @@ public class SqlCacheUtil {
 		this.constantMap = constantMap;
 	}
 	
+	public Map<String, Object> getEntityMap() {
+		return entityMap;
+	}
+
+	public void setEntityMap(Map<String, Object> entityMap) {
+		this.entityMap = entityMap;
+	}
+
 	public void put(String out,String in,List list) {
 		Map<String,Object> innerMap = new HashMap<String,Object>();
 		innerMap.put(out, list);
 		Map<String,Map<String,Object>> outMap = new HashMap<String,Map<String,Object>>();
 		outMap.put(in, innerMap);
 		setConstantMap(outMap);
+	}
+	
+	public void put(String dataSrc,Object object) {
+		entityMap.put(dataSrc, object);
 	}
 	
 	

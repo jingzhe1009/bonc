@@ -1,7 +1,7 @@
 package com.ljz.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.Date;
 
 public class DataInterface2procHistory implements Serializable {
     private String needVrsnNbr;
@@ -16,9 +16,9 @@ public class DataInterface2procHistory implements Serializable {
 
     private String procName;
 
-    private LocalDate sDate;
+    private Date sDate;
 
-    private LocalDate eDate;
+    private Date eDate;
 
     private static final long serialVersionUID = 1L;
 
@@ -70,19 +70,19 @@ public class DataInterface2procHistory implements Serializable {
         this.procName = procName == null ? null : procName.trim();
     }
 
-    public LocalDate getsDate() {
+    public Date getsDate() {
         return sDate;
     }
 
-    public void setsDate(LocalDate sDate) {
+    public void setsDate(Date sDate) {
         this.sDate = sDate;
     }
 
-    public LocalDate geteDate() {
+    public Date geteDate() {
         return eDate;
     }
 
-    public void seteDate(LocalDate eDate) {
+    public void seteDate(Date eDate) {
         this.eDate = eDate;
     }
 }

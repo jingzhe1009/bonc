@@ -64,25 +64,25 @@ function initDetailTable(obj) {
             {"title": "接口名", "data": "dataInterfaceName" },
             {"title": "字段编号", "data": "columnNo","width":"10%" },
             {"title": "字段名", "data": "columnName","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             } },
             {"title": "数据类型", "data": "dataType","width":"10%","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             } },
             {"title": "格式", "data": "dataFormat","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             } },
             {"title": "是否非空", "data": "nullable","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "分隔符", "data": "comma","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             } },
             {"title": "字段描述", "data": "columnComment","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "分桶字段", "data": "isbucket","width":"10%","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             } }
             /*{"title": "生效日期", "data": "sData"}*/
             /*{"title": "失效日期", "data": "eDate" },*/

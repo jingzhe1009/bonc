@@ -21,6 +21,7 @@ import com.ljz.model.*;
 import com.ljz.service.impl.DataSourceServiceImpl;
 import com.ljz.service.impl.ExcelServiceImpl;
 import com.ljz.util.ExcelUtil;
+import com.ljz.util.SqlCacheUtil;
 import com.ljz.util.TransUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -119,11 +120,18 @@ public class InterfaceController extends MainController{
 		record.setDataSrcAbbr(dataSrcAbbr);
 		List<DataInterfaceRecords> list = intService.queryRecord(record);
 		DataInterfaceRecords data = new DataInterfaceRecords();
+		SqlCacheUtil cache = SqlCacheUtil.getInstance();
 		String state = "";
 		if(list.size()>0) {
 			data =list.get(0);
 			state = "success";
+		}else {
+			data.setNeedVrsnNbr("V1.0");
+			data.setExptSeqNbr("V1.0.0");
+			data.setDataSrcAbbr(dataSrcAbbr);
 		}
+		//存入缓存
+		cache.put(dataSrcAbbr+"DataInterfaceRecords",data);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", state);
         resultMap.put("data", data);
