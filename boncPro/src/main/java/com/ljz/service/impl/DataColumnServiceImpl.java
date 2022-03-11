@@ -80,7 +80,10 @@ public class DataColumnServiceImpl implements IDataColumnService{
 					String colKey = data.getDataInterfaceName()+data.getColumnNo();
 					if(columnMap!=null&&columnMap.containsKey(colKey)){
 						if(data.toStr().equalsIgnoreCase(columnMap.get(colKey))){//无变化
-							//对比
+							
+						}else{//修改
+	                		data.setFlag("2");//修改
+	                		//对比
 							//临时表的所有字段
 					        Field[] fields = data.getClass().getDeclaredFields();  
 					        for(int i=0; i<fields.length; i++){ 
@@ -111,8 +114,6 @@ public class DataColumnServiceImpl implements IDataColumnService{
 					                }
 					            }
 					        }
-						}else{//修改
-	                		data.setFlag("2");//修改
 						}
 					}else{//新增
                 		DataInterfaceColumnsHistory add = new DataInterfaceColumnsHistory();
@@ -126,7 +127,7 @@ public class DataColumnServiceImpl implements IDataColumnService{
 						resultList.add(tmp);
 						resultList.add(data);
 					}
-					tmp = null;
+					//tmp = null;
 				}
 			}
 		} catch (DataAccessException e) {

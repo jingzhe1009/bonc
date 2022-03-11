@@ -107,9 +107,9 @@
 	        		<!--Tab-->
 	                <div class="tableIcon" id="tabContainer">
 	                    <ul class="nav nav-tabs" id="authorityTab">
-	                        <!-- <li tab-id="0"><a data-toggle="tab">数据源信息</a></li> -->
+	                    	<li tab-id="0"><a data-toggle="tab">接口信息导入</a></li>
+	                        <!-- <li tab-id="15"><a data-toggle="tab">数据源信息</a></li> -->
 	                        <!-- <li tab-id="13"><a data-toggle="tab">配置说明</a></li> -->
-	                        <li tab-id="14"><a data-toggle="tab">接口信息导入</a></li>
 	                        <!-- <li tab-id="10"><a data-toggle="tab">一键导入</a></li> -->
 	                        <!-- <li tab-id="11"><a data-toggle="tab">接口信息下载</a></li>
 	                        <li tab-id="12"><a data-toggle="tab">接口查看</a></li> -->
@@ -125,19 +125,19 @@
 								<h2 class="importH11">当前数据库：星环HIVE</h2><br/>
 								<div class="importA">
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">最新需求规范版本<br/>v1.1</div>
+										<div class="importC"><img src="imgs/index/home.png">最新需求规范版本<br/><p id="shouye_version"></p></div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">接口总数<br/>5个</div>
+										<div class="importC"><img src="imgs/index/home.png">接口总数<br/><p id="shouye_sum"></p></div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">新增接口个数<br/>2个</div>
+										<div class="importC"><img src="imgs/index/home.png">新增接口个数<br/><p id="shouye_add"></p></div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">修改接口个数<br/>2个</div>
+										<div class="importC"><img src="imgs/index/home.png">修改接口个数<br/><p id="shouye_edit"></p></div>
 									</div>
 									<div class="importB">
-										<div class="importC"><img src="imgs/index/home.png">最后修改时间<br/>2022/01/11 17:25</div>
+										<div class="importC"><img src="imgs/index/home.png">最后修改时间<br/><p id="shouye_date"></p></div>
 									</div>
 								</div>
 	
@@ -148,7 +148,7 @@
 											<h2>版本信息</h2>
 										</div>
 										<div class="importF">
-											<a class="btn btn-primary" target="_blank" onclick="yjdr()" >一键导入</a>
+											<a class="btn btn-primary" target="_blank" onclick="historyModel.yjdr()" >一键导入</a>
 										</div>
 									</div>
 								</form>
@@ -160,6 +160,9 @@
 						<div id="importContent">
 				            <div class="modal-body">
 								<div class="model-content">
+									<div class="head-btn">
+										<button type="button" class="btn btn-primary"  style="float:right; margin-right:10px;" onclick="javascript:history.go(0)">返回</button>
+									</div>
 									<div class="main">
 										<div class="row">
 											<div class="col-md-12">
@@ -253,7 +256,7 @@
 																		</div>
 																        <div class="form-group" align="center">
 																        	<a class="btn btn-primary btn-large uploader-btn-browse"  href="/interface/exportTable">模板下载</a>
-																			<button type="button" class="btn btn-primary uploader-btn-browse" onclick="importExcel()"><i class="icon icon-cloud-upload"></i>上传</button>
+																			<button type="button" class="btn btn-primary uploader-btn-browse" onclick="infoModel.importExcel()"><i class="icon icon-cloud-upload"></i>上传</button>
 													                	</div>
 													                </form>
 													            </div>
@@ -272,12 +275,6 @@
 									
 									                    <!-- 数据接口 -->
 									                    <div class="tab-content2" id="interfaceContent">
-									<!--                        <form class="navbar-form navbar-left" role="search" id="form">-->
-									<!--                            <div class="selfAdaptionRight">-->
-									<!--                                <button type="reset" class="btn btn-primary" onclick='infoModel.init(localStorage.getItem("idx"))'></button>-->
-									<!--                                -->
-									<!--                            </div>-->
-									<!--                        </form>-->
 									                        <div style="clear: both"></div>
 									                        <div>
 									                            <table id="interfaceTable" style="white-space:nowrap;"></table>
@@ -473,17 +470,18 @@
                 <div class="tab-content" id="dicTableContent">
                 	<!-- <div class="tableIcon">词根表管理</i></div> -->
                 	<form class="navbar-form navbar-left" role="search"  >
-                		<div class="selfAdaptionLeft">
+                		<!-- <div class="selfAdaptionLeft">
                 			<div class="input-group">
                 				<input data-col="cname" type="text" class="form-control" placeholder="中文词根">
+                				
                 			</div>
-                		</div>
+                		</div> -->
                 		<div class="selfAdaptionRight">
-                			<button type="button" class="btn btn-primary" onclick="dicTableModel.search()">查询</button>
-							<button type="reset" class="btn btn-primary" >重置</button>
-							<button type="button" class="btn btn-primary" onclick="dicTableModel.show(1,this)">新增</button>
+                			<!-- <button type="button" class="btn btn-primary" onclick="dicTableModel.search()">查询</button>
+							<button type="reset" class="btn btn-primary" >重置</button> -->
 							<a class="btn btn-primary" target="_blank" onclick="dicTableModel.importDictionary()">导入词根</a>
-	                 </div>
+               				<button type="button" class="btn btn-primary" onclick="dicTableModel.show(1,this)">新增</button>
+	                 	</div>
 	                 </form>
                     <div style="clear: both"></div>
                     <div>
@@ -497,12 +495,12 @@
                 	<form class="navbar-form navbar-left" role="search" >
                 		<div class="selfAdaptionLeft">
                 			<div class="input-group">
-                				<input data-col="cname" type="text" class="form-control" placeholder="中文词根">
+                				<!-- <input data-col="cname" type="text" class="form-control" placeholder="中文词根"> -->
                 			</div>
                 		</div>
                 		<div class="selfAdaptionRight">
-                			<button type="button" class="btn btn-primary" onclick="dicColModel.search()">查询</button>
-							<button type="reset" class="btn btn-primary" >重置</button>
+                			<!-- <button type="button" class="btn btn-primary" onclick="dicColModel.search()">查询</button>
+							<button type="reset" class="btn btn-primary" >重置</button> -->
 							<button type="button" class="btn btn-primary btn-large" onclick="dicColModel.show(1,this)">新增</button>
 							<!-- <a class="btn btn-primary" target="_blank" onclick="dicColModel.importDictionary()">导入词根</a> -->
 		                 </div>
@@ -519,12 +517,12 @@
                 	<form class="navbar-form navbar-left" role="search" >
                 		<div class="selfAdaptionLeft">
                 			<div class="input-group">
-                				<input data-col="dataSrcAbbr" type="text" class="form-control" placeholder="数据源" >
+                				<!-- <input data-col="dataSrcAbbr" type="text" class="form-control" placeholder="数据源" > -->
                 			</div>
                 		</div>
                 		<div class="selfAdaptionRight">
-                			<button type="button" class="btn btn-primary" onclick="dataSrcModel.search()">查询</button>
-                			<button type="reset" class="btn btn-primary" onclick="dataSrcModel.init()">重置</button>
+                			<!-- <button type="button" class="btn btn-primary" onclick="dataSrcModel.search()">查询</button>
+                			<button type="reset" class="btn btn-primary" onclick="dataSrcModel.init()">重置</button> -->
 							<button type="button" class="btn btn-primary" onclick="dataSrcModel.add(1,this)">登记</button>
 		                 </div>
 	                 </form>
@@ -548,12 +546,12 @@
                 	<form class="navbar-form navbar-left" role="search" >
                 		<div class="selfAdaptionLeft">
                 			<div class="input-group">
-                				<input data-col="funcName" type="text" class="form-control" placeholder="函数名">
+                				<!-- <input data-col="funcName" type="text" class="form-control" placeholder="函数名"> -->
                 			</div>
                 		</div>
                 		<div class="selfAdaptionRight">
-                			<button type="button" class="btn btn-primary" onclick="funcModel.search()">查询</button>
-							<button type="reset" class="btn btn-primary" >重置</button>
+                			<!-- <button type="button" class="btn btn-primary" onclick="funcModel.search()">查询</button>
+							<button type="reset" class="btn btn-primary" >重置</button> -->
 							<button type="button" class="btn btn-primary btn-large" id="addFunc" onclick="funcModel.add(1,this)">登记</button>
 							<button type="button" class="btn btn-primary btn-large" id="addProc" onclick="funcModel.addProc(1,this)">登记</button>
 		                 </div>
@@ -570,12 +568,12 @@
                 	<form class="navbar-form navbar-left" role="search" >
                 		<div class="selfAdaptionLeft">
                 			<div class="input-group">
-                				<input data-col="actionId" type="text" class="form-control" placeholder="日志id">
+                				<!-- <input data-col="actionId" type="text" class="form-control" placeholder="日志id"> -->
                 			</div>
                 		</div>
                 		<div class="selfAdaptionRight">
-                			<button type="button" class="btn btn-primary" onclick="createSqlModel.search()">查询</button>
-							<button type="reset" class="btn btn-primary" >重置</button>
+                			<!-- <button type="button" class="btn btn-primary" onclick="createSqlModel.search()">查询</button>
+							<button type="reset" class="btn btn-primary" >重置</button> -->
 		                 </div>
 	                </form>
                     <div style="clear: both"></div>
@@ -661,33 +659,40 @@
 	<!-- 公共-->
 	<div th:include="common/common"></div>
 </body>
-<script src="/js/index.js"></script>
+
 
 <!-- 基础信息 -->
-<script src="/js/manageDictionary.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/dictory.js"></script>
+<script src="/js/dataSrc.js"></script>
+<script src="/js/index.js"></script>
+<script src="/js/func.js"></script>
+<script src="/js/log.js"></script>
+<script src="/js/createSql.js"></script>
+<!-- 主流程 -->
+<script src="/js/index.js"></script>
+<script src="/js/history.js"></script>
+<script src="/js/info.js"></script>
+<script src="/js/compare.js"></script>
+<script src="/js/detail.js"></script>
+<script src="/js/model.js"></script>
+
+
+
+
+
+
+<!-- <script src="/js/toTmpToSave.js"></script> -->
 <!-- <script src="/js/interface_version.js"></script> -->
 <!-- <script src="/js/column_version.js"></script> -->
 <!-- <script src="/js/proc_version.js"></script> -->
 <!-- <script src="/js/column.js"></script> 
 <script src="/js/interface.js"></script>
 <script src="/js/proc.js"></script>-->
-<script src="/js/common.js"></script>
-<script src="/js/dataSrc.js"></script>
-<script src="/js/createSql.js"></script>
-<script src="/js/index.js"></script>
-
-<script src="/js/func.js"></script>
-<script src="/js/log.js"></script>
-<script src="/js/model.js"></script>
-<script src="/js/detail.js"></script>
-<script src="/js/compare.js"></script>
-<script src="/js/history.js"></script>
-
-<script src="/js/toTmpToSave.js"></script>
-<script src="/js/infoImportTmp.js"></script>
 <!-- <script src="/js/interface_tmp.js"></script>
 <script src="/js/column_tmp.js"></script>
 <script src="/js/proc_tmp.js"></script> -->
-<script src="/js/indexTmp.js"></script>
+<!-- <script src="/js/indexTmp.js"></script> -->
+<!-- <script src="/js/train.js"></script> -->
 
 </html>

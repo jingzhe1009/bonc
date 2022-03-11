@@ -36,7 +36,41 @@ var historyModel = {
     detail: function(dataSrcAbbr,dataInterfaceNo,dataInterfaceName){
     	$('#detailAlert').modal({'show': 'center', "backdrop": "static"});
     	detailModel.init(dataSrcAbbr,dataInterfaceNo,dataInterfaceName);
-    }
+    },
+    setIndexParam:function(idx){
+		var param = {};
+		param.dataSrcAbbr = idx;
+		var json = JSON.stringify(param);
+		console.log(json);
+		$.ajax({
+			url:"/interface/queryLastRecord",
+			type:"POST",
+			data:json,
+			contentType:"application/json;charset=UTF-8",
+			success: function(result){
+				console.log(result);
+				if(result.state=='success'){
+					var data = result.data;
+					$("#shouye_version").text(data.needVrsnNbr);
+					$("#shouye_sum").text(data.intfTot);
+					$("#shouye_add").text(data.intfNew);
+					$("#shouye_edit").text(data.intfAlt);
+					$("#shouye_date").text(data.exptDate);
+				}else{
+					$("#shouye_version").text('v1.0');
+					$("#shouye_sum").text('0');
+					$("#shouye_add").text('0');
+					$("#shouye_edit").text('0');
+					$("#shouye_date").text('2022/01/11 11:11:11');
+				}
+			}
+		});
+	},
+	//一键导入
+	yjdr:function() {
+		$("#syContent").hide();
+		$("#importContent").show();
+	}
 }
 
 
@@ -93,7 +127,6 @@ function initHistoryTable(obj) {
             url: '/interface/queryRecord',
             "type": 'GET',
             "data": function (d) { // 查询参数
-            	debugger;
                 return $.extend({}, d, obj);
             }
         },

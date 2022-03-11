@@ -110,4 +110,55 @@
 		$('[name=items]:checkbox').prop("checked", checked ); //所有checkbox跟着全选的checkbox走。
 	}
 	
+	//定义success主题提示消息
+	var successMessager = new $.zui.Messager({
+	    type: 'success', // 定义颜色主题
+	    placement: 'center', // 位置
+	    icon: 'ok-sign',
+	    time: 2000
+	});
+	
+	// 定义danger主题提示消息
+	var failedMessager = new $.zui.Messager({
+	    type: 'danger',
+	    placement: 'center',
+	    icon: 'exclamation-sign',
+	    time: 2000
+	});
+	
+	// 定义warning主题提示消息
+	var warningMessager = new $.zui.Messager({
+	    type: 'warning', // 定义颜色主题
+	    placement: 'center', // 位置
+	    icon: 'info-sign',
+	    time: 2000
+	});
+	
+	//确认弹框
+	var confirmAlert = {
+	    /**
+	     * @param msg: 弹框提示信息
+	     * @param confirmHandler: 确认handler
+	     * @param cancelHandler: 取消handler
+	     */
+	    show: function (msg, confirmHandler, cancelHandler) {
+	        $('#msgText').text(msg ? msg : '');
+	        if (confirmHandler) {
+	            $('#msgConfirm').unbind().on('click', function () {
+	                confirmHandler();
+	            });
+	        }
+	        if (cancelHandler) {
+	            $('#msgCancel').unbind().on('click', function () {
+	                cancelHandler();
+	            });
+	        }
+	        $('#msgAlertModal').modal({'show': 'center', "backdrop": "static"});
+	    },
+	
+	    hide: function () {
+	        $('#msgAlertModal').modal('hide');
+	    }
+	}
+	
 

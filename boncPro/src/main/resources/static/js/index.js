@@ -1,14 +1,16 @@
 //zUI.select.init(0);
 $(function () {
 	initMenu();
-	$(".tab-content").hide();
 });
-var index ='14';
+//默认标签
+var index ='0';
 /**
  * 加载数据源菜单
  * @returns
  */
 function initMenu(){
+	
+	//加载菜单
 	var localObj = window.location;
 	var contextPath = localObj.pathname.split("/")[1];
 	var basePath = localObj.protocol + "//" + localObj.host + "/"+ contextPath;
@@ -183,6 +185,7 @@ function initMenu(){
 	});
 	
 	// 监听切换数据源工作流程tab选项卡
+	$(".tab-content").hide();
     $('#authorityTab li').click(function () {
         var tabId = $(this).attr('tab-id');
         var idx = localStorage.getItem("idx");
@@ -201,15 +204,7 @@ function initMenu(){
     });
     
 }
-//切换函数登记标签
-function changeRegisterTab(tabId){
-	localStorage.setItem("funcTab",tabId);
-	$('#funcTab li').removeClass('active');
-	$("#funcTab li[tab-id='" + tabId + "']").addClass('active');
-	var obj = {};
-	obj['useType'] = tabId;
-	funcModel.init(obj);
-}
+
 //切换数据源工作流程标签
 function changeTab(tabId){
 	var idx = localStorage.getItem("idx");
@@ -221,7 +216,7 @@ function changeTab(tabId){
     $('#authorityTab li').removeClass('active');
     $("#authorityTab li[tab-id='" + tabId + "']").addClass('active');
     
-	if (tabId == '0') {
+	if (tabId == '14') {
 		$("#regDesc").val('');
 		$("#desc").val('');
 		$("#param").val('');
@@ -270,66 +265,32 @@ function changeTab(tabId){
 		$("#baseContent").show();
 		$('.base_title').html('当前数据源:'+desc+"("+idx+")");
     	$("#pageHeader").html('<p>当前位置：配置说明</p>');
-	} else if(tabId == '14'){
+	} else if(tabId == '0'){
+		//接口导入标签
 		$("#historyContent").show();
+		//首页
 		$("#syContent").show();
+		//火车图
 		$("#importContent").hide();
     	$("#pageHeader").html('<p>当前位置：接口信息导入</p>');
     	$('.base_title').html('当前数据源:'+desc+"("+idx+")");
+    	//加载流水表
     	historyModel.init(idx);
+    	//加载流水表最新一条数据
+    	historyModel.setIndexParam(idx);
 	}
 }
 
-//定义success主题提示消息
-var successMessager = new $.zui.Messager({
-    type: 'success', // 定义颜色主题
-    placement: 'center', // 位置
-    icon: 'ok-sign',
-    time: 2000
-});
-
-// 定义danger主题提示消息
-var failedMessager = new $.zui.Messager({
-    type: 'danger',
-    placement: 'center',
-    icon: 'exclamation-sign',
-    time: 2000
-});
-
-// 定义warning主题提示消息
-var warningMessager = new $.zui.Messager({
-    type: 'warning', // 定义颜色主题
-    placement: 'center', // 位置
-    icon: 'info-sign',
-    time: 2000
-});
-
-//确认弹框
-var confirmAlert = {
-    /**
-     * @param msg: 弹框提示信息
-     * @param confirmHandler: 确认handler
-     * @param cancelHandler: 取消handler
-     */
-    show: function (msg, confirmHandler, cancelHandler) {
-        $('#msgText').text(msg ? msg : '');
-        if (confirmHandler) {
-            $('#msgConfirm').unbind().on('click', function () {
-                confirmHandler();
-            });
-        }
-        if (cancelHandler) {
-            $('#msgCancel').unbind().on('click', function () {
-                cancelHandler();
-            });
-        }
-        $('#msgAlertModal').modal({'show': 'center', "backdrop": "static"});
-    },
-
-    hide: function () {
-        $('#msgAlertModal').modal('hide');
-    }
+//切换函数登记标签
+function changeRegisterTab(tabId){
+	localStorage.setItem("funcTab",tabId);
+	$('#funcTab li').removeClass('active');
+	$("#funcTab li[tab-id='" + tabId + "']").addClass('active');
+	var obj = {};
+	obj['useType'] = tabId;
+	funcModel.init(obj);
 }
+
 
 function showTrain(){
 	$('#trainAlert').modal({'show': 'center', "backdrop": "static"});
@@ -361,25 +322,4 @@ function getInput(key,value){
 	var text ='<div class="form-group"><label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>'+key+'</label><div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input name="'+value+'param" type="text" class="form-control" ></div></div>';
 	return text;
 }
-function yjdr() {
-	//document.getElementById("ehdel_upload_text").value=null;
-	$("#syContent").hide();
-	$("#importContent").show();
-}
-function yjdr_bak(){
-	$("#syContent").hide();
-	$("#importContent").show();
-	var obj ={};
-	obj['batchNo'] = localStorage.getItem("batchNo");
-	obj['dataSrcAbbr'] =  localStorage.getItem("dataSrcTmp");
-	for (var i=1;i<=3;i++) {
-		// debugger
-		changeTab2(i, obj);
-	}
-	changeTab2(1,obj);	 //默认显示第一个tab页
-	// 监听切换数据源工作流程tab选项卡
-    $('#authorityTab2 li').click(function () {
-        var tabId = $(this).attr('tab-id');
-		changeTab2(tabId,obj);
-    });
-}
+

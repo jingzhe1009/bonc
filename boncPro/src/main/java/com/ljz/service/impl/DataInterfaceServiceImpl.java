@@ -912,7 +912,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 						resultList.add(tmp);
 						resultList.add(data);
 					}
-					tmp = null;
+					//tmp = null;
 				}
 				
 			}
@@ -1096,7 +1096,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					+ "    b.data_interface_desc, b.data_load_freq, b.data_load_mthd, b.filed_delim, b.line_delim, b.extrnl_database_name, \r\n"
 					+ "    b.intrnl_database_name, b.extrnl_table_name, b.intrnl_table_name, b.table_type, b.bucket_number, \r\n"
 					+ "    b.s_date, b.e_date from data_interface b where b.e_date='3000-12-31' and b.data_src_abbr='"+dataSrcAbbr+"'";
-			jdbc.batchUpdate(sql);
+			//jdbc.batchUpdate(sql);
 		}
 		List<Map<String, Object>> colHistoryList = jdbc.queryForList("select *  from data_interface_columns_history where e_date = '3000-12-31' ");
 		if(colHistoryList.size()<1) {
@@ -1114,7 +1114,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					+ "      ) select '"+needVrsnNbr+"','"+exptSeqNbr+"', b.data_src_abbr,b.data_interface_no,b.data_interface_name,b.\r\n"
 							+ "    column_no,b.column_name,b.data_type,b.data_format,b.nullable,b.replacenull,b.comma,b.column_comment,b.\r\n"
 							+ "    isbucket,b.s_date,b.e_date from data_interface_columns b where b.e_date='3000-12-31' and b.data_src_abbr='"+dataSrcAbbr+"'";
-			jdbc.batchUpdate(sql);
+			//jdbc.batchUpdate(sql);
 		}
 		
 		
@@ -1622,24 +1622,24 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		 * 历史表
 		 */
 		try {
-			if(updateListHis.size()>0){
-				jdbc.batchUpdate((String[]) updateListHis.toArray());
-			}
-			if(newAddListHis.size()>0){
-				mapper.batchInsertHis(newAddListHis);
-			}
-			if(colUpdateListHis.size()>0){
-				jdbc.batchUpdate((String[]) colUpdateListHis.toArray());
-			}
-			if(colNewAddListHis.size()>0){
-				colMapper.batchInsertHis(colNewAddListHis);
-			}
-			if(procUpdateListHis.size()>0){
-				jdbc.batchUpdate((String[]) procUpdateListHis.toArray());
-			}
-			if(procNewAddListHis.size()>0){
-				procMapper.batchInsertHis(procNewAddListHis);
-			}
+//			if(updateListHis.size()>0){
+//				jdbc.batchUpdate((String[]) updateListHis.toArray());
+//			}
+//			if(newAddListHis.size()>0){
+//				mapper.batchInsertHis(newAddListHis);
+//			}
+//			if(colUpdateListHis.size()>0){
+//				jdbc.batchUpdate((String[]) colUpdateListHis.toArray());
+//			}
+//			if(colNewAddListHis.size()>0){
+//				colMapper.batchInsertHis(colNewAddListHis);
+//			}
+//			if(procUpdateListHis.size()>0){
+//				jdbc.batchUpdate((String[]) procUpdateListHis.toArray());
+//			}
+//			if(procNewAddListHis.size()>0){
+//				procMapper.batchInsertHis(procNewAddListHis);
+//			}
 			if(delList.size()>0){
 				//jdbc.batchUpdate((String[]) delList.toArray());
 			}

@@ -1,4 +1,4 @@
-function importExcel() {
+function importExcel_bak() {
 	debugger
 	var d = new Date();
 	var batchNo = d.getTime();
@@ -129,6 +129,24 @@ function tmpToSave(flag) {
 
 		}
 	})
+}
+
+function yjdr_bak(){
+	$("#syContent").hide();
+	$("#importContent").show();
+	var obj ={};
+	obj['batchNo'] = localStorage.getItem("batchNo");
+	obj['dataSrcAbbr'] =  localStorage.getItem("dataSrcTmp");
+	for (var i=1;i<=3;i++) {
+		// debugger
+		changeTab2(i, obj);
+	}
+	changeTab2(1,obj);	 //默认显示第一个tab页
+	// 监听切换数据源工作流程tab选项卡
+    $('#authorityTab2 li').click(function () {
+        var tabId = $(this).attr('tab-id');
+		changeTab2(tabId,obj);
+    });
 }
 
 

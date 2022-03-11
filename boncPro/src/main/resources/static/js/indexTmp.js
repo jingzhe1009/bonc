@@ -1,9 +1,9 @@
-function tmpInfoCheck(){
+function tmpInfoCheck_bak(){
 	$("#syContent").hide();
 	$("#importContent").show();
 	var obj ={};
 	obj['batchNo'] = localStorage.getItem("batchNo");
-	obj['dataSrcAbbr'] =  localStorage.getItem("dataSrcTmp");
+	obj['dataSrcAbbr'] =  localStorage.getItem("idx");
 	//for (var i=1;i<=3;i++) {
 		// debugger
 		//changeTab2(i, obj);
@@ -21,7 +21,7 @@ function tmpInfoCheck(){
 }
 
 //切换数据源工作流程标签
-function changeTab2(tabId,obj){
+function changeTab2_bak(tabId,obj){
 	$("#checkedAll").prop("checked", false );
     $(".tab-content2").hide();
     $("#tabContainer2").show();

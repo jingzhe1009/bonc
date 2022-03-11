@@ -1,3 +1,101 @@
+var infoModel = {
+	tmpInfoCheck:function (){
+		$("#syContent").hide();
+		$("#importContent").show();
+		var obj ={};
+		obj['batchNo'] = localStorage.getItem("batchNo");
+		obj['dataSrcAbbr'] =  localStorage.getItem("idx");
+		//for (var i=1;i<=3;i++) {
+			// debugger
+			//changeTab2(i, obj);
+		//}
+		infoModel.changeTab2(1,obj);	 //默认显示第一个tab页
+		// 监听切换数据源工作流程tab选项卡
+		$('#authorityTab2 li').click(function () {
+			var tabId = $(this).attr('tab-id');
+			infoModel.changeTab2(tabId,obj);
+		});
+		//加载信息确认table
+		//var idx = localStorage.getItem("idx");
+		//compareModel.init(idx);
+		//dataModelModel.init(idx);
+	},
+	//切换数据源工作流程标签
+	changeTab2:function (tabId,obj){
+		$("#checkedAll").prop("checked", false );
+	    $(".tab-content2").hide();
+	    $("#tabContainer2").show();
+		//标签页选中样式
+	    $('#authorityTab2 li').removeClass('active');
+	    $("#authorityTab2 li[tab-id='" + tabId + "']").addClass('active');
+	
+		if (tabId == '1') {
+			$("#interfaceContent").show(obj);
+			// interfaceModel.init(idx);
+			debugger
+			initInterfaceTable(obj);
+			// $("#inter_dataSrcAbbr").val(idx);
+			$("#pageHeader").html('<p>当前位置：<span>数据接口配置</span></p>');
+		} else if (tabId == '2') {
+			$("#colContent").show(obj);
+			// columnModel.init(idx);
+			initColumnTable(obj);
+			// $("#column_dataSrcAbbr").val(idx);
+			$("#pageHeader").html('<p>当前位置：<span>数据接口字段配置</span></p>');
+		} else if (tabId == '3') {
+			$("#procContent").show(obj);
+			// procModel.init(idx);
+			initProcTable(obj);
+			// $("#proc_dataSrcAbbr").val(idx);
+			$("#pageHeader").html('<p>当前位置：<span>数据算法加载</span></p>');
+		}
+	
+	},
+	//上传
+	importExcel:function () {
+		debugger
+		var d = new Date();
+		var batchNo = d.getTime();
+		$("#batchNo").val(batchNo);
+		var fileInput = $('#filename').get(0).files[0];
+		if (fileInput) {
+			var formData = new FormData($("#form")[0]);
+			//$('#loadAlert').modal({'show': 'center', "backdrop": "static"});
+			$.ajax({
+				//几个参数需要注意一下
+				type: 'POST',//方法类型
+				url: "/info/importExcel",//url
+				data: formData,
+				async: false,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function (result) {
+					console.log(result);//打印服务端返回的数据(调试用)
+					localStorage.setItem("batchNo",$("#batchNo").val());
+					localStorage.setItem("dataSrcTmp",result.dataSrcAbbr);
+					zUI.dialog.alert('<pre>' + result.msgData + '</pre>');
+					if(result.msgData.indexOf('成功')){
+						$("#resultText").text('导入成功,请进行下一步');
+					}else{
+						$("#resultText").text('');
+					}
+					
+				},
+				error: function (error) {
+					debugger
+					console.log(error);
+					zUI.dialog.alert('<pre>异常</pre>');
+				}
+			});
+		} else {
+			zUI.dialog.alert('<pre>请上传文件</pre>');
+		}
+	}
+}
+
+
+
 /**
  * 初始化临时表
  */

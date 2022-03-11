@@ -115,12 +115,14 @@ function loadFlowDiv(index){
 //上一步下一步按钮点击事件
 var maxstep=1;
 function checkBtn(index, count) {
-    //$("#btnBack").addClass("disabled");
 	 /*默认进来隐藏上一步按钮*/
 	$("#btnBack").hide();
 	$("#btnok").hide();	
 	/*下一步点击事件*/ 
-    $("#btnNext").click(function () {	
+    $("#btnNext").click(function () {
+	
+		debugger;
+		//接口导入
 		if(index==2){
 			debugger;
 			if($("#batchNo").val()==''){
@@ -128,34 +130,40 @@ function checkBtn(index, count) {
 				return;
 			}
 		}
+		
+		
         methodBtn(index++, 'forward', false);
 		var idx = localStorage.getItem("idx");
 		
 		if(index>maxstep){
 			maxstep=index;
 		}
+		
         if (index != 1) {
 			/*非第一步的时候，显示上一步*/
-			if(index==5){
-				importInfo();
-				$("#btnBack").addClass("disabled");
-			}else{
-				$("#btnBack").removeClass("disabled");
-			}
+			
+			//接口导入-下一步
 			if(index==3){
-				tmpInfoCheck();
+				infoModel.tmpInfoCheck();
 			}
+			//信息确认
 			if(index==4){
-				//加载信息确认table
 				compareModel.init(idx);
 			}
+			//信息确认-下一步
+			if(index==5){
+				compareModel.importInfo();
+			}
+			/*else{
+				$("#btnBack").addClass("disabled");
+				$("#btnBack").removeClass("disabled");
+			}*/
+			
 			$("#btnBack").show();
         }
         if (index >= count) {  
 			/*到最后一步时 去掉下一步 显示上一步和完成*/
             $("#btnNext").hide();
-            /*$("#btnNext").removeClass("disabled");*/
-            $("#btnBack").show();
 			$("#btnok").show();
         }
         refreshBack(index);
@@ -172,7 +180,7 @@ function checkBtn(index, count) {
                 $("#btnBack").hide();
             } 
             if(index==5){
-				$("#btnBack").addClass("disabled");
+				//$("#btnBack").addClass("disabled");
 			}
 			/* for(var num=1;num<=maxstep;num++){
 				 if(num==maxstep+1){

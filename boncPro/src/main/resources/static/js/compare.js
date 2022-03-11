@@ -24,7 +24,40 @@ var compareModel = {
     detail: function(dataSrcAbbr,dataInterfaceNo,dataInterfaceName){
     	$('#detailAlert').modal({'show': 'center', "backdrop": "static"});
     	detailModel.init(dataSrcAbbr,dataInterfaceNo,dataInterfaceName);
-    }
+    },
+    importInfo:function (){
+		var param = {};
+		param.dataSrcAbbr=localStorage.getItem("idx");
+		param.batchNo = localStorage.getItem("batchNo");
+		param.needVrsnNbr=localStorage.getItem("batchNo");
+		var json = JSON.stringify(param);
+		$('#loadAlert').modal({'show': 'center', "backdrop": "static"});
+		$.ajax({
+			url:"/interface/saveAll",
+			type:"post",
+			data:json,
+			contentType:"application/json;charset=UTF-8",
+			success:function(data){
+				$('#loadAlert').modal('hide');
+				console.log(data);
+				zUI.dialog.alert('<pre>'+data.msgData+'</pre>');
+				dataModelModel.init(localStorage.getItem("idx"));
+			}
+		}) 
+	},
+	getData:function (row,data){
+		console.log(row.red);
+		console.log(data);
+		debugger;
+		var red = row.red;
+		if(red==null||red==''){
+			 return data;
+		}
+		if(red.indexOf("'"+data+"'")!=-1){
+			return '<font color="red">'+data+'</font>';
+		}
+		return data;
+	}
 }
 
 
@@ -88,7 +121,7 @@ function initCompareTable(obj) {
 				/*if(row.flag=='0'&&row.flag!='4'){
 					return data;
 				}*/
-				return getData(row,'<a href="#" onclick=compareModel.detail("'+row.dataInterfaceName+'")>'+data+'</a>');
+				return compareModel.getData(row,'<a href="#" onclick=compareModel.detail("'+row.dataInterfaceName+'")>'+data+'</a>');
             }},
             {"title": "数据接口名", "data": "dataInterfaceName"},
             {"title": "数据接口描述", "data": "dataInterfaceDesc","render":function(data,type,row){
@@ -98,40 +131,40 @@ function initCompareTable(obj) {
 				if(row.flag=='0'){
 					return data;
 				}
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "存储过程", "data": "procName","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "数据加载频率", "data": "dataLoadFreq","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "数据加载方式", "data": "dataLoadMthd","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "字段分割符", "data": "filedDelim","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "行分隔符", "data": "lineDelim","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "外表数据库", "data": "extrnlDatabaseName","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "内表数据库", "data": "intrnlDatabaseName","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "外表表名", "data": "extrnlTableName","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "内表表名", "data": "intrnlTableName","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "表类型", "data": "tableType","render":function(data,type,row){
-				return getData(row,data);
+				return compareModel.getData(row,data);
             }},
             {"title": "分桶数", "data": "bucketNumber","render":function(data,type,row){
-            	return getData(row,data);
+            	return compareModel.getData(row,data);
             }},
             {"title": "起效日期", "data": "sDate","render": function(data, type, row) {
             	var oDate = new Date(data);
@@ -155,35 +188,4 @@ function initCompareTable(obj) {
         }
     });
 }
-function getData(row,data){
-	console.log(row.red);
-	console.log(data);
-	var red = row.red;
-	if(red==null||red==''){
-		 return data;
-	}
-	if(red.indexOf("'"+data+"'")!=-1){
-		return '<font color="red">'+data+'</font>';
-	}
-	return data;
-}
-function importInfo(){
-	var param = {};
-	param.dataSrcAbbr=localStorage.getItem("idx");
-	param.batchNo = localStorage.getItem("batchNo");
-	param.needVrsnNbr=localStorage.getItem("batchNo");
-	var json = JSON.stringify(param);
-	$('#loadAlert').modal({'show': 'center', "backdrop": "static"});
-	$.ajax({
-		url:"/interface/saveAll",
-		type:"post",
-		data:json,
-		contentType:"application/json;charset=UTF-8",
-		success:function(data){
-			$('#loadAlert').modal('hide');
-			console.log(data);
-			zUI.dialog.alert('<pre>'+data.msgData+'</pre>');
-			dataModelModel.init(localStorage.getItem("idx"));
-		}
-	}) 
-}
+

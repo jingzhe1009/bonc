@@ -180,7 +180,7 @@ function initProcTable(obj) {
 	
     $('#procTable').width('100%').dataTable({
     	//默认搜索组件
-        "searching": false,
+        "searching": true,
         //排序功能
         "ordering": false,
         "destroy": true,

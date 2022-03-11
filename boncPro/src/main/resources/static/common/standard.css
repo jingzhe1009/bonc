@@ -488,7 +488,7 @@ input[type=checkbox]:checked:before,
     margin: 0 10px 10px 0;
 }
 .modelBaseContainer .selfAdaptionLeft>div{
-    margin-right: 165px;
+    margin-right: 0px;
 }
 .modelBaseContainer .selfAdaptionRight{
     position: relative;

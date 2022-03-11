@@ -112,6 +112,26 @@ public class InterfaceController extends MainController{
     }
 	
 	@ResponseBody
+	@RequestMapping(value="/queryLastRecord",method = RequestMethod.POST)
+    public Map<String, Object> queryLastRecord(@RequestBody(required=false) ParamEntity param) {
+		String dataSrcAbbr = param.getDataSrcAbbr();
+		DataInterfaceRecords record = new DataInterfaceRecords();
+		record.setDataSrcAbbr(dataSrcAbbr);
+		List<DataInterfaceRecords> list = intService.queryRecord(record);
+		DataInterfaceRecords data = new DataInterfaceRecords();
+		String state = "";
+		if(list.size()>0) {
+			data =list.get(0);
+			state = "success";
+		}
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("state", state);
+        resultMap.put("data", data);
+        logger.info("query records success,data="+data+",dataSrcAbbr="+dataSrcAbbr);
+        return resultMap;
+    }
+	
+	@ResponseBody
 	@RequestMapping(value="/queryInterfaceCompare",method = RequestMethod.GET)
     public Map<String, Object> queryInterfaceCompare(String dataSrcAbbr,String batchNo) {
 		DataInterfaceHistory record = new DataInterfaceHistory();
