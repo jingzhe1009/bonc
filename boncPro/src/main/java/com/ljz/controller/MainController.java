@@ -54,30 +54,30 @@ import com.ljz.util.TimeUtil;
 @Controller
 @RequestMapping("/bonc")
 public class MainController {
-
+	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
-
+	
 	@Autowired
 	DataSourceServiceImpl dsService;
-
+	
 	@Autowired
 	ExcelServiceImpl excelService;
-
+	
 	@Autowired
 	VersionServiceImpl versionService;
-
+	
 	@Autowired
-	InfoConfig config;
-
+    InfoConfig config;
+	
 	@Autowired
 	LogServiceImpl logService;
-
+	
 	@RequestMapping(value= {"/","/index"})
 	public String index() {
 		logger.info("hello,world");
 		return "index";
 	}
-
+	
 	@ResponseBody
 	@RequestMapping(value="/datasource",method = RequestMethod.GET)
     public Map<String, Object> datasource(String dataSrcAbbr) {
@@ -92,7 +92,7 @@ public class MainController {
         resultMap.put("data", list);
         return resultMap;
     }
-
+	
 	@ResponseBody
 	@RequestMapping(value="/queryDataSrc",method = RequestMethod.GET)
     public Map<String, Object> queryDataSrc(DataSrc record) {
@@ -100,17 +100,17 @@ public class MainController {
 		record.seteDate(new java.sql.Date(new Date().getTime()));
 		List<DataSrc> list = dsService.queryAll(record);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-
+		
 		//resultMap.put("word", funcService.getWord(record.getDataSrcAbbr(),"1"));
         resultMap.put("data", list);
         return resultMap;
     }
-
+	
 	@ResponseBody
 	@RequestMapping(value="/queryDataSrcInfo",method = RequestMethod.GET)
     public Map<String, Object> queryDataSrcInfo() {
 		logger.info("datasrcInfo query success");
-
+		
 		List list = new ArrayList();
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map map = new HashMap();
@@ -200,7 +200,7 @@ public class MainController {
 		map.put("message","保存成功");
 		return map;
     }
-
+	
 	@ResponseBody
 	@RequestMapping(value="/deleteDataSrc",method = RequestMethod.POST)
     public String deleteDataSrc(DataSrc record) {
@@ -208,16 +208,16 @@ public class MainController {
 		logger.info("DataSrc delete success");
         return record.getDataSrcAbbr();
     }
-
-
-
-
+	
+	
+	
+	
 	@RequestMapping(value="/log")
 	public String log(HttpServletResponse response,HttpServletRequest request) {
-
+	   
 	    return "log";
 	}
-
+	
 	@ResponseBody
 	@RequestMapping(value="/queryLog",method = RequestMethod.GET)
     public Map<String, Object> queryLog(DataLog record) {
@@ -243,7 +243,7 @@ public class MainController {
         logger.info("version query success");
 		return resultMap;
 	}
-
+	
 	@ResponseBody
 	@RequestMapping(value="/tmpToSaveBak",method = RequestMethod.POST)
 	@Transactional
@@ -256,11 +256,11 @@ public class MainController {
 		List<DataInterface> colList = new ArrayList<DataInterface>();
 		//创建使用单个线程的线程池
 		ExecutorService es = Executors.newFixedThreadPool(10);
-
+		
 		return "导入成功";
-
+		
     }
-
+	
 	@ResponseBody
 	@RequestMapping(value="/tmpToSaveBakCol",method = RequestMethod.POST)
 	@Transactional
@@ -303,7 +303,7 @@ public class MainController {
 				logger.info("update column success,num:"+update);*/
 			}
 		}
-
+		
 		return "导入成功";
     }
 	/**
@@ -340,7 +340,7 @@ public class MainController {
 		data.setVersionDesc(desc);
 		versionService.insert(data);
 	}
-
+	
 	void downLoadExcel(String fileName, HttpServletResponse response, Workbook workbook){
 		ServletOutputStream outputStream = null;
 		try {
@@ -397,21 +397,21 @@ public class MainController {
 			}
 		}
 	}
-	
+
 	public static java.sql.Date getTomorrow() {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
         calendar.add(Calendar.DATE, 1);
         return new java.sql.Date(calendar.getTime().getTime());
     }
-
+	
 	public static java.sql.Date getToday(){
 		return new java.sql.Date(new Date().getTime());
 	}
-
+	
 	public static java.sql.Date getEdate() {
 		return ExcelUtil.getInstance().StringToDate(BoncConstant.CON_E_DATE);
 	}
-
-
+	
+	
 }

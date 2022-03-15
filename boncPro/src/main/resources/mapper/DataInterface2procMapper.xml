@@ -154,7 +154,7 @@
        and data_src_abbr=#{dataSrcAbbr}
     </if>
     <if test="dataInterfaceNo != null">
-       and data_interface_no=#{dataInterfaceNo}
+       and upper(data_interface_no) like upper(CONCAT("%",#{dataInterfaceNo},"%"))
     </if>
     order by data_src_abbr,data_interface_no;
   </select>
@@ -182,8 +182,7 @@
   </select>
   
   <insert id="tmpToSave" parameterType="com.ljz.model.DataInterfaceTmp">
-  	  insert into data_interface2proc (data_src_abbr, data_interface_no, proc_database_name, 
-      proc_name, s_date, e_date)
+  	  insert into data_interface2proc (data_src_abbr, data_interface_no, proc_database_name, proc_name, s_date, e_date)
       SELECT data_interface2proc_tmp.data_src_abbr, data_interface2proc_tmp.data_interface_no, data_interface2proc_tmp.proc_database_name, 
       data_interface2proc_tmp.proc_name, data_interface2proc_tmp.s_date, data_interface2proc_tmp.e_date
       FROM data_interface2proc_tmp
@@ -209,13 +208,13 @@
       		#{model.procName,jdbcType=VARCHAR}, #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE})
 	    </foreach>
 	</insert>
-	
+
 	<insert id="batchInsertHis" useGeneratedKeys="false"  parameterType="com.ljz.model.DataInterface2procHistory">
-	  insert into data_interface2proc_history (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, proc_database_name, 
+	  insert into data_interface2proc_history (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, proc_database_name,
       proc_name, s_date, e_date)
 	  	values
 	    <foreach collection="list" item="model" separator=",">
-	      ((#{model.needVrsnNbr,jdbcType=VARCHAR},#{model.exptSeqNbr,jdbcType=VARCHAR},#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.procDatabaseName,jdbcType=VARCHAR}, 
+	      ((#{model.needVrsnNbr,jdbcType=VARCHAR},#{model.exptSeqNbr,jdbcType=VARCHAR},#{model.dataSrcAbbr,jdbcType=VARCHAR}, #{model.dataInterfaceNo,jdbcType=VARCHAR}, #{model.procDatabaseName,jdbcType=VARCHAR},
       		#{model.procName,jdbcType=VARCHAR}, #{model.sDate,jdbcType=DATE}, #{model.eDate,jdbcType=DATE})
 	    </foreach>
 	</insert>

@@ -55,6 +55,11 @@ public class DataColumnServiceImpl implements IDataColumnService{
 	@Override
 	public List<DataInterfaceColumnsHistory> queryColumnCompare(DataInterfaceColumnsHistory record) {
 		List<Map<String, Object>> colHistoryList = jdbc.queryForList("select * from  data_interface_columns where e_date = '3000-12-31' and data_interface_name='"+record.getDataInterfaceName()+"'");
+
+		for (int i=0;i<colHistoryList.size();i++){
+			logger.info("colHistoryList:::"+colHistoryList.toString());
+		}
+
 		if(colHistoryList.size()<1) {//第一次导入历史表
 			return hisMapper.queryFirst(record);
 		}

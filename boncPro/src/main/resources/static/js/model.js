@@ -33,17 +33,25 @@ var dataModelModel = {
     	detailModel.init(dataInterfaceName);
     },
     common:function(url,type){
+    	debugger
     	var chkBoxes = $('#dataModelTable').find('input:checked');
-        if (chkBoxes.length == 0) {
-            zUI.dialog.alert('<pre>请至少选择一条记录</pre>');
-            return false;
-        }
-		var dataSrcAbbr = $("#model_dataSrcAbbr").val();
+        // if (chkBoxes.length == 0) {
+        //     zUI.dialog.alert('<pre>请至少选择一条记录</pre>');
+        //     return false;
+        // }
+		// var dataSrcAbbr = $("#model_dataSrcAbbr").val();
+		var dataSrcAbbr = localStorage.getItem("idx");
 		var arr = [];
-		$(chkBoxes).each(function() {
-	    	arr.push($(this).attr('id'));
-	    });
+		// $(chkBoxes).each(function() {
+	    // 	arr.push($(this).attr('id'));
+	    // });
 		var param = {};
+
+		$("input[name='items']").each(function(index,item){
+			var id = $(this).attr("id");
+			arr.push(id);
+		});
+
 		param.tables = arr;
 		param.dataSrcAbbr = dataSrcAbbr;
 		param.dbType = '1';
@@ -220,9 +228,9 @@ function initDataModelTable(obj) {
         	/*{"title": "全选<input type=\"checkbox\" id=\"checkedAll\" onclick=\"checkedAll()\">", "data": null, "width": "5%","render": function (data, type, row) {
                return '<input type="checkbox" id="'+row.dataInterfaceNo+'" name="items">';
             }},*/
-        	/*{"title": "<input type=\"checkbox\" id=\"checkedAll\" onclick=\"checkedAll()\">全选", "data": null, "width": "5%","render": function (data, type, row) {
+        	{"title": "<input type=\"checkbox\" id=\"checkedAll\" onclick=\"checkedAll()\">全选", "data": null, "width": "5%","render": function (data, type, row) {
                 return '<input type="checkbox" id="'+row.dataInterfaceName+'-'+row.condition+'-'+row.num+'" name="items">';
-             }},*/
+             }},
              /*{"title":"操作" ,"data": null,"width":"15%","render": function(data, type, row) {
              	var html = '<div>';
              		html += '<span onclick=dataModelModel.detail("'+row.dataInterfaceName+'") class="btn-sm cm-tblA">字段</span>';

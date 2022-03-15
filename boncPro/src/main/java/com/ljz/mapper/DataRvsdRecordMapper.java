@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface DataRvsdRecordMapper {
 
-    int batchInsert(DataRvsdRecordTmp record);
+    int batchInsert(DataRvsdRecordTmp dataRvsdRecordTmp);
 
     List<DataRvsdRecord> queryExptSeqNbr(String dataSrcAbbr);
 

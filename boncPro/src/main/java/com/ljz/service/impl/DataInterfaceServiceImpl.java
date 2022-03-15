@@ -79,6 +79,10 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 
 	private static final Logger logger = LoggerFactory.getLogger(DataInterfaceServiceImpl.class);
 
+	public String date = TimeUtil.getDateToString(TimeUtil.getTy());
+	public String time = FileUtil.formatDate(new Date());
+	public StringBuffer DMLDeclare = new StringBuffer();
+	public StringBuffer DMLInsert = new StringBuffer();
 
     @Override
     public List<DataInterface> queryDsAndInfaceName(String dataSrc) {
@@ -281,136 +285,156 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		// TODO Auto-generated method stub
 		List<DataInterface> queryAll = mapper.queryAll(record);
 		//查询接口对应的字段数量
-		/*
-		 * List<Map<String, Object>> queryIntNum = jdbc.
-		 * queryForList("select data_interface_name,count(*) as bucket_number from data_interface_columns "
-		 * +
-		 * "where data_src_abbr='"+record.getDataSrcAbbr()+"' and e_date='"+BoncConstant
-		 * .CON_E_DATE+"'  group by data_interface_name"); //查询外表sdata的表列表
-		 * List<Map<String, Object>> sdataList = jdbc.
-		 * queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='"
-		 * +BoncConstant.SDATA+"'"); //查询内表odata的表列表 List<Map<String, Object>> odataList
-		 * = jdbc.
-		 * queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='"
-		 * +BoncConstant.ODATA+"'"); List<DataInterface> resultList = new
-		 * ArrayList<DataInterface>(); for(DataInterface data:queryAll){ for(Map<String,
-		 * Object> map:queryIntNum){ String data_interface_name = (String)
-		 * map.get("data_interface_name"); long bucket_number = (long)
-		 * map.get("bucket_number");
-		 * if(data_interface_name.equalsIgnoreCase(data.getDataInterfaceName())){
-		 * data.setNum(bucket_number+""); } } //创建标识0未创建，1已创建 String flag1 = "0";
-		 * for(int i=0;i<sdataList.size();i++){ Map<String, Object> map =
-		 * sdataList.get(i); String tb = (String) map.get("table_name");
-		 * if(tb.equalsIgnoreCase(data.getExtrnlTableName())){
-		 * data.setCondition("外表已创建"); flag1 = "1"; break; }else{
-		 * if(i==sdataList.size()-1&&"0".equals(flag1)){ data.setCondition("外表未创建"); } }
-		 * } String flag2 = "0"; for(int i=0;i<odataList.size();i++){ Map<String,
-		 * Object> map = odataList.get(i); String tb = (String) map.get("table_name");
-		 * if(tb.equalsIgnoreCase(data.getIntrnlTableName())){
-		 * data.setCondition(data.getCondition()+",内表已创建"); flag2 = "1"; break; }else{
-		 * if(i==odataList.size()-1&&"0".equals(flag2)){
-		 * data.setCondition(data.getCondition()+",内表未创建"); } } } resultList.add(data);
-		 * }
-		 */
+
+//		List<Map<String, Object>> queryIntNum = jdbc.queryForList("select data_interface_name,count(*) as bucket_number from data_interface_columns "
+//				+"where data_src_abbr='"+record.getDataSrcAbbr()+"' and e_date='"+BoncConstant.CON_E_DATE+"'  group by data_interface_name");
+//		//查询外表sdata的表列表
+//		List<Map<String, Object>> sdataList = jdbc.queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='"+BoncConstant.SDATA+"'");
+//		//查询内表odata的表列表
+//		List<Map<String, Object>> odataList= jdbc.queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='"+BoncConstant.ODATA+"'");
+//		List<DataInterface> resultList = new ArrayList<DataInterface>();
+//		for(DataInterface data:queryAll){
+//			for(Map<String,Object> map:queryIntNum){
+//				String data_interface_name = (String)map.get("data_interface_name");
+//				long bucket_number = (long)map.get("bucket_number");
+//				if(data_interface_name.equalsIgnoreCase(data.getDataInterfaceName())){
+//				data.setNum(bucket_number+"");
+//				}
+//			}
+//			//创建标识0未创建，1已创建
+//			String flag1 = "0";
+//			for(int i=0;i<sdataList.size();i++){
+//				Map<String, Object> map = sdataList.get(i);
+//				String tb = (String) map.get("table_name");
+//				if(tb.equalsIgnoreCase(data.getExtrnlTableName())){
+//					data.setCondition("外表已创建");
+//					flag1 = "1";
+//					break;
+//				}else{
+//					if(i==sdataList.size()-1&&"0".equals(flag1)){
+//						data.setCondition("外表未创建");
+//					}
+//				}
+//			}
+//			String flag2 = "0";
+//			for(int i=0;i<odataList.size();i++){
+//				Map<String,Object> map = odataList.get(i);
+//				String tb = (String) map.get("table_name");
+//				if(tb.equalsIgnoreCase(data.getIntrnlTableName())){
+//					data.setCondition(data.getCondition()+",内表已创建");
+//					flag2 = "1";
+//					break;
+//				}else{
+//					if(i==odataList.size()-1&&"0".equals(flag2)){
+//						data.setCondition(data.getCondition()+",内表未创建");
+//					}
+//				}
+//			}
+//			resultList.add(data);
+//
+//		}
 		return queryAll;
 	}
 	
 	public String createRollBackFile(String dataSrc) {
 
         DataInterface record = new DataInterface();
-        //record应该传入当前批次数据（优化）
+		String rollBackFilePath = config.getFilePath()+record.getDataSrcAbbr()+"_ROLLBACK_"+infoImportService.date+".sql";
+		StringBuffer rollBackSb = null;
+
+		//record应该传入当前批次数据（优化）
         record.setDataSrcAbbr(dataSrc);
         record.seteDate(TimeUtil.getTw());
 
         // TODO Auto-generated method stub
         List<DataInterface> queryAll = mapper.queryAll(record);
         //查询接口对应的字段数量
-        List<Map<String, Object>> queryIntNum = jdbc.queryForList("select data_interface_name,count(*) as bucket_number from data_interface_columns "
-                +"where data_src_abbr='"+record.getDataSrcAbbr()+"' and e_date='"+BoncConstant.CON_E_DATE+"'  group by data_interface_name");
-        //查询外表sdata的表列表
-        List<Map<String, Object>> sdataList = jdbc.queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='" +BoncConstant.SDATA+"'");
-        //查询内表odata的表列表
-        List<Map<String, Object>> odataList = jdbc.queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='" +BoncConstant.ODATA+"'");
-        List<DataInterface> resultList = new ArrayList<DataInterface>();
-
-        String rollBackFilePath = config.getFilePath()+record.getDataSrcAbbr()+"_ROLLBACK_"+infoImportService.date+".sql";
-//        List<String> rollBackList = new ArrayList<String>();
-        StringBuffer rollBackSb = null;
-
-        for(DataInterface data:queryAll){
-            for(Map<String,Object> map:queryIntNum){
-                String data_interface_name = (String)map.get("data_interface_name");
-                long bucket_number = (long)map.get("bucket_number");
-                if(data_interface_name.equalsIgnoreCase(data.getDataInterfaceName())){
-                    data.setNum(bucket_number+"");
-                }
-            }
-            //创建标识0未创建，1已创建
-            String flag1 = "0";
-            for(int i=0;i<sdataList.size();i++){
-                Map<String, Object> map = sdataList.get(i);
-                String tb = (String) map.get("table_name");
-                if(tb.equalsIgnoreCase(data.getExtrnlTableName())){
-                    //查正式表表字段
-
-                    data.setCondition("外表已创建");
-                    flag1 = "1";
-                    String rollBackExternalSql = "--"+tb+"--\n"
-                            +"CREATE EXTERNAL TABLE SDATA_OLTP."+tb+"_"+"_"+infoImportService.date+" LIKE SDATA_OLTP."+tb+";\n"
-                            +"INSERT INTO SDATA_OLTP."+tb+"_"+"_"+infoImportService.date+ " SELECT * FROM SDATA_OLTP."+tb+";\n"
-                            +"DROP TABLE IF EXISTS SDATA_OLTP."+tb+";\n"
-                            +"CREATE EXTERNAL TABLE SDATA_OLTP."+tb+"\n"
-                            +//表字段
-
-                            ";\n"
-                            +"INSERT INTO SDATA_OLTP."+tb+" SELECT * FROM SDATA_OLTP."+tb+"_"+"_"+infoImportService.date+";\n\n"
-                            ;
-//                    rollBackList.add(rollBackExternalSql);
-                    rollBackSb.append(rollBackExternalSql);
-//                    try {
-//                        FileUtil.write(rollBackFilePath, rollBackExternalSql,config.getFileEncode());
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
+//        List<Map<String, Object>> queryIntNum = jdbc.queryForList("select data_interface_name,count(*) as bucket_number from data_interface_columns "
+//                +"where data_src_abbr='"+record.getDataSrcAbbr()+"' and e_date='"+BoncConstant.CON_E_DATE+"'  group by data_interface_name");
+//        //查询外表sdata的表列表
+//        List<Map<String, Object>> sdataList = jdbc.queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='" +BoncConstant.SDATA+"'");
+//        //查询内表odata的表列表
+//        List<Map<String, Object>> odataList = jdbc.queryForList("SELECT table_name FROM SYSTEM.tables_v WHERE database_name='" +BoncConstant.ODATA+"'");
+//        List<DataInterface> resultList = new ArrayList<DataInterface>();
+//
+////        String rollBackFilePath = config.getFilePath()+record.getDataSrcAbbr()+"_ROLLBACK_"+infoImportService.date+".sql";
+////        List<String> rollBackList = new ArrayList<String>();
+////        StringBuffer rollBackSb = null;
+//
+//        for(DataInterface data:queryAll){
+//            for(Map<String,Object> map:queryIntNum){
+//                String data_interface_name = (String)map.get("data_interface_name");
+//                long bucket_number = (long)map.get("bucket_number");
+//                if(data_interface_name.equalsIgnoreCase(data.getDataInterfaceName())){
+//                    data.setNum(bucket_number+"");
+//                }
+//            }
+//            //创建标识0未创建，1已创建
+//            String flag1 = "0";
+//            for(int i=0;i<sdataList.size();i++){
+//                Map<String, Object> map = sdataList.get(i);
+//                String tb = (String) map.get("table_name");
+//                if(tb.equalsIgnoreCase(data.getExtrnlTableName())){
+//                    //查正式表表字段
+//
+//                    data.setCondition("外表已创建");
+//                    flag1 = "1";
+//                    String rollBackExternalSql = "--"+tb+"--\n"
+//                            +"CREATE EXTERNAL TABLE SDATA_OLTP."+tb+"_"+"_"+infoImportService.date+" LIKE SDATA_OLTP."+tb+";\n"
+//                            +"INSERT INTO SDATA_OLTP."+tb+"_"+"_"+infoImportService.date+ " SELECT * FROM SDATA_OLTP."+tb+";\n"
+//                            +"DROP TABLE IF EXISTS SDATA_OLTP."+tb+";\n"
+//                            +"CREATE EXTERNAL TABLE SDATA_OLTP."+tb+"\n"
+//                            +//表字段
+//
+//                            ";\n"
+//                            +"INSERT INTO SDATA_OLTP."+tb+" SELECT * FROM SDATA_OLTP."+tb+"_"+"_"+infoImportService.date+";\n\n"
+//                            ;
+////                    rollBackList.add(rollBackExternalSql);
+//                    rollBackSb.append(rollBackExternalSql);
+////                    try {
+////                        FileUtil.write(rollBackFilePath, rollBackExternalSql,config.getFileEncode());
+////                    } catch (Exception e) {
+////                        e.printStackTrace();
+////                    }
+//                    break;
+//                }else{
+//                    if(i==sdataList.size()-1&&"0".equals(flag1)){
+//                        data.setCondition("外表未创建");
 //                    }
-                    break;
-                }else{
-                    if(i==sdataList.size()-1&&"0".equals(flag1)){
-                        data.setCondition("外表未创建");
-                    }
-                }
-            }
-            String flag2 = "0";
-            for(int i=0;i<odataList.size();i++){
-                Map<String,Object> map = odataList.get(i);
-                String tb = (String) map.get("table_name");
-                if(tb.equalsIgnoreCase(data.getIntrnlTableName())){
-                    data.setCondition(data.getCondition()+",内表已创建");
-                    flag2 = "1";
-                    String rollBackSql = "--"+data.getDataInterfaceName()+"--\n"
-                            +"CREATE TABLE IF NOT EXISTS ODATA."+tb+"_"+"_"+infoImportService.date+" LIKE ODATA."+tb+";\n"
-                            +"INSERT INTO ODATA."+tb+"_"+"_"+infoImportService.date+ " SELECT * FROM ODATA."+tb+";\n"
-                            +"DROP TABLE IF EXISTS ODATA."+tb+";\n"
-                            +"CREATE TABLE ODATA."+tb+"\n"
-                            //表字段
-
-                            +";\n"
-                            +"INSERT INTO ODATA."+tb+" SELECT * FROM ODATA."+tb+"_"+"_"+infoImportService.date+";\n\n"
-                            ;
-                    rollBackSb.append(rollBackSql);
-//                    try {
-//                        FileUtil.write(rollBackFilePath, rollBackSql,config.getFileEncode());
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
+//                }
+//            }
+//            String flag2 = "0";
+//            for(int i=0;i<odataList.size();i++){
+//                Map<String,Object> map = odataList.get(i);
+//                String tb = (String) map.get("table_name");
+//                if(tb.equalsIgnoreCase(data.getIntrnlTableName())){
+//                    data.setCondition(data.getCondition()+",内表已创建");
+//                    flag2 = "1";
+//                    String rollBackSql = "--"+data.getDataInterfaceName()+"--\n"
+//                            +"CREATE TABLE IF NOT EXISTS ODATA."+tb+"_"+"_"+infoImportService.date+" LIKE ODATA."+tb+";\n"
+//                            +"INSERT INTO ODATA."+tb+"_"+"_"+infoImportService.date+ " SELECT * FROM ODATA."+tb+";\n"
+//                            +"DROP TABLE IF EXISTS ODATA."+tb+";\n"
+//                            +"CREATE TABLE ODATA."+tb+"\n"
+//                            //表字段
+//
+//                            +";\n"
+//                            +"INSERT INTO ODATA."+tb+" SELECT * FROM ODATA."+tb+"_"+"_"+infoImportService.date+";\n\n"
+//                            ;
+//                    rollBackSb.append(rollBackSql);
+////                    try {
+////                        FileUtil.write(rollBackFilePath, rollBackSql,config.getFileEncode());
+////                    } catch (Exception e) {
+////                        e.printStackTrace();
+////                    }
+//                    break;
+//                }else{
+//                    if(i==odataList.size()-1 && "0".equals(flag2)){
+//                        data.setCondition(data.getCondition()+",内表未创建");
 //                    }
-                    break;
-                }else{
-                    if(i==odataList.size()-1 && "0".equals(flag2)){
-                        data.setCondition(data.getCondition()+",内表未创建");
-                    }
-                }
-            }
-            resultList.add(data);
-        }
+//                }
+//            }
+//            resultList.add(data);
+//        }
         if (rollBackSb != null){
             try {
                 FileUtil.write(rollBackFilePath, rollBackSb.toString(),config.getFileEncode());
@@ -712,16 +736,27 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			logger.info("创建表线程开始");
 		}
 		String filePath="";
+		String DMLFilePath="";
+
 		try {
-			filePath = config.getFilePath()+param.getDataSrcAbbr()+"_DDL_"+infoImportService.date+".sql";
-			logger.info("建表文件路径:"+filePath);
+//			filePath = config.getFilePath()+"test"+time+"/"+param.getDataSrcAbbr()+"_DDL_"+date+".sql";
+//			DMLFilePath = config.getFilePath()+"test"+time+"/"+param.getDataSrcAbbr()+"_DML_"+date+".sql";
+			filePath = config.getFilePath()+param.getDataSrcAbbr()+"_DDL_"+date+".sql";
+			DMLFilePath = config.getFilePath()+param.getDataSrcAbbr()+"_DML_"+date+".sql";
+
+//			logger.info("建表文件路径:"+filePath);
+			logger.info("建表文件路径:"+DMLFilePath);
+
 			int i =0;
-			reWriteFile(list, sucList,failList,filePath, i);
+//			reWriteFile(list, sucList,failList,filePath, i);
+			FileUtil.write(filePath, DMLInsert.toString(),config.getFileEncode());
+			FileUtil.write(DMLFilePath, DMLDeclare.toString(),config.getFileEncode());
+
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			map.put("msgCode", "1111");
-			map.put("msgData", "文件写入失败,文件路径:"+filePath+",文件编码"+config.getFileEncode());
+			map.put("msgData", "文件写入失败,文件路径:\n"/*+filePath+"\n"*/+DMLFilePath+"\n文件编码:"+config.getFileEncode());
 			return map;
 		} finally {
 			es.shutdown();
@@ -738,6 +773,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		map.put("idx", param.getDataSrcAbbr());
 		map.put("msgData", str);
 		map.put("filePath", filePath);
+		map.put("DMLFilePath",DMLFilePath);
 		return map;
 	}
 	//递归等待写文件，直到存储过程全部执行完，或者超过一定时间
@@ -891,12 +927,12 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 								}
 					        }
 						}else{//修改
-					        Field[] fields = data.getClass().getDeclaredFields(); 
+					        Field[] fields = data.getClass().getDeclaredFields();
 							for(int i=0; i<fields.length; i++){  
 					            Field f = fields[i];  
 					            f.setAccessible(true);  
 					            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
-					            Field[] fields2 = tmp.getClass().getDeclaredFields(); 
+					            Field[] fields2 = tmp.getClass().getDeclaredFields();
 					            if("red".equals(f.getName())||"flag".equals(f.getName())||"serialVersionUID".equals(f.getName()))
 				                	continue;
 					            for(int j=0; j<fields2.length; j++){  
@@ -914,7 +950,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					        }
 							data.setFlag("2");
 						}
-						
+
 						//数据加载算法
 						if(tmp!=null&&tmp.getProcName()!=null) {
 							if(data==null||tmp.getProcName()==null||!data.getProcName().equals(tmp.getProcName())) {
@@ -1058,23 +1094,25 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 	@Transactional
 	public String saveAll(ParamEntity param) throws Exception {
 		// TODO Auto-generated method stub
+		Map<String,String> mapResult = new HashMap<>();
 		String dataSrcAbbr = param.getDataSrcAbbr();
 		String batchNo = param.getBatchNo();//导入批次号
 		String needVrsnNbr = "";//需求号
-		String exptSeqNbr = ""; //流水号
+//        String needVrsnNbr = param.getNeedVrsnNbr();//需求号
+        String exptSeqNbr = ""; //流水号
 		String fileName = "";//文件名
 		String createDate ="";
 		String altDate ="";
 		String exctPsn ="";
 		String exptDate ="";
 		String intfDscr = "";
-		
+
 		//单例模式获取在导入校验中存放在map缓存中的数据
 		ExcelUtil obj = ExcelUtil.getInstance();
 		Map<String, String> interfaceMap = obj.getInterfaceMap(dataSrcAbbr);
 		Map<String, String> columnMap = obj.getColumnMap(dataSrcAbbr);
 		Map<String, String> procMap = obj.getProcMap(dataSrcAbbr);
-		
+
 		//获取需求号和流水号
 		DataRvsdRecordTmp dataRvsdRecordTmp = (DataRvsdRecordTmp)obj.getEntityMap().get(dataSrcAbbr+"DataRvsdRecordTmp");
 		needVrsnNbr = dataRvsdRecordTmp.getNeedVrsnNbr();
@@ -1093,7 +1131,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		//初始化历史表
 		initHistory(needVrsnNbr,exptSeqNbr);
 		
-		
+
 		
 		
 		
@@ -1115,12 +1153,31 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		List<DataInterfaceTmp> queryAllTmpInt = mapper.queryAllTmp(intCondition);
 		for(DataInterfaceTmp tmp:queryAllTmpInt){
 			String key = tmp.getDataInterfaceName();
+			//已存在
 			if(interfaceMap!=null&&interfaceMap.containsKey(key)){
 				if(!tmp.toStr().equalsIgnoreCase(interfaceMap.get(key))){//修改
 					//正式
 					updateList.add(new Object[] {new Date(),tmp.getDataInterfaceName()});
 					//修改sql
 					insertList.add(new Object[] {batchNo,tmp.getDataInterfaceName()});
+
+                    DMLInsert.append("UPDATE SDATA_OLTP_CFG.DATA_INTERFACE SET e_date='"+TimeUtil.getDateToString(TimeUtil.getToday())
+                            +"' where data_interface_name = '"+tmp.getDataInterfaceName()+"' and e_date ='3000-12-31';\n"
+                            +"INSERT INTO SDATA_OLTP_CFG.DATA_INTERFACE VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()+"','"+tmp.getDataInterfaceName()
+                            +"','"+tmp.getDataInterfaceDesc()+"','"+tmp.getDataLoadFreq()+"','"+tmp.getDataLoadMthd()+"','"+tmp.getFiledDelim()
+                            +"','"+tmp.getLineDelim()+"','"+tmp.getExtrnlDatabaseName()+"','"+tmp.getIntrnlDatabaseName()+"','"+tmp.getExtrnlTableName()
+                            +"','"+tmp.getIntrnlTableName()+"','"+tmp.getTableType()+"',"+tmp.getBucketNumber()+",'"+TimeUtil.getDate(tmp.getsDate())
+                            +"','"+TimeUtil.getDate(tmp.geteDate())+"');"
+                            +"\n\n");
+                    DMLDeclare.append("DECLARE \n"
+                            +"o_extrnl_table_ddl STRING\n"
+                            +"o_intrnl_table_ddl STRING\n"
+                            +"BEGIN\n"
+                            +"pkg_ruku_ddl.pro_sp_ddl('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceName()+"',o_extrnl_table_ddl,o_intrnl_table_ddl)\n"
+                            +"DBMS_OUTPUT.PUT_LINE(o_extrnl_table_ddl)\n"
+                            +"DBMS_OUTPUT.PUT_LINE(o_intrnl_table_ddl)\n"
+                            +"END"
+                            +"\n\n");
 				}
 			}else{//新增
 				DataInterface data = new DataInterface();
@@ -1141,7 +1198,25 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 				data.setsDate(tmp.getsDate());
 				data.seteDate(tmp.geteDate());
 				newAddList.add(data);
-				
+
+				DMLInsert.append("INSERT INTO SDATA_OLTP_CFG.DATA_INTERFACE VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()+"','"+tmp.getDataInterfaceName()
+						+"','"+tmp.getDataInterfaceDesc()+"','"+tmp.getDataLoadFreq()+"','"+tmp.getDataLoadMthd()+"','"+tmp.getFiledDelim()
+						+"','"+tmp.getLineDelim()+"','"+tmp.getExtrnlDatabaseName()+"','"+tmp.getIntrnlDatabaseName()+"','"+tmp.getExtrnlTableName()
+						+"','"+tmp.getIntrnlTableName()+"','"+tmp.getTableType()+"',"+tmp.getBucketNumber()+",'"+TimeUtil.getDate(tmp.getsDate())
+						+"','"+TimeUtil.getDate(tmp.geteDate())+"');"
+						+"\n\n");
+				DMLDeclare.append("DECLARE \n"
+						+"o_extrnl_table_ddl STRING\n"
+						+"o_intrnl_table_ddl STRING\n"
+						+"BEGIN\n"
+						+"pkg_ruku_ddl.pro_sp_ddl('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceName()+"',o_extrnl_table_ddl,o_intrnl_table_ddl)\n"
+						+"DBMS_OUTPUT.PUT_LINE(o_extrnl_table_ddl)\n"
+						+"DBMS_OUTPUT.PUT_LINE(o_intrnl_table_ddl)\n"
+						+"END"
+						+"\n\n");
+//
+//
+//				FileUtil.write(DMLFilePath, DMLSql, config.getFileEncode());
 				
 				DataInterfaceHistory dataHis = new DataInterfaceHistory();
 				dataHis.setNeedVrsnNbr(needVrsnNbr);
@@ -1193,6 +1268,15 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					//正式
 					colUpdateList.add(new Object[] {new Date(),tmp.getDataInterfaceName(),tmp.getColumnNo()});
 					colInsertList.add(new Object[] {batchNo,tmp.getDataInterfaceName(),tmp.getColumnNo()});
+
+                    DMLInsert.append("UPDATE SDATA_OLTP_CFG.DATA_INTERFACE_COLUMNS SET e_date='"+TimeUtil.getDateToString(TimeUtil.getToday())
+                            +"' where data_interface_name = '"+tmp.getDataInterfaceName()+"' and e_date ='3000-12-31';\n"
+                            +"INSERT INTO SDATA_OLTP_CFG.DATA_INTERFACE_COLUMNS VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()
+                            +"','"+tmp.getDataInterfaceName()+"','"+tmp.getColumnNo()+"','"+tmp.getColumnName()+"','"+tmp.getDataType()
+                            +"','"+tmp.getDataFormat()+"','"+tmp.getNullable()+"','"+tmp.getReplacenull()+"','"+tmp.getComma()
+                            +"','"+tmp.getColumnComment()+"','"+tmp.getIsbucket()+"','"+tmp.getIskey()+"','"+tmp.getIsvalid()
+                            +"','"+tmp.getIncrementfield()+"','"+TimeUtil.getDate(tmp.getsDate())+"','"+TimeUtil.getDate(tmp.geteDate())+"');"
+                            +"\n\n");
 				}
 			}else{//新增
 				//正式
@@ -1215,6 +1299,14 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 				data.setIsvalid(tmp.getIsvalid());
 				data.setIncrementfield(tmp.getIncrementfield());
 				colNewAddList.add(data);
+
+				DMLInsert.append("INSERT INTO SDATA_OLTP_CFG.DATA_INTERFACE_COLUMNS VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()
+						+"','"+tmp.getDataInterfaceName()+"','"+tmp.getColumnNo()+"','"+tmp.getColumnName()+"','"+tmp.getDataType()
+						+"','"+tmp.getDataFormat()+"','"+tmp.getNullable()+"','"+tmp.getReplacenull()+"','"+tmp.getComma()
+						+"','"+tmp.getColumnComment()+"','"+tmp.getIsbucket()+"','"+tmp.getIskey()+"','"+tmp.getIsvalid()
+						+"','"+tmp.getIncrementfield()+"','"+TimeUtil.getDate(tmp.getsDate())+"','"+TimeUtil.getDate(tmp.geteDate())+"');"
+						+"\n\n");
+
 				//历史
 				DataInterfaceColumnsHistory dataHis = new DataInterfaceColumnsHistory();
 				dataHis.setNeedVrsnNbr(needVrsnNbr);
@@ -1261,10 +1353,20 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		List<DataInterface2procTmp> queryAllTmp = procMapper.queryAllTmp(procCondition);
 		for(DataInterface2procTmp tmp:queryAllTmp){
 			if(procMap!=null&&procMap.containsKey(tmp.getDataSrcAbbr()+tmp.getDataInterfaceNo())){
+				//修改
 				if(!tmp.toStr().equals(procMap.get(tmp.getDataSrcAbbr()+tmp.getDataInterfaceNo()))){
 					procUpdateList.add(new Object[] {new Date(),tmp.getDataSrcAbbr(),tmp.getDataInterfaceNo()});
 					procInsertList.add(new Object[] {batchNo,tmp.getDataSrcAbbr(),tmp.getDataInterfaceNo()});
+
+					DMLInsert.append("UPDATE SDATA_OLTP_CFG.data_interface2proc SET e_date='"+TimeUtil.getDateToString(TimeUtil.getToday())
+							+"' where data_src_abbr = "+tmp.getDataSrcAbbr()+"and data_interface_no = '"+tmp.getDataInterfaceNo()+"' and e_date ='3000-12-31';\n"
+							+"INSERT INTO SDATA_OLTP_CFG.data_interface2proc VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()
+							+"','"+tmp.getProcDatabaseName()+"','"+tmp.getProcName()+"','"+TimeUtil.getDate(tmp.getsDate())
+							+"','"+TimeUtil.getDate(tmp.geteDate())+"');"
+							+"\n\n");
+
 				}
+			//新增
 			}else{
 				DataInterface2proc data = new DataInterface2proc();
 				data.setDataSrcAbbr(tmp.getDataSrcAbbr());
@@ -1285,6 +1387,11 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 				dataHis.setsDate(tmp.getsDate());
 				dataHis.seteDate(tmp.geteDate());
 				procNewAddListHis.add(dataHis);
+
+				DMLInsert.append("INSERT INTO SDATA_OLTP_CFG.data_interface2proc VALUES('"+tmp.getDataSrcAbbr()+"','"+tmp.getDataInterfaceNo()
+						+"','"+tmp.getProcDatabaseName()+"','"+tmp.getProcName()+"','"+TimeUtil.getDate(tmp.getsDate())
+						+"','"+TimeUtil.getDate(tmp.geteDate())+"');"
+						+"\n\n");
 			}
 		}
 		logger.info("导入加载算法结束,导入用时："+(new Date().getTime()-procTime));
@@ -1319,10 +1426,11 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		 * 正式表
 		 */
 		try {
-			
-			if(newAddList.size()>0){
+            //新增 新纪录insert
+            if(newAddList.size()>0){
 				logger.info("all batch insert interface success:"+mapper.batchInsertPro(newAddList));
 			}
+			//修改 原纪录update、insert
 			if(updateList.size()>0){
 				logger.info("all batch update interface success:"+jdbc.batchUpdate(getSql("intPro", "update", needVrsnNbr, exptSeqNbr), updateList).length);
 			}
@@ -1419,9 +1527,9 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			if(insertList.size()>0){
 				logger.info("all batch edit&insert interface his from tmp success:"+jdbc.batchUpdate(getSql("intHis", "insert", needVrsnNbr, exptSeqNbr),insertList).length);
 			}
-//			
-//			
-//			
+//
+//
+//
 			if(colNewAddListHis.size()>0){
 				logger.info("all batch insert column his success:"+colMapper.batchInsertHis(colNewAddListHis));
 			}
@@ -1431,9 +1539,9 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			if(colInsertList.size()>0){
 				logger.info("all batch insert column his from tmp success:"+jdbc.batchUpdate(getSql("colHis", "insert", needVrsnNbr, exptSeqNbr),colInsertList).length);
 			}
-//			
-//			
-//			
+//
+//
+//
 			if(procNewAddListHis.size()>0){
 				logger.info("all batch insert proc his success:"+procMapper.batchInsertHis(procNewAddListHis));
 			}
@@ -1471,12 +1579,12 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			//调用submit传递线程任务，开启线程
 		};
 		hisEs.submit(hisTask);
-		
-		
+
+
 		obj.clearColumn(dataSrcAbbr);
 		obj.clearInterface(dataSrcAbbr);
 		obj.clearProc(dataSrcAbbr);
-		
+
 		return "success";
 	}
 	

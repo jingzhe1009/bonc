@@ -373,7 +373,9 @@ public class ModelController extends MainController{
 	}
 
 	String DDLFilePath = null;
+	String DMLFilePath = null;
 	String dataSrc = null;
+	String rollBackFilePath = null;
 	@RequestMapping("/createFile")
 	@ResponseBody
 	public Map<String,String> createFile(@RequestBody(required=false) ParamEntity param) throws Exception{
@@ -397,30 +399,34 @@ public class ModelController extends MainController{
 				break;
 			list.add(tb);
 		}
-		if(num==null||num.equals("null")||"".equals(num)){
-			map.put("msgCode", "1111");
-			map.put("msgData", "接口"+tb+"没有配置字段");
-			return map;
-		}
+//		if(num==null||num.equals("null")||"".equals(num)){
+//			map.put("msgCode", "1111");
+//			map.put("msgData", "接口"+tb+"没有配置字段");
+//			return map;
+//		}
 		map = intService.createFile(list, param);
 		DDLFilePath = map.get("filePath");
-		dataSrc = map.get("idx");
+        DMLFilePath = map.get("DMLFilePath");
+        rollBackFilePath = dataInterfaceService.createRollBackFile(dataSrc);//生成回滚sql文件
+
+        dataSrc = map.get("idx");
 		long end = new Date().getTime();
 		logger.info("生成建表语句文件用时:"+(end-start)+"毫秒");
 		return map;
 	}
 
+	//文件下载
 	@RequestMapping(value="/exportFile")
 	public String exportFile(HttpServletResponse response) {
 		StringBuffer stringBuffer = null;
-		String rollBackFilePath = dataInterfaceService.createRollBackFile(dataSrc);//生成回滚sql文件
+//		String rollBackFilePath = dataInterfaceService.createRollBackFile(dataSrc);//生成回滚sql文件
 		try {
 			if(DDLFilePath == null || !new File(DDLFilePath).exists()){
 				logger.info("DDL文件不存在");
 				stringBuffer.append("DDL文件不存在");
 //				return "DDL文件不存在";
 			}
-			if (infoImportService.DMLFilePath == null || !new File(infoImportService.DMLFilePath).exists()){
+			if (DMLFilePath == null || !new File(DMLFilePath).exists()){
 				logger.info("DML文件不存在");
 				stringBuffer.append("DML文件不存在");
 			}
@@ -436,6 +442,7 @@ public class ModelController extends MainController{
 			String fileNameDML = "";
 			String fileNameRollBack = "";
 			fileNameDDL = DDLFilePath.substring(config.getFilePath().length());
+			logger.info("getFilePath().length():::"+config.getFilePath().length()+"");
 			fileNameDML = infoImportService.DMLFilePath.substring(config.getFilePath().length());
 			fileNameRollBack = rollBackFilePath.substring(config.getFilePath().length());
 

@@ -55,15 +55,15 @@ import com.ljz.util.TimeUtil;
 @Controller
 @RequestMapping("/interface")
 public class InterfaceController extends MainController{
-
+	
 	private static final Logger logger = LoggerFactory.getLogger(InterfaceController.class);
-
+	
 	@Autowired
 	IDataInterfaceService intService;
-
+	
 	@Autowired
 	JdbcTemplate jdbc;
-
+	
 	@Autowired
 	ExcelServiceImpl excelService;
 
@@ -110,7 +110,7 @@ public class InterfaceController extends MainController{
         logger.info("query records success,num:"+list.size());
         return resultMap;
     }
-	
+
 	@ResponseBody
 	@RequestMapping(value="/queryLastRecord",method = RequestMethod.POST)
     public Map<String, Object> queryLastRecord(@RequestBody(required=false) ParamEntity param) {
@@ -182,8 +182,10 @@ public class InterfaceController extends MainController{
 		Map<String,String> map = new HashMap<String,String>();
 		long start = new Date().getTime();
 		try {
-			logger.info(param.toString());
+			logger.info("saveAll.param:::"+param.toString());
 			String content = intService.saveAll(param);
+//			map = intService.saveAll(param);
+//			String content = map.get("msg");
 			if(!"success".equals(content)) {
 				throw new Exception();
 			}
@@ -196,9 +198,13 @@ public class InterfaceController extends MainController{
 		long end = new Date().getTime();
 		logger.info("导入用时:"+(end-start)+"毫秒");
 		map.put("msgData", "导入成功");
+
+//		map.get("DMLInsert");
+//		map.get("DMLDeclare");
+
 		return map;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value="/createInterface",method = RequestMethod.POST)
 	@Transactional
