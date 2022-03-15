@@ -21,7 +21,6 @@ import com.ljz.model.*;
 import com.ljz.service.impl.DataSourceServiceImpl;
 import com.ljz.service.impl.ExcelServiceImpl;
 import com.ljz.util.ExcelUtil;
-import com.ljz.util.SqlCacheUtil;
 import com.ljz.util.TransUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -120,7 +119,7 @@ public class InterfaceController extends MainController{
 		record.setDataSrcAbbr(dataSrcAbbr);
 		List<DataInterfaceRecords> list = intService.queryRecord(record);
 		DataInterfaceRecords data = new DataInterfaceRecords();
-		SqlCacheUtil cache = SqlCacheUtil.getInstance();
+//		SqlCacheUtil cache = SqlCacheUtil.getInstance();
 		String state = "";
 		if(list.size()>0) {
 			data =list.get(0);
@@ -131,11 +130,32 @@ public class InterfaceController extends MainController{
 			data.setDataSrcAbbr(dataSrcAbbr);
 		}
 		//存入缓存
-		cache.put(dataSrcAbbr+"DataInterfaceRecords",data);
+		//cache.put(dataSrcAbbr+"DataInterfaceRecords",data);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", state);
         resultMap.put("data", data);
         logger.info("query records success,data="+data+",dataSrcAbbr="+dataSrcAbbr);
+        return resultMap;
+    }
+	
+	@ResponseBody
+	@RequestMapping(value="/queryCurrentNum",method = RequestMethod.POST)
+    public Map<String, Object> queryCurrentNum(@RequestBody(required=false) ParamEntity param) {
+		
+		String dataSrcAbbr = param.getDataSrcAbbr();
+		ExcelUtil util = ExcelUtil.getInstance();
+		int intUpdateNum=(int) util.getEntityMap().get(dataSrcAbbr+"intUpdateNum");
+		int intInsertNum=(int) util.getEntityMap().get(dataSrcAbbr+"intInsertNum");
+		int colUpdateNum=(int) util.getEntityMap().get(dataSrcAbbr+"colUpdateNum");
+		int colInsertNum=(int) util.getEntityMap().get(dataSrcAbbr+"colInsertNum");
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("state", "success");
+        resultMap.put("intUpdateNum", intUpdateNum);
+        resultMap.put("intInsertNum", intInsertNum);
+        resultMap.put("colUpdateNum", colUpdateNum);
+        resultMap.put("colInsertNum", colInsertNum);
+        logger.info("query queryCurrentNum success,dataSrcAbbr="+dataSrcAbbr);
         return resultMap;
     }
 	

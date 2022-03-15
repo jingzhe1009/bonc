@@ -10,11 +10,16 @@ var infoModel = {
 			//changeTab2(i, obj);
 		//}
 		infoModel.changeTab2(1,obj);	 //默认显示第一个tab页
+		initInterfaceTable(obj);
+		initColumnTable(obj);
+		initProcTable(obj);
 		// 监听切换数据源工作流程tab选项卡
 		$('#authorityTab2 li').click(function () {
 			var tabId = $(this).attr('tab-id');
 			infoModel.changeTab2(tabId,obj);
 		});
+		$("#filename").val('');
+		$("#resultText").text('');
 		//加载信息确认table
 		//var idx = localStorage.getItem("idx");
 		//compareModel.init(idx);
@@ -33,19 +38,19 @@ var infoModel = {
 			$("#interfaceContent").show(obj);
 			// interfaceModel.init(idx);
 			debugger
-			initInterfaceTable(obj);
+			
 			// $("#inter_dataSrcAbbr").val(idx);
 			$("#pageHeader").html('<p>当前位置：<span>数据接口配置</span></p>');
 		} else if (tabId == '2') {
 			$("#colContent").show(obj);
 			// columnModel.init(idx);
-			initColumnTable(obj);
+			
 			// $("#column_dataSrcAbbr").val(idx);
 			$("#pageHeader").html('<p>当前位置：<span>数据接口字段配置</span></p>');
 		} else if (tabId == '3') {
 			$("#procContent").show(obj);
 			// procModel.init(idx);
-			initProcTable(obj);
+			
 			// $("#proc_dataSrcAbbr").val(idx);
 			$("#pageHeader").html('<p>当前位置：<span>数据算法加载</span></p>');
 		}

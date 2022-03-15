@@ -125,7 +125,8 @@ function checkBtn(index, count) {
 		//接口导入
 		if(index==2){
 			debugger;
-			if($("#batchNo").val()==''){
+			if($("#batchNo").val()!=''&&$("#filename").val()!=''&&$("#resultText").text()!=''){
+			}else{
 				zUI.dialog.alert('<pre>请上传文件</pre>');
 				return;
 			}

@@ -54,6 +54,8 @@ public class ExcelUtil {
 	private Map<String,Map<String,String>> interfaceMap = new HashMap<String,Map<String,String>> ();
 
 	private Map<String,Map<String,String>> procMap = new HashMap<String,Map<String,String>> ();
+	
+	private Map<String,Object> entityMap = new HashMap<String,Object> ();
 
 	public Map<String, String> getTableMap() {
 		return tableMap;
@@ -102,6 +104,14 @@ public class ExcelUtil {
 
 	public void setProcMap(Map<String, Map<String, String>> procMap) {
 		this.procMap = procMap;
+	}
+	
+	public Map<String, Object> getEntityMap() {
+		return entityMap;
+	}
+
+	public void setEntityMap(Map<String, Object> entityMap) {
+		this.entityMap = entityMap;
 	}
 
 	private ExcelUtil() {
@@ -165,6 +175,15 @@ public class ExcelUtil {
 		//setProcMap(procMap);
 	}
 
+	
+	public void put(String dataSrc,Object object) {
+		entityMap.put(dataSrc, object);
+	}
+	
+	public void clearEntity(String dataSrcAbbr){
+		entityMap.remove(dataSrcAbbr);
+	}
+	
 	public void clearInterface(String dataSrcAbbr){
 		interfaceMap.remove(dataSrcAbbr);
 	}

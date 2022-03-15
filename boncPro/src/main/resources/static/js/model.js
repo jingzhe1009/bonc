@@ -223,20 +223,20 @@ function initDataModelTable(obj) {
         	/*{"title": "<input type=\"checkbox\" id=\"checkedAll\" onclick=\"checkedAll()\">全选", "data": null, "width": "5%","render": function (data, type, row) {
                 return '<input type="checkbox" id="'+row.dataInterfaceName+'-'+row.condition+'-'+row.num+'" name="items">';
              }},*/
-             {"title":"操作" ,"data": null,"width":"15%","render": function(data, type, row) {
+             /*{"title":"操作" ,"data": null,"width":"15%","render": function(data, type, row) {
              	var html = '<div>';
-             		/*html += '<span onclick=dataModelModel.detail("'+row.dataInterfaceName+'") class="btn-sm cm-tblA">字段</span>';*/
+             		html += '<span onclick=dataModelModel.detail("'+row.dataInterfaceName+'") class="btn-sm cm-tblA">字段</span>';
              		html += '<span onclick="dataModelModel.viewSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\')" class="btn-sm cm-tblA">查看建表语句</span>';
-             		/*html += '<span onclick="dataModelModel.delModel(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',\''+row.intrnlTableName+'\')" class="btn-sm cm-tblA">删除表</span>';*/
-             		/*html += '<span onclick="dataModelModel.createSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',1);" class="btn-sm cm-tblA">查看外表</span>';*/
-             		/*html += '<span onclick="dataModelModel.createSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',2);" class="btn-sm cm-tblA">查看内表</span>';*/
-             		/*html += '<span onclick="interfaceModel.version(1,\''+row.dataSrcAbbr+'|'+row.dataInterfaceNo+'\');" class="btn-sm cm-tblA">版本</span>';
+             		html += '<span onclick="dataModelModel.delModel(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',\''+row.intrnlTableName+'\')" class="btn-sm cm-tblA">删除表</span>';
+             		html += '<span onclick="dataModelModel.createSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',1);" class="btn-sm cm-tblA">查看外表</span>';
+             		html += '<span onclick="dataModelModel.createSql(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceName+'\',2);" class="btn-sm cm-tblA">查看内表</span>';
+             		html += '<span onclick="interfaceModel.version(1,\''+row.dataSrcAbbr+'|'+row.dataInterfaceNo+'\');" class="btn-sm cm-tblA">版本</span>';
              		html += '<span onclick="interfaceModel.add(2,this)" class="btn-sm cm-tblA">修改</span>';
-             		html += '<span onclick="interfaceModel.del(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceNo+'\');" class="btn-sm cm-tblC">删除</span>';*/
+             		html += '<span onclick="interfaceModel.del(\''+row.dataSrcAbbr+'\',\''+row.dataInterfaceNo+'\');" class="btn-sm cm-tblC">删除</span>';
              		html += '</div>';
              	$("#row_"+row.functionId).data("rowData",row);
  				return html;
- 			}},
+ 			}},*/
             {"title": "数据源缩写", "data": "dataSrcAbbr"},
             {"title": "数据接口编号", "data": "dataInterfaceNo"},
             {"title": "数据接口名", "data": "dataInterfaceName"},

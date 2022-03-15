@@ -1,13 +1,11 @@
 package com.ljz.service.impl;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,7 +41,6 @@ import com.ljz.service.IDataInterfaceService;
 import com.ljz.util.ExcelUtil;
 import com.ljz.util.FileUtil;
 import com.ljz.util.InsertDbProduceReturn;
-import com.ljz.util.SqlCacheUtil;
 import com.ljz.util.TestProduceReturn;
 import com.ljz.util.TimeUtil;
 
@@ -161,11 +158,14 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 	@Override
 	public List<DataInterfaceTmp> queryAllTmp(DataInterfaceTmp record) {
 		// TODO Auto-generated method stub
+		int intUpdateNum=0;
+		int intInsertNum=0;
+		int intAllNum=0;
+		ExcelUtil obj = ExcelUtil.getInstance();
 		List<DataInterfaceTmp> resultList = new ArrayList<DataInterfaceTmp>();
 		String dataSrcAbbr = record.getDataSrcAbbr();
 		if(dataSrcAbbr!=null&&!"".equals(dataSrcAbbr)){
 			logger.info("导入临时表时，数据源是"+record.getDataSrcAbbr());
-			ExcelUtil obj = ExcelUtil.getInstance();
 			List<DataInterfaceTmp> queryAllTmp = mapper.queryAllTmp(record);
 			Map<String,String> interfaceMap =obj.getInterfaceMap(record.getDataSrcAbbr());
 			for(DataInterfaceTmp tmp:queryAllTmp){
@@ -175,12 +175,18 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 						tmp.setImportType("3");
 					}else{//修改
 						tmp.setImportType("2");
+						intUpdateNum++;
 					}
 				}else{//新增
 					tmp.setImportType("1");
+					intInsertNum++;
 				}
+				intAllNum++;
 				resultList.add(tmp);
 			}
+			obj.put(dataSrcAbbr+"intUpdateNum", intUpdateNum);
+			obj.put(dataSrcAbbr+"intInsertNum", intInsertNum);
+			obj.put(dataSrcAbbr+"intAllNum", intAllNum);
 		}
 		return resultList;
 	}
@@ -210,6 +216,9 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 	@Override
 	public List<DataInterface2procTmp> queryAllTmpProc(DataInterface2procTmp record) {
 		// TODO Auto-generated method stub
+		int procUpdateNum=0;
+		int procInsertNum=0;
+		int procAllNum=0;
 		List<DataInterface2procTmp> resultList = new ArrayList<DataInterface2procTmp>();
 		String dataSrcAbbr = record.getDataSrcAbbr();
 		if(dataSrcAbbr!=null&&!"".equals(dataSrcAbbr)){
@@ -223,12 +232,18 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 						tmp.setImportType("3");
 					}else{//修改
 						tmp.setImportType("2");
+						procUpdateNum++;
 					}
 				}else{//新增
 					tmp.setImportType("1");
+					procInsertNum++;
 				}
 				resultList.add(tmp);
+				procAllNum++;
 			}
+			obj.put(dataSrcAbbr+"procUpdateNum", procUpdateNum);
+			obj.put(dataSrcAbbr+"procInsertNum", procInsertNum);
+			obj.put(dataSrcAbbr+"procAllNum", procAllNum);
 		}
 		return resultList;
 	}
@@ -876,14 +891,12 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 								}
 					        }
 						}else{//修改
-							Class cls = data.getClass();  
-					        Field[] fields = cls.getDeclaredFields(); 
+					        Field[] fields = data.getClass().getDeclaredFields(); 
 							for(int i=0; i<fields.length; i++){  
 					            Field f = fields[i];  
 					            f.setAccessible(true);  
 					            System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(data));  
-					            Class cls2 = tmp.getClass();  
-					            Field[] fields2 = cls2.getDeclaredFields(); 
+					            Field[] fields2 = tmp.getClass().getDeclaredFields(); 
 					            if("red".equals(f.getName())||"flag".equals(f.getName())||"serialVersionUID".equals(f.getName()))
 				                	continue;
 					            for(int j=0; j<fields2.length; j++){  
@@ -901,6 +914,14 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					        }
 							data.setFlag("2");
 						}
+						
+						//数据加载算法
+						if(tmp!=null&&tmp.getProcName()!=null) {
+							if(data==null||tmp.getProcName()==null||!data.getProcName().equals(tmp.getProcName())) {
+								data.setFlag("2");
+								red +="'"+data.getProcName()+"',";
+							}
+						}
 					}else{//新增
 						DataInterfaceHistory add = new DataInterfaceHistory();
 						add.setFlag("0");
@@ -915,7 +936,6 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					}
 					//tmp = null;
 				}
-				
 			}
 		} catch (DataAccessException e) {
 			e.printStackTrace();
@@ -1049,25 +1069,31 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		String exptDate ="";
 		String intfDscr = "";
 		
-		//获取需求号和流水号
-		SqlCacheUtil cache = SqlCacheUtil.getInstance();
-		DataInterfaceRecords dataInterfaceRecords=(DataInterfaceRecords)cache.getEntityMap().get(dataSrcAbbr+"DataInterfaceRecords");
-		DataRvsdRecordTmp dataRvsdRecordTmp = (DataRvsdRecordTmp)cache.getEntityMap().get(dataSrcAbbr+"DataRvsdRecordTmp");
-		needVrsnNbr = dataRvsdRecordTmp.getNeedVrsnNbr();
-		if(dataInterfaceRecords.getNeedVrsnNbr().equals(needVrsnNbr)) {
-			exptSeqNbr=getNewId(dataInterfaceRecords.getExptSeqNbr());
-		}else {
-			exptSeqNbr=needVrsnNbr+".1";
-		}
-		
-		//初始化历史表
-		initHistory();
-		
 		//单例模式获取在导入校验中存放在map缓存中的数据
 		ExcelUtil obj = ExcelUtil.getInstance();
 		Map<String, String> interfaceMap = obj.getInterfaceMap(dataSrcAbbr);
 		Map<String, String> columnMap = obj.getColumnMap(dataSrcAbbr);
 		Map<String, String> procMap = obj.getProcMap(dataSrcAbbr);
+		
+		//获取需求号和流水号
+		DataRvsdRecordTmp dataRvsdRecordTmp = (DataRvsdRecordTmp)obj.getEntityMap().get(dataSrcAbbr+"DataRvsdRecordTmp");
+		needVrsnNbr = dataRvsdRecordTmp.getNeedVrsnNbr();
+		if(dataRvsdRecordTmp.getNeedVrsnNbr().equals(needVrsnNbr)) {
+			List<Map<String,Object>> dirList =jdbc.queryForList(" select expt_seq_nbr from data_interface_records order by expt_date desc ");
+			for(int i=0;i<dirList.size();i++) {
+				if(i==0) {
+					Map<String,Object> m =dirList.get(i);
+					exptSeqNbr = getNewId((String) m.get("expt_seq_nbr"));
+				}
+			}
+		}else {
+			exptSeqNbr=needVrsnNbr+".1";
+		}
+		
+		//初始化历史表
+		initHistory(needVrsnNbr,exptSeqNbr);
+		
+		
 		
 		
 		
@@ -1384,39 +1410,39 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		 */
 		try {
 
-//			if(newAddListHis.size()>0){
-//				logger.info("all batch insert interface his success:"+mapper.batchInsertHis(newAddListHis));
-//			}
-//			if(updateList.size()>0){
-//				logger.info("all batch update interface his success:"+jdbc.batchUpdate(getSql("intHis", "update", needVrsnNbr, exptSeqNbr), updateList).length);
-//			}
-//			if(insertList.size()>0){
-//				logger.info("all batch edit&insert interface his from tmp success:"+jdbc.batchUpdate(getSql("intHis", "insert", needVrsnNbr, exptSeqNbr),insertList).length);
-//			}
+			if(newAddListHis.size()>0){
+				logger.info("all batch insert interface his success:"+mapper.batchInsertHis(newAddListHis));
+			}
+			if(updateList.size()>0){
+				logger.info("all batch update interface his success:"+jdbc.batchUpdate(getSql("intHis", "update", needVrsnNbr, exptSeqNbr), updateList).length);
+			}
+			if(insertList.size()>0){
+				logger.info("all batch edit&insert interface his from tmp success:"+jdbc.batchUpdate(getSql("intHis", "insert", needVrsnNbr, exptSeqNbr),insertList).length);
+			}
 //			
 //			
 //			
-//			if(colNewAddListHis.size()>0){
-//				logger.info("all batch insert column his success:"+colMapper.batchInsertHis(colNewAddListHis));
-//			}
-//			if(colUpdateList.size()>0){
-//				logger.info("all batch update column his success:"+jdbc.batchUpdate(getSql("colHis", "update", needVrsnNbr, exptSeqNbr), colUpdateList).length);
-//			}
-//			if(colInsertList.size()>0){
-//				logger.info("all batch insert column his from tmp success:"+jdbc.batchUpdate(getSql("colHis", "insert", needVrsnNbr, exptSeqNbr),colInsertList).length);
-//			}
+			if(colNewAddListHis.size()>0){
+				logger.info("all batch insert column his success:"+colMapper.batchInsertHis(colNewAddListHis));
+			}
+			if(colUpdateList.size()>0){
+				logger.info("all batch update column his success:"+jdbc.batchUpdate(getSql("colHis", "update", needVrsnNbr, exptSeqNbr), colUpdateList).length);
+			}
+			if(colInsertList.size()>0){
+				logger.info("all batch insert column his from tmp success:"+jdbc.batchUpdate(getSql("colHis", "insert", needVrsnNbr, exptSeqNbr),colInsertList).length);
+			}
 //			
 //			
 //			
-//			if(procNewAddListHis.size()>0){
-//				//logger.info("all batch insert proc his success:"+procMapper.batchInsertHis(procNewAddListHis));
-//			}
-//			if(procUpdateList.size()>0){
-//				logger.info("all batch update proc his success:"+jdbc.batchUpdate(getSql("procHis", "update", needVrsnNbr, exptSeqNbr), procUpdateList).length);
-//			}
-//			if(procInsertList.size()>0){
-//				logger.info("all batch insert proc his from tmp success:"+jdbc.batchUpdate(getSql("procHis", "insert", needVrsnNbr, exptSeqNbr),procInsertList).length);
-//			}
+			if(procNewAddListHis.size()>0){
+				logger.info("all batch insert proc his success:"+procMapper.batchInsertHis(procNewAddListHis));
+			}
+			if(procUpdateList.size()>0){
+				logger.info("all batch update proc his success:"+jdbc.batchUpdate(getSql("procHis", "update", needVrsnNbr, exptSeqNbr), procUpdateList).length);
+			}
+			if(procInsertList.size()>0){
+				logger.info("all batch insert proc his from tmp success:"+jdbc.batchUpdate(getSql("procHis", "insert", needVrsnNbr, exptSeqNbr),procInsertList).length);
+			}
 			
 //			if(delList.size()>0){
 //				jdbc.batchUpdate((String[]) delList.toArray());
@@ -1446,10 +1472,15 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		};
 		hisEs.submit(hisTask);
 		
+		
+		obj.clearColumn(dataSrcAbbr);
+		obj.clearInterface(dataSrcAbbr);
+		obj.clearProc(dataSrcAbbr);
+		
 		return "success";
 	}
 	
-	private void initHistory() {
+	private void initHistory(String needVrsnNbr,String exptSeqNbr) {
 		/**
 		 * 初始历史表数据
 		 */
@@ -1466,6 +1497,21 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					+ "    b.intrnl_database_name, b.extrnl_table_name, b.intrnl_table_name, b.table_type, b.bucket_number, \r\n"
 					+ "    b.s_date, b.e_date from data_interface b where b.e_date='3000-12-31'";
 			jdbc.batchUpdate(sql);
+		}else {
+			List<Map<String, Object>> intHistoryList2 = jdbc.queryForList("select * from  data_interface_history where e_date = '3000-12-31' and need_vrsn_nbr='"+needVrsnNbr+"' and expt_seq_nbr='"+exptSeqNbr+"' ");
+			if(intHistoryList2.size()<1) {//第一次导入历史表
+				String sql = "insert into data_interface_history  (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, \r\n"
+						+ "      data_interface_no, data_interface_name, data_interface_desc, \r\n"
+						+ "      data_load_freq, data_load_mthd, filed_delim, \r\n"
+						+ "      line_delim, extrnl_database_name, intrnl_database_name, \r\n"
+						+ "      extrnl_table_name, intrnl_table_name, table_type, \r\n"
+						+ "      bucket_number, s_date, e_date\r\n"
+						+ "      ) select '"+needVrsnNbr+"','"+exptSeqNbr+"', b.data_src_abbr, b.data_interface_no, b.data_interface_name, \r\n"
+						+ "    b.data_interface_desc, b.data_load_freq, b.data_load_mthd, b.filed_delim, b.line_delim, b.extrnl_database_name, \r\n"
+						+ "    b.intrnl_database_name, b.extrnl_table_name, b.intrnl_table_name, b.table_type, b.bucket_number, \r\n"
+						+ "    b.s_date, b.e_date from data_interface b where b.e_date='3000-12-31' ";
+				jdbc.batchUpdate(sql);
+			}
 		}
 		List<Map<String, Object>> colHistoryList = jdbc.queryForList("select *  from data_interface_columns_history where e_date = '3000-12-31' ");
 		if(colHistoryList.size()<1) {
@@ -1476,12 +1522,30 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					+ "    column_no,b.column_name,b.data_type,b.data_format,b.nullable,b.replacenull,b.comma,b.column_comment,b.\r\n"
 					+ "    isbucket,b.s_date,b.e_date from data_interface_columns b where b.e_date='3000-12-31'";
 			jdbc.batchUpdate(sql);
+		}else {
+			List<Map<String, Object>> colHistoryList2 = jdbc.queryForList("select *  from data_interface_columns_history where e_date = '3000-12-31' and need_vrsn_nbr='"+needVrsnNbr+"' and expt_seq_nbr='"+exptSeqNbr+"' ");
+			if(colHistoryList2.size()<1) {
+				String sql = "insert into data_interface_columns_history  (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, data_interface_no, data_interface_name, \r\n"
+						+ "    column_no, column_name, data_type, data_format, nullable, replacenull, comma, column_comment, \r\n"
+						+ "    isbucket, s_date, e_date"
+						+ "      ) select '"+needVrsnNbr+"','"+exptSeqNbr+"', b.data_src_abbr,b.data_interface_no,b.data_interface_name,b.\r\n"
+						+ "    column_no,b.column_name,b.data_type,b.data_format,b.nullable,b.replacenull,b.comma,b.column_comment,b.\r\n"
+						+ "    isbucket,b.s_date,b.e_date from data_interface_columns b where b.e_date='3000-12-31'";
+				jdbc.batchUpdate(sql);
+			}
 		}
 		List<Map<String, Object>> procHistoryList = jdbc.queryForList("select *  from data_interface2proc_history where e_date = '3000-12-31' ");
-		if(colHistoryList.size()<1) {
+		if(procHistoryList.size()<1) {
 			String sql = "insert into data_interface2proc_history  (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, data_interface_no,proc_database_name,proc_name,s_date,e_date) "
 					+ "  select '1.0','1.0.0', b.data_src_abbr,b.data_interface_no,b.proc_database_name,b.proc_name,b.s_date,b.e_date from data_interface2proc b where b.e_date='3000-12-31'";
 			jdbc.batchUpdate(sql);
+		}else {
+			List<Map<String, Object>> procHistoryList2 = jdbc.queryForList("select *  from data_interface2proc_history where e_date = '3000-12-31' and need_vrsn_nbr='"+needVrsnNbr+"' and expt_seq_nbr='"+exptSeqNbr+"' ");
+			if(procHistoryList2.size()<1) {
+				String sql = "insert into data_interface2proc_history  (need_vrsn_nbr, expt_seq_nbr, data_src_abbr, data_interface_no,proc_database_name,proc_name,s_date,e_date) "
+						+ "  select '"+needVrsnNbr+"','"+exptSeqNbr+"', b.data_src_abbr,b.data_interface_no,b.proc_database_name,b.proc_name,b.s_date,b.e_date from data_interface2proc b where b.e_date='3000-12-31'";
+				jdbc.batchUpdate(sql);
+			}
 		}
 	}
 	
@@ -1520,14 +1584,14 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			}
 		}else if("colHis".equals(type)) {
 			if("update".equals(method)) {
-				String colUpdateSqlHis = "update data_interface_columns_history set e_date = ? where data_interface_name = ? and column_no = ? and e_date '3000-12-31' ";
+				String colUpdateSqlHis = "update data_interface_columns_history set e_date = ? where data_interface_name = ? and column_no = ? and e_date='3000-12-31' ";
 				return colUpdateSqlHis;
 			}else if("insert".equals(method)) {
 				StringBuffer colSbHis = new StringBuffer();
 				colSbHis.append("insert into data_interface_columns_history (need_vrsn_nbr,expt_seq_nbr,data_src_abbr, data_interface_no, data_interface_name,column_no, ");
 				colSbHis.append("column_name, data_type,data_format, nullable, replacenull,comma, column_comment, isbucket,s_date, e_date,iskey,isvalid,increment_field) ");
 				colSbHis.append("select '"+needVrsnNbr+"','"+exptSeqNbr+"',tmp.data_src_abbr, tmp.data_interface_no, tmp.data_interface_name,tmp.column_no, ");
-				colSbHis.append("tmp.column_name, tmp.data_type,data_format, tmp.nullable, tmp.replacenull,tmp.comma, tmp.column_comment, tmp.isbucket,tmp.s_date, tmp.e_date, tmp.e_date,tmp.iskey,tmp.isvalid,tmp.increment_field ");
+				colSbHis.append("tmp.column_name, tmp.data_type,data_format, tmp.nullable, tmp.replacenull,tmp.comma, tmp.column_comment, tmp.isbucket,tmp.s_date, tmp.e_date,tmp.iskey,tmp.isvalid,tmp.increment_field ");
 				colSbHis.append("from data_interface_columns_tmp tmp  ");
 				colSbHis.append("where tmp.batch_no = ? and data_interface_name = ? and tmp.column_no = ? ");
 				return colSbHis.toString();

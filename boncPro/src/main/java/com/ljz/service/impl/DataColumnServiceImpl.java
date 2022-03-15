@@ -18,7 +18,6 @@ import com.ljz.mapper.DataInterfaceColumnsMapper;
 import com.ljz.model.DataInterfaceColumns;
 import com.ljz.model.DataInterfaceColumnsHistory;
 import com.ljz.model.DataInterfaceColumnsTmp;
-import com.ljz.model.DataInterfaceHistory;
 import com.ljz.service.IDataColumnService;
 import com.ljz.util.ExcelUtil;
 import com.ljz.util.TimeUtil;
@@ -213,11 +212,14 @@ public class DataColumnServiceImpl implements IDataColumnService{
 	@Override
 	public List<DataInterfaceColumnsTmp> queryAllTmp(DataInterfaceColumnsTmp record) {
 		// TODO Auto-generated method stub
+		int colUpdateNum=0;
+		int colInsertNum=0;
+		int colAllNum=0;
+		ExcelUtil obj = ExcelUtil.getInstance();
 		List<DataInterfaceColumnsTmp> resultList = new ArrayList<DataInterfaceColumnsTmp>();
 		String dataSrcAbbr = record.getDataSrcAbbr();
 		if(dataSrcAbbr!=null&&!"".equals(dataSrcAbbr)){
 			logger.info("导入临时表时，数据源是"+record.getDataSrcAbbr());
-			ExcelUtil obj = ExcelUtil.getInstance();
 			List<DataInterfaceColumnsTmp> queryAllTmp = mapper.queryAllTmp(record);
 			Map<String,String> columnMap =obj.getColumnMap(record.getDataSrcAbbr());
 			for(DataInterfaceColumnsTmp tmp:queryAllTmp){
@@ -227,12 +229,18 @@ public class DataColumnServiceImpl implements IDataColumnService{
 						tmp.setImportType("3");
 					}else{//修改
 						tmp.setImportType("2");
+						colUpdateNum++;
 					}
 				}else{//新增
 					tmp.setImportType("1");
+					colInsertNum++;
 				}
+				colAllNum++;
 				resultList.add(tmp);
 			}
+			obj.put(dataSrcAbbr+"colUpdateNum", colUpdateNum);
+			obj.put(dataSrcAbbr+"colInsertNum", colInsertNum);
+			obj.put(dataSrcAbbr+"colAllNum", colAllNum);
 		}
 		return resultList;
 	}

@@ -9,6 +9,7 @@ var compareModel = {
 		obj['dataSrcAbbr'] = idx;
 		obj['batchNo'] = localStorage.getItem("batchNo");
 		initCompareTable(obj);
+		compareModel.setIndexParam(idx);
 		//按条件查询用
 	},
     //查看版本
@@ -57,7 +58,33 @@ var compareModel = {
 			return '<font color="red">'+data+'</font>';
 		}
 		return data;
-	}
+	},
+	setIndexParam:function(idx){
+		var param = {};
+		param.dataSrcAbbr = idx;
+		var json = JSON.stringify(param);
+		console.log(json);
+		$.ajax({
+			url:"/interface/queryCurrentNum",
+			type:"POST",
+			data:json,
+			contentType:"application/json;charset=UTF-8",
+			success: function(result){
+				console.log(result);
+				if(result.state=='success'){
+					$("#compare_intUpdateNum").text(result.intUpdateNum);
+					$("#compare_intInsertNum").text(result.intInsertNum);
+					$("#compare_colUpdateNum").text(result.colUpdateNum);
+					$("#compare_colInsertNum").text(result.colInsertNum);
+				}else{
+					$("#compare_intUpdateNum").text('0');
+					$("#compare_intInsertNum").text('0');
+					$("#compare_colUpdateNum").text('0');
+					$("#compare_colInsertNum").text('0');
+				}
+			}
+		});
+	},
 }
 
 
@@ -118,9 +145,9 @@ function initCompareTable(obj) {
 				if(data==null||data==''){
 					return data;
 				}
-				/*if(row.flag=='0'&&row.flag!='4'){
+				if(row.flag=='0'){
 					return data;
-				}*/
+				}
 				return compareModel.getData(row,'<a href="#" onclick=compareModel.detail("'+row.dataInterfaceName+'")>'+data+'</a>');
             }},
             {"title": "数据接口名", "data": "dataInterfaceName"},
@@ -166,13 +193,13 @@ function initCompareTable(obj) {
             {"title": "分桶数", "data": "bucketNumber","render":function(data,type,row){
             	return compareModel.getData(row,data);
             }},
-            {"title": "起效日期", "data": "sDate","render": function(data, type, row) {
+            /*{"title": "起效日期", "data": "sDate","render": function(data, type, row) {
             	var oDate = new Date(data);
             	var oYear = oDate.getFullYear();
             	var oMonth = oDate.getMonth()+1;
             	var oDay = oDate.getDate();
             	return oYear+"-"+oMonth+"-"+oDay;
-            }},
+            }},*/
             {"title": "标红", "data": "red","visible":false}
             ],
         ajax: {
