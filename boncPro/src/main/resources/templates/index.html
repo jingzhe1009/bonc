@@ -110,6 +110,7 @@
 	                    	<li tab-id="0"><a data-toggle="tab">接口信息导入</a></li>
 	                        <!-- <li tab-id="15"><a data-toggle="tab">数据源信息</a></li> -->
 	                        <!-- <li tab-id="13"><a data-toggle="tab">配置说明</a></li> -->
+<!--	                        <li tab-id="14"><a data-toggle="tab">接口信息导入</a></li>-->
 	                        <!-- <li tab-id="10"><a data-toggle="tab">一键导入</a></li> -->
 	                        <!-- <li tab-id="11"><a data-toggle="tab">接口信息下载</a></li>
 	                        <li tab-id="12"><a data-toggle="tab">接口查看</a></li> -->
@@ -140,7 +141,22 @@
 										<div class="importC"><img src="imgs/index/home.png">最后修改时间<br/><p id="shouye_date"></p></div>
 									</div>
 								</div>
-	
+								<div class="tableIcon" align="center" >
+					        		<div class="row clearfix" style="width:1150px">
+										<div class="col-md-12 column">
+											<div class="alert alert-dismissable alert-normal">
+												<h4>
+													变更内容:以下5个接口部分字段阈值有更新
+													<table>
+														<tr><td>1.CSF_H0001增加客户代码</td><td>2.CSF_H0001修改客户代码</td></tr>
+														<tr><td></td><td></td></tr>
+														<tr><td></td></tr>
+													</table>
+												</h4>
+											</div>
+										</div>
+									</div>
+								</div>
 								<form class="navbar-form navbar-left" role="search" style="width: 100%">
 	
 									<div class="selfAdaptionRight1 importD">
@@ -256,6 +272,7 @@
 																		</div>
 																        <div class="form-group" align="center">
 																        	<a class="btn btn-primary btn-large uploader-btn-browse"  href="/interface/exportTable">模板下载</a>
+<!--																			<button type="button" class="btn btn-primary uploader-btn-browse" onclick="toTmpToSave.importExcel()"><i class="icon icon-cloud-upload"></i>上传</button>-->
 																			<button type="button" class="btn btn-primary uploader-btn-browse" onclick="infoModel.importExcel()"><i class="icon icon-cloud-upload"></i>上传</button>
 													                	</div>
 													                </form>
@@ -420,7 +437,9 @@
 										               			</tr>
 										               			<tr>
 										               				<td style="text-align:right"  >
-									               						<button type="button" class="btn btn-primary">下载</button>
+                                                                        <button type="button" class="btn btn-primary" onclick="dataModelModel.createFile()">生成建表语句文件</button>
+
+                                                                        <button type="button" class="btn btn-primary">下载</button>
 										               				</td>
 										               				<td style="text-align:left">
 										               					<table style="border-collapse:separate; border-spacing:0px 10px;">
@@ -473,7 +492,7 @@
                 		<!-- <div class="selfAdaptionLeft">
                 			<div class="input-group">
                 				<input data-col="cname" type="text" class="form-control" placeholder="中文词根">
-                				
+
                 			</div>
                 		</div> -->
                 		<div class="selfAdaptionRight">
@@ -686,7 +705,7 @@
 <!-- <script src="/js/interface_version.js"></script> -->
 <!-- <script src="/js/column_version.js"></script> -->
 <!-- <script src="/js/proc_version.js"></script> -->
-<!-- <script src="/js/column.js"></script> 
+<!-- <script src="/js/column.js"></script>
 <script src="/js/interface.js"></script>
 <script src="/js/proc.js"></script>-->
 <!-- <script src="/js/interface_tmp.js"></script>
