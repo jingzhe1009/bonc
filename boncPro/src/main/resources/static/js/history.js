@@ -106,13 +106,7 @@ function initHistoryTable(obj) {
             {"title": "接口总数", "data": "intfTot"},
             {"title": "新增", "data": "intfNew"},
             {"title": "修改", "data": "intfAlt"},
-            {"title": "导入时间", "data": "exptDate","render": function(data, type, row) {
-            	var oDate = new Date(data);
-            	var oYear = oDate.getFullYear();
-            	var oMonth = oDate.getMonth()+1;
-            	var oDay = oDate.getDate();
-            	return oYear+"-"+oMonth+"-"+oDay;
-            }},
+            {"title": "导入时间", "data": "exptDate"},
             /*{"title": "失效日期", "data": "eDate","hidden":"true"},*/
             {"title":"操作" ,"data": null,"render": function(data, type, row) {
             	var html = '<div>';

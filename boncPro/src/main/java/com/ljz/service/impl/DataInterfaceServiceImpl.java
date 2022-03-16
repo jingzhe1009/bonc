@@ -34,6 +34,7 @@ import com.ljz.model.DataInterfaceColumnsHistory;
 import com.ljz.model.DataInterfaceColumnsTmp;
 import com.ljz.model.DataInterfaceHistory;
 import com.ljz.model.DataInterfaceRecords;
+import com.ljz.model.DataInterfaceRecordsDetail;
 import com.ljz.model.DataInterfaceTmp;
 import com.ljz.model.DataRvsdRecordTmp;
 import com.ljz.model.Order;
@@ -884,6 +885,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		List<DataInterfaceHistory> resultList = new ArrayList<DataInterfaceHistory>();
 		ExcelUtil obj = ExcelUtil.getInstance();
 		try {
+			Map<String,Object> msgMap = new HashMap<String,Object>();
 			DataInterfaceHistory tmp = null;
 			for(DataInterfaceHistory data:historyList) {
 				String red = "";
@@ -897,6 +899,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 						del.setFlag("4");
 						resultList.add(del);//删除
 					}
+					List msgList = new ArrayList();
 					DataInterfaceTmp intRecord = new DataInterfaceTmp();
 					intRecord.setBatchNo(record.getExptSeqNbr());
 					intRecord.setDataInterfaceName(data.getDataInterfaceName());
@@ -918,11 +921,13 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 										if(colTmp.toStr().equalsIgnoreCase(columnMap.get(colKey))){//无变化
 										}else{//修改
 					                		data.setFlag("2");//修改
-					                		break;
+					                		msgList.add("修改字段["+colTmp.getColumnComment()+"]");
+					                		//break;
 										}
 									}else{//新增
 				                		data.setFlag("2");//修改
-				                		break;
+				                		msgList.add("新增字段["+colTmp.getColumnComment()+"]");
+				                		//break;
 									}
 								}
 					        }
@@ -944,6 +949,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 					                if(f.getName().equals(f2.getName())) {
 					                	if(f.get(data)!=f2.get(tmp)&&!f.get(data).equals(f2.get(tmp))) {
 					                		red +="'"+f.get(data)+"',";
+					                		msgList.add("修改接口属性["+f.getName()+"]为"+f.get(data));
 					                	}
 					                }
 					            }
@@ -964,15 +970,18 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 						resultList.add(add);
 						data.setFlag("3");
 						resultList.add(data);//新增
+						msgList.add("新增接口"+data.getDataInterfaceDesc());
 					}
 					if("2".equals(data.getFlag())) {//修改
 						data.setRed(red);
 						resultList.add(tmp);
 						resultList.add(data);
 					}
+					msgMap.put(data.getDataInterfaceName(), msgList);
 					//tmp = null;
 				}
 			}
+			obj.put(record.getDataSrcAbbr()+"msgMap", msgMap);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
@@ -1502,6 +1511,16 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			recordsMapper.insertSelective(records);
 		} catch (Exception e1) {
 			e1.printStackTrace();
+		}
+		//流水明细表
+		Map<String,Object> map =(Map<String, Object>) obj.getEntityMap().get(dataSrcAbbr+"msgMap");
+		for(Map.Entry<String, Object> entry:map.entrySet()) {
+			String key = entry.getKey();
+			List list = (List) entry.getValue();
+			for(Object o:list) {
+				String msg = (String) o;
+				jdbc.update(" insert into data_interface_records_detail (need_vrsn_nbr,expt_seq_nbr,data_interface_name,data_change) values ('"+needVrsnNbr+"','"+exptSeqNbr+"','"+key+"','"+msg+"')");
+			}
 		}
 		/**
 		 * 修订版本表
