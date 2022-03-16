@@ -2,6 +2,7 @@ package com.bonc.frame.service.modelImportAndExport.import_v1.imp;
 
 import com.alibaba.fastjson.JSON;
 import com.bonc.frame.dao.DaoHelper;
+import com.bonc.frame.entity.api.ApiConf;
 import com.bonc.frame.entity.modelImportAndExport.modelExport.entity.ExportConstant;
 import com.bonc.frame.entity.modelImportAndExport.modelImport.ImportParam;
 import com.bonc.frame.entity.modelImportAndExport.modelImport.importEntity.ImportAdjustObject;
@@ -389,6 +390,19 @@ public abstract class AbstractImportAdjustServiceImp implements ImportAdjustServ
             needSaveData = context.getNeedSaveData(type, object, null);
         }
         if (needSaveData != null) {
+        	
+        	//参数特殊化
+        	/*if("variable".equals(type)) {
+        		List<Variable> variableList = daoHelper.queryForList("com.bonc.frame.dao.variable.VariableMapper.selectByPrimaryKey", fileObjectId);
+            	if(variableList.size()>0)
+            		return;
+        	}else if("api".equals(type)) {
+        		Map<String, Object> param = new HashMap<>();
+        		param.put("apiId", fileObjectId);
+        		List<ApiConf> list = daoHelper.queryForList("com.bonc.frame.dao.api.ApiMapper.selectByPrimaryKey",param);
+        		if(list.size()>0) return;
+        	}*/
+        	
             dataPersistenceObjectRef(type, object, context);
             dataPersistenceObject(type, needSaveData, context);
         }
