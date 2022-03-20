@@ -56,6 +56,19 @@ var historyModel = {
 					$("#shouye_add").text(data.intfNew);
 					$("#shouye_edit").text(data.intfAlt);
 					$("#shouye_date").text(data.exptDate);
+					var str ='<tr>';
+					var list = result.list;
+					for(var i in list){
+						var detail = list[i];
+						var index = parseInt(i)+1;
+						if(i!=3){
+							str +='<td style="width=30%">'+index+'.'+detail.dataInterfaceName+':'+detail.dataChange+'</td>';
+						}else{
+							str +='</tr><tr><td>'+index+'.'+detail.dataInterfaceName+':'+detail.dataChange+'</td>';
+						}
+					}
+					str +='</tr>';
+					$("#msgTable").html(str);
 				}else{
 					$("#shouye_version").text('v1.0');
 					$("#shouye_sum").text('0');
@@ -110,7 +123,7 @@ function initHistoryTable(obj) {
             /*{"title": "失效日期", "data": "eDate","hidden":"true"},*/
             {"title":"操作" ,"data": null,"render": function(data, type, row) {
             	var html = '<div>';
-            		/*html += '<span onclick="" class="btn-sm cm-tblA"><img src="imgs/index/history.png">历史信息</span>';*/
+            		html += '<span onclick="" class="btn-sm cm-tblA"><img src="imgs/index/history.png">历史信息</span>';
             		html += '<span onclick="" class="btn-sm cm-tblA"><img src="imgs/index/down.png">生成上线脚本</span>';
             		html += '</div>';
             	//$("#row_"+row.functionId).data("rowData",row);

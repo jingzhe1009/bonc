@@ -58,38 +58,38 @@
 		<nav class="menu" data-ride="menu" style="width: 200px">
 		  <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
 		    <li class="open">
-		      <a href="#">数据源</a>
+		      <a href="#"><i class="icon icon-tasks"></i>数据源</a>
 		      <ul id="menusWrap"></ul>
 		    </li>
 		    <li class="open">
-		      <a href="#">词根管理</a>
+		      <a href="#"><i class="icon icon-th"></i>词根管理</a>
 		      <ul id="dicWrap">
 		        <li idx="table">
-		          <a href="#" onclick="dicColModel.init()">词根表管理</a>
+		          <a href="#" onclick="dicColModel.init()"><i class="icon icon-play-sign"></i>词根表管理</a>
 		        </li>
-		        <li idx="col"><a href="#">词根字段管理</a></li>
+		        <li idx="col"><a href="#"><i class="icon icon-play-sign"></i>词根字段管理</a></li>
 		      </ul>
 		    </li>
 		    <li class="open">
-		      <a href="#">基础信息</a>
+		      <a href="#"><i class="icon icon-list-ul"></i>基础信息</a>
 		      <ul id="baseWrap">
 		      	<li idx="ds">
-		          <a href="#">数据源登记</a>
+		          <a href="#"><i class="icon icon-ok-sign"></i>数据源登记</a>
 		        </li>
 		        <li idx="func">
-		          <a href="#">公共函数登记</a>
+		          <a href="#"><i class="icon icon-ok-sign"></i>公共函数登记</a>
 		        </li>
 		        <li idx="log">
-		          <a href="#">日志查询</a>
+		          <a href="#"><i class="icon icon-ok-sign"></i>日志查询</a>
 		        </li>
 		        <li idx="proc">
-		          <a href="#">接口入库算法配置</a>
+		          <a href="#"><i class="icon icon-ok-sign"></i>接口入库算法配置</a>
 		        </li>
 		        <li idx="info">
-		          <a href="#">数据源信息查询</a>
+		          <a href="#"><i class="icon icon-ok-sign"></i>数据源信息查询</a>
 		        </li>
 		        <li idx="excel">
-		          <a href="#">模版导出</a>
+		          <a href="#"><i class="icon icon-ok-sign"></i>模版导出</a>
 		        </li>
 		      </ul>
 		    </li>
@@ -112,8 +112,8 @@
 	                        <!-- <li tab-id="13"><a data-toggle="tab">配置说明</a></li> -->
 <!--	                        <li tab-id="14"><a data-toggle="tab">接口信息导入</a></li>-->
 	                        <!-- <li tab-id="10"><a data-toggle="tab">一键导入</a></li> -->
-	                        <!-- <li tab-id="11"><a data-toggle="tab">接口信息下载</a></li>
-	                        <li tab-id="12"><a data-toggle="tab">接口查看</a></li> -->
+	                        <!-- <li tab-id="11"><a data-toggle="tab">接口信息下载</a></li> -->
+	                        <li tab-id="1"><a data-toggle="tab">接口信息查看</a></li>
 	                    </ul>
 	                </div>
 	              	
@@ -147,7 +147,7 @@
 											<div class="alert alert-dismissable alert-success">
 												<h4>
 													变更内容:以下5个接口部分字段阈值有更新
-													<table id="msgTable">
+													<table id="msgTable" style="border-collapse:separate; border-spacing:0px 10px;">
 														
 													</table>
 												</h4>
@@ -481,7 +481,34 @@
 		                <!-- 火车图 -->
 					</div>
 	        	</div>
-	        	
+	        	<!-- 接口信息查看 -->
+	        	<div class="tab-content" id="interShowContent">
+	        		<nav class="menu" data-ride="menu" style="width: 200px">
+					  <ul id="treeMenu" class="tree tree-menu" data-ride="tree">
+					    <li class="open">
+					      <a href="#"><i class="icon icon-tasks"></i>接口</a>
+					      <ul>
+					        <li id="allInter">
+					          <a href="#"><i class="icon icon-circle-blank"></i>已就绪</a>
+					          <ul>
+					            <li><a href="#">已取消</a></li>
+					            <li><a href="#">已关闭</a></li>
+					          </ul>
+					        </li>
+					        <li>
+					          <a href="#"><i class="icon icon-circle-blank"></i>已就绪</a>
+					          <ul>
+					            <li><a href="#">已取消</a></li>
+					            <li><a href="#">已关闭</a></li>
+					          </ul>
+					        </li>
+					        <li class="active"><a href="#"><i class="icon icon-play-sign"></i>进行中</a></li>
+					        <li><a href="#"><i class="icon icon-ok-sign"></i>已完成</a></li>
+					      </ul>
+					    </li>
+					  </ul>
+					</nav>
+	        	</div>
 	        	
 	        	<!-- 词根表管理标签内容 -->
                 <div class="tab-content" id="dicTableContent">

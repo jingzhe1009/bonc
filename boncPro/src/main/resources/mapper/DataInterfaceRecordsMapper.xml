@@ -15,6 +15,15 @@
     <result column="exct_psn" jdbcType="VARCHAR" property="exctPsn" />
     <result column="expt_date" jdbcType="VARCHAR" property="exptDate" />
   </resultMap>
+  <resultMap id="BaseResultMap2" type="com.ljz.model.DataInterfaceRecordsDetail">
+    <id column="need_vrsn_nbr" jdbcType="VARCHAR" property="needVrsnNbr" />
+    <id column="expt_seq_nbr" jdbcType="VARCHAR" property="exptSeqNbr" />
+    <id column="data_src_abbr" jdbcType="VARCHAR" property="dataSrcAbbr" />
+    <result column="data_interface_no" jdbcType="VARCHAR" property="dataInterfaceNo" />
+    <result column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName" />
+    <result column="data_change" jdbcType="VARCHAR" property="dataChange" />
+    <result column="data_flag" jdbcType="VARCHAR" property="dataFlag" />
+  </resultMap>
   <sql id="Base_Column_List">
     need_vrsn_nbr, expt_seq_nbr, data_src_abbr, expt_file_name, intf_tot, intf_new, intf_alt, 
     intf_dscr, create_date, alt_date, exct_psn, expt_date
@@ -179,5 +188,9 @@
     <include refid="Base_Column_List" />
     from data_interface_records
     where 1=1 and  data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR} order by expt_date desc
+  </select>
+  <select id="queryLastFive" parameterType="com.ljz.model.DataInterfaceRecordsDetail" resultMap="BaseResultMap2">
+    select  * from data_interface_records_detail
+    where 1=1 and  data_src_abbr = #{dataSrcAbbr,jdbcType=VARCHAR} order by expt_seq_nbr desc
   </select>
 </mapper>

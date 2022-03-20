@@ -3,6 +3,7 @@ package com.ljz.mapper;
 import java.util.List;
 
 import com.ljz.model.DataInterfaceRecords;
+import com.ljz.model.DataInterfaceRecordsDetail;
 import com.ljz.model.DataInterfaceRecordsKey;
 
 public interface DataInterfaceRecordsMapper {
@@ -19,4 +20,6 @@ public interface DataInterfaceRecordsMapper {
     int updateByPrimaryKey(DataInterfaceRecords record);
     
     List<DataInterfaceRecords> queryAll(DataInterfaceRecords record);
+    
+    List<DataInterfaceRecordsDetail> queryLastFive(DataInterfaceRecordsDetail record);
 }

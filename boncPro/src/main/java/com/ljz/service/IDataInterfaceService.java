@@ -9,6 +9,7 @@ import com.ljz.model.DataInterface2proc;
 import com.ljz.model.DataInterface2procTmp;
 import com.ljz.model.DataInterfaceHistory;
 import com.ljz.model.DataInterfaceRecords;
+import com.ljz.model.DataInterfaceRecordsDetail;
 import com.ljz.model.DataInterfaceTmp;
 
 public interface IDataInterfaceService {
@@ -55,6 +56,8 @@ public interface IDataInterfaceService {
     String saveAll(ParamEntity param)  throws Exception;
     
     List<DataInterfaceRecords> queryRecord(DataInterfaceRecords record);
+    
+    List<DataInterfaceRecordsDetail> queryLastFive(DataInterfaceRecordsDetail record);
 
 	//数据算法加载
 

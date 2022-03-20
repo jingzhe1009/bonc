@@ -29,15 +29,19 @@ function initMenu(){
 		    	if(i==0){
 		    		localStorage.setItem("idx",idx);
 		    		localStorage.setItem("desc",desc);
-		    		changeTab(index);//0:目录扫描函数配置
+		    		changeTab(index);
 		    		active = "active";
 		    	}
-		    	htmlstr=htmlstr+'<li idx="'+idx+'" desc="'+desc+'" link="'+basePath+'/newIndex?idx='+idx+'" class="'+active+'"><a href=#>'+desc+'('+idx+')'+'</a></li>';
+		    	htmlstr=htmlstr+'<li idx="'+idx+'" desc="'+desc+'" link="'+basePath+'/newIndex?idx='+idx+'" class="'+active+'"><a href=#><i class="icon icon-circle-blank"></i>'+desc+'('+idx+')'+'</a></li>';
     		}
 			$("#menusWrap").html(htmlstr);
 		}
 	});
-	
+	// 手动通过点击模拟高亮菜单项
+	$('#treeMenu').on('click', 'a', function() {
+	    $('#treeMenu li.active').removeClass('active');
+	    $(this).closest('li').addClass('active');
+	});
 	//监听切换菜单数据源列表
 	$('#menusWrap').on('click','li',function () {
 		var idx = $(this).attr("idx");
@@ -225,7 +229,7 @@ function changeTab(tabId){
     	localStorage.setItem("use_type","1");
     	localStorage.setItem("idx",idx);
     	funcModel.queryConfig(idx,1);
-    } else if (tabId == '1') {
+    } else if (tabId == '15') {
     	$("#desc").val('');
 		$("#param").val('');
     	$("#configFuncContent2").show();
@@ -278,6 +282,9 @@ function changeTab(tabId){
     	historyModel.init(idx);
     	//加载流水表最新一条数据
     	historyModel.setIndexParam(idx);
+	} else if(tabId == '1'){
+		$("#interShowContent").show();
+		showAllInter(idx);
 	}
 }
 
@@ -321,5 +328,22 @@ function getInput(key,value){
 	
 	var text ='<div class="form-group"><label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><i class="mustIcon">*</i>'+key+'</label><div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input name="'+value+'param" type="text" class="form-control" ></div></div>';
 	return text;
+}
+
+function showAllInter(idx){
+	$.ajax({
+		url:"/interface/queryInterface",
+		type:"GET",
+		data:{"dataSrcAbbr":idx},
+		success: function(result){
+			console.log(result);
+			var data = result.data;
+			var str = '';
+			for(var i in data){
+				str +='<li><a href="#"><i class="icon icon-play-sign"></i>'+data[i].dataInterfaceName+'</a></li>';
+			}
+			$("#allInter").html(str);	
+		}
+	});
 }
 

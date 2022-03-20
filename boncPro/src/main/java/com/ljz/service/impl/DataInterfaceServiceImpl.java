@@ -1519,7 +1519,7 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 			List list = (List) entry.getValue();
 			for(Object o:list) {
 				String msg = (String) o;
-				jdbc.update(" insert into data_interface_records_detail (need_vrsn_nbr,expt_seq_nbr,data_interface_name,data_change) values ('"+needVrsnNbr+"','"+exptSeqNbr+"','"+key+"','"+msg+"')");
+				jdbc.update(" insert into data_interface_records_detail (need_vrsn_nbr,expt_seq_nbr,data_src_abbr,data_interface_name,data_change,expt_date) values ('"+needVrsnNbr+"','"+exptSeqNbr+"','"+dataSrcAbbr+"'"+key+"','"+msg+"','"+exptDate+"')");
 			}
 		}
 		/**
@@ -1778,6 +1778,10 @@ public class DataInterfaceServiceImpl implements IDataInterfaceService{
 		return recordsMapper.queryAll(record);
 	}
 
+	@Override
+	public List<DataInterfaceRecordsDetail> queryLastFive(DataInterfaceRecordsDetail record) {
+		return recordsMapper.queryLastFive(record);
+	}
 
 
 }

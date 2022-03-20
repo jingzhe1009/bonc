@@ -41,10 +41,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ljz.entity.ParamEntity;
-import com.ljz.model.DataInterface;
-import com.ljz.model.DataInterfaceHistory;
-import com.ljz.model.DataInterfaceRecords;
-import com.ljz.model.DataInterfaceTmp;
 import com.ljz.service.IDataInterfaceService;
 import com.ljz.util.TimeUtil;
 /**
@@ -129,11 +125,23 @@ public class InterfaceController extends MainController{
 			data.setExptSeqNbr("V1.0.0");
 			data.setDataSrcAbbr(dataSrcAbbr);
 		}
+		DataInterfaceRecordsDetail detail = new DataInterfaceRecordsDetail();
+		detail.setDataSrcAbbr(dataSrcAbbr);
+		List<DataInterfaceRecordsDetail> detailList = intService.queryLastFive(detail);
+		List<DataInterfaceRecordsDetail> resultList = new ArrayList<DataInterfaceRecordsDetail>();
+		for(int i=0;i<detailList.size();i++) {
+			if(i<5) {
+				DataInterfaceRecordsDetail d =detailList.get(i);
+				resultList.add(d);
+			}
+		}
+		
 		//存入缓存
 		//cache.put(dataSrcAbbr+"DataInterfaceRecords",data);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", state);
         resultMap.put("data", data);
+        resultMap.put("list", resultList);
         logger.info("query records success,data="+data+",dataSrcAbbr="+dataSrcAbbr);
         return resultMap;
     }
